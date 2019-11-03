@@ -1,0 +1,116 @@
+  
+;;;;;;;;;;;;;;;
+;; FUNCTIONS ;;
+;;;;;;;;;;;;;;;
+
+
+to setup
+  clear-all
+  setup-portales
+  setup-estaciones
+  setup-transmilenio
+  setup-people
+  crear-vias
+  reset-ticks
+end
+
+to setup-portales
+  create-portales 2 [
+    set shape "house"
+    set color green
+    set xcor random-xcor
+    set ycor random-ycor
+  ]
+end
+
+to setup-estaciones
+  create-estaciones 5 [
+    set shape "circle"
+    set color white
+    set size 0.2
+    set xcor random-xcor
+    set ycor random-ycor
+  ]
+end
+
+to setup-transmilenio
+  create-transmilenio 3 [
+    setxy random-xcor random-ycor
+    let vertex-to-move min-one-of (portales) [distance myself]
+    set shape "truck"
+    set color red
+    set last_vertex vertex-to-move
+;   set last-vertex vertex-to-move
+    move-to vertex-to-move
+    ]
+
+end
+
+to setup-people
+  create-people 2 [
+    setxy random-xcor random-ycor
+    set shape "person"
+  ]
+end
+
+to crear-vias
+  ask estaciones;(min-one-of (estaciones) [who])
+  [ifelse who < [who] of max-one-of (estaciones) [who]
+    [
+      set color blue
+      create-link-to estacion (who + 1);(if max-one-of );([ifelse  (max-one-of (estaciones) [who]) = true [1][who + 1]])
+    ]
+    [
+      create-link-to portal 1
+    ]
+  set name-troncal "nacional"
+  ]
+;  [while [who < [who] of max-one-of (estaciones) [who]]
+;    [
+;      set color blue
+;      create-link-to estacion (who + 1);(if max-one-of );([ifelse  (max-one-of (estaciones) [who]) = true [1][who + 1]])
+;    ]
+;  ]
+  ask min-one-of (portales) [who]
+  [create-link-to min-one-of (estaciones) [who]]
+;  ask max-one-of (portales) [who]
+;  [create-link-to max-one-of (estaciones) [who]]
+
+
+
+  ;]
+end
+
+;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
+
+to go
+  mover-transmi
+
+end
+
+to move-people
+  ask people
+    [
+      let vertex-to-move min-one-of (portales) [distance myself]
+      move-to vertex-to-move
+    ]
+end
+
+
+to mover-transmi
+  ask transmilenio
+  [ifelse any? portales-on patch-here = true
+    [ifelse transmilenio-on portal 0 = true
+      [move-to estacion 1 fd 1]
+      [move-to item 0 [end2] of links with [end1 = portal 0]]
+    ]
+;    [ifelse any? estaciones-on patch-here = true
+;      [while [[who] of portales-on patch-here <  ]]
+      []
+;    ]
+
+  ]
+;  [let estacion-to-move min-one-of (estaciones) [distance myself]
+;    face estacion-to-move fd 0.5]
+;    move-to estacion-to-move ]
+end

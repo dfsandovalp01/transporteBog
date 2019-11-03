@@ -1,0 +1,17 @@
+;;;;;;;;;;;;;;
+;; ENTITIES ;;
+;;;;;;;;;;;;;;
+breed [transmilenio articulado]
+breed [people person]
+breed [estaciones estacion]
+breed [portales portal]
+
+transmilenio-own [
+  speed
+  path
+  last_vertex
+]
+
+estaciones-own [
+  name-troncal
+]
