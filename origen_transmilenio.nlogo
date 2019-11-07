@@ -32,10 +32,10 @@ ticks
 30.0
 
 INPUTBOX
-56
-46
-217
-106
+16
+21
+177
+81
 articulados_x_portal
 0.0
 1
@@ -52,7 +52,7 @@ go
 NIL
 1
 T
-TURTLE
+OBSERVER
 NIL
 NIL
 NIL

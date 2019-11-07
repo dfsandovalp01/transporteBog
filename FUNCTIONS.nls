@@ -1,4 +1,4 @@
-  
+
 ;;;;;;;;;;;;;;;
 ;; FUNCTIONS ;;
 ;;;;;;;;;;;;;;;
@@ -35,11 +35,11 @@ end
 
 to setup-transmilenio
   create-transmilenio 3 [
-    setxy random-xcor random-ycor
+    setxy [xcor] of portal 0 [ycor] of portal 0;random-xcor random-ycor
     let vertex-to-move min-one-of (portales) [distance myself]
     set shape "truck"
     set color red
-    set last_vertex vertex-to-move
+   set last_stop vertex-to-move
 ;   set last-vertex vertex-to-move
     move-to vertex-to-move
     ]
@@ -47,9 +47,11 @@ to setup-transmilenio
 end
 
 to setup-people
-  create-people 2 [
+  create-people 3 [
     setxy random-xcor random-ycor
     set shape "person"
+    set color white
+    
   ]
 end
 
@@ -84,33 +86,66 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
 
 to go
-  mover-transmi
-
+  ask transmilenio [mover-transmi-from-portal]
+  ask transmilenio [mover-transmi-from-stop]
+  ask people [move-people]
+  tick
 end
 
 to move-people
-  ask people
-    [
-      let vertex-to-move min-one-of (portales) [distance myself]
+;  ask people
+;    [
+      let vertex-to-move min-one-of (estaciones) [distance myself]
       move-to vertex-to-move
-    ]
+;    ]
 end
 
 
-to mover-transmi
-  ask transmilenio
-  [ifelse any? portales-on patch-here = true
-    [ifelse transmilenio-on portal 0 = true
-      [move-to estacion 1 fd 1]
-      [move-to item 0 [end2] of links with [end1 = portal 0]]
-    ]
-;    [ifelse any? estaciones-on patch-here = true
-;      [while [[who] of portales-on patch-here <  ]]
-      []
+to mover-transmi-from-portal
+;  ask transmilenio
+;  [
+    if any? portales-on patch-here = true
+    [
+      let who.origen item 0 [who] of portales-on patch-here
+      let next.stop item 0 [end2] of links with [end1 = portal who.origen]
+      let next.stop_x [xcor] of next.stop
+      let next.stop_y [ycor] of next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
+      set last_stop portal who.origen
+;      move-to item 0 [end2] of links with [end1 = portal destino.norte]  fd 0.2
 ;    ]
+;    [ifelse any? portales-on patch-here = true
+;      [ifelse transmilenio-on portal 0 = true
+;        [move-to estacion 1 fd 1]
+;        [move-to item 0 [end2] of links with [end1 = portal 0] 
+;        set last_vertex min-one-of (estaciones) [distance myself]]
+      ]
+;  ;    [ifelse any? estaciones-on patch-here = true
+;  ;      [while [[who] of portales-on patch-here <  ]]
+;      [];; condicion si falso
+    
+  ;    ]
 
-  ]
+;    ]
+  
 ;  [let estacion-to-move min-one-of (estaciones) [distance myself]
 ;    face estacion-to-move fd 0.5]
 ;    move-to estacion-to-move ]
+end
+
+to mover-transmi-from-stop
+;  ask transmilenio 
+;  [
+;    if any? estaciones-on patch-here = true 
+;      [
+        let who.origen item 0 [who] of estaciones-on patch-here
+        let next.stop item 0 [end2] of links with [end1 = estacion who.origen]
+        let next.stop_x [xcor] of next.stop
+        let next.stop_y [ycor] of next.stop
+        facexy next.stop_x next.stop_y fd distance next.stop
+;        let destino.norte item 0 [who] of estaciones-on patch-here
+;        move-to item 0 [end2] of links with [end1 = estacion destino.norte]
+        set last_stop estacion who.origen;min-one-of (estaciones) [distance myself]
+;      ]  
+;  ]
 end

@@ -9,7 +9,9 @@ breed [portales portal]
 transmilenio-own [
   speed
   path
-  last_vertex
+  last_stop
+  destino_0
+  destino_1
 ]
 
 estaciones-own [
