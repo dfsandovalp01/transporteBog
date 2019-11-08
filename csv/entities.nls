@@ -1,0 +1,24 @@
+; Entities file
+
+breed [
+	vertices vertex
+]
+
+vertices-own [
+	id
+	expected-cost
+	visited? 
+	predecessor
+]
+
+undirected-link-breed [
+	edges edge
+]
+
+edges-own [
+	pk
+	cost
+	capacity
+	penalty
+	dist
+]

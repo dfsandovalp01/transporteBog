@@ -2,6 +2,11 @@ __includes [
   "GLOBALS.nls"
   "ENTITIES.nls"
   "FUNCTIONS.nls"
+
+  "csv/globals.nls"
+  "csv/entities.nls"
+  "csv/create-graph.nls"
+
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -21,10 +26,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
+0
+32
+0
+32
 0
 0
 1

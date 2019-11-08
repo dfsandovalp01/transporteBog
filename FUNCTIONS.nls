@@ -6,20 +6,22 @@
 
 to setup
   clear-all
+  setup-importer
   setup-portales
-  setup-estaciones
+;  setup-estaciones
   setup-transmilenio
   setup-people
-  crear-vias
+;  crear-vias
+  
   reset-ticks
 end
 
 to setup-portales
-  create-portales 2 [
+  create-portales 1 [
     set shape "house"
     set color green
-    set xcor random-xcor
-    set ycor random-ycor
+    set xcor [xcor] of vertex 30
+    set ycor [ycor] of vertex 30
   ]
 end
 
@@ -35,11 +37,11 @@ end
 
 to setup-transmilenio
   create-transmilenio 3 [
-    setxy [xcor] of portal 0 [ycor] of portal 0;random-xcor random-ycor
+    setxy [xcor] of portal 151 [ycor] of portal 151;random-xcor random-ycor
     let vertex-to-move min-one-of (portales) [distance myself]
     set shape "truck"
     set color red
-   set last_stop vertex-to-move
+    set last_stop vertex-to-move
 ;   set last-vertex vertex-to-move
     move-to vertex-to-move
     ]
@@ -86,7 +88,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
 
 to go
-  ask transmilenio [mover-transmi-from-portal]
+;  ask transmilenio [mover-transmi-from-portal]
   ask transmilenio [mover-transmi-from-stop]
   ask people [move-people]
   tick
@@ -95,7 +97,7 @@ end
 to move-people
 ;  ask people
 ;    [
-      let vertex-to-move min-one-of (estaciones) [distance myself]
+      let vertex-to-move min-one-of (vertices) [distance myself]
       move-to vertex-to-move
 ;    ]
 end
@@ -138,14 +140,14 @@ to mover-transmi-from-stop
 ;  [
 ;    if any? estaciones-on patch-here = true 
 ;      [
-        let who.origen item 0 [who] of estaciones-on patch-here
-        let next.stop item 0 [end2] of links with [end1 = estacion who.origen]
+        let who.origen item 0 [who] of vertices-on patch-here
+        let next.stop item 0 [end2] of links with [end1 = vertex who.origen]
         let next.stop_x [xcor] of next.stop
         let next.stop_y [ycor] of next.stop
         facexy next.stop_x next.stop_y fd distance next.stop
 ;        let destino.norte item 0 [who] of estaciones-on patch-here
 ;        move-to item 0 [end2] of links with [end1 = estacion destino.norte]
-        set last_stop estacion who.origen;min-one-of (estaciones) [distance myself]
+        set last_stop vertex who.origen;min-one-of (estaciones) [distance myself]
 ;      ]  
 ;  ]
 end
