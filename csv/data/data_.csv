@@ -1,0 +1,60 @@
+ID,last_stop,y,Heading,breed
+153,(vertex 150),7.392,253.17859010995915,transmilenio
+152,(vertex 150),7.392,253.17859010995915,transmilenio
+154,(vertex 150),7.392,253.17859010995915,transmilenio
+ID,last_stop,y,Heading,breed
+152,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+154,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+153,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+ID,last_stop,y,Heading,breed
+154,(vertex 125),8.607999999999999,70.14478563067905,transmilenio
+153,(vertex 125),8.607999999999999,70.14478563067905,transmilenio
+152,(vertex 125),8.607999999999999,70.14478563067905,transmilenio
+ID,last_stop,y,Heading,breed
+152,(vertex 12),8.192,250.14478563067905,transmilenio
+154,(vertex 12),8.864,77.7995312726191,transmilenio
+153,(vertex 12),8.192,250.14478563067905,transmilenio
+ID,last_stop,y,Heading,breed
+152,(vertex 125),7.808,248.8387401831717,transmilenio
+154,(vertex 78),8.864,90,transmilenio
+153,(vertex 125),7.808,248.8387401831717,transmilenio
+ID,last_stop,y,Heading,breed
+152,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+154,(vertex 17),8.736,97.35237935989232,transmilenio
+153,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+ID,last_stop,y,Heading,breed
+153,(vertex 125),8.607999999999999,70.14478563067905,transmilenio
+154,(vertex 145),8.864,277.3523793598923,transmilenio
+152,(vertex 125),8.607999999999999,70.14478563067905,transmilenio
+ID,last_stop,y,Heading,breed
+153,(vertex 12),8.192,250.14478563067905,transmilenio
+154,(vertex 17),8.736,97.35237935989232,transmilenio
+152,(vertex 12),8.192,250.14478563067905,transmilenio
+ID,last_stop,y,Heading,breed
+153,(vertex 125),7.808,248.8387401831717,transmilenio
+152,(vertex 125),7.808,248.8387401831717,transmilenio
+154,(vertex 145),8.864,277.3523793598923,transmilenio
+ID,last_stop,y,Heading,breed
+154,(vertex 17),8.864,270,transmilenio
+152,(vertex 150),7.392000000000001,253.17859010995926,transmilenio
+153,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+ID,last_stop,y,Heading,breed
+152,(vertex 150),7.392000000000001,253.17859010995926,transmilenio
+153,(vertex 125),8.607999999999999,70.14478563067905,transmilenio
+154,(vertex 78),8.864,90,transmilenio
+ID,last_stop,y,Heading,breed
+153,(vertex 12),8.192,250.14478563067905,transmilenio
+154,(vertex 17),8.864,270,transmilenio
+152,(vertex 150),7.392000000000001,253.17859010995926,transmilenio
+ID,last_stop,y,Heading,breed
+153,(vertex 125),7.808,248.8387401831717,transmilenio
+152,(vertex 150),7.392000000000001,253.17859010995926,transmilenio
+154,(vertex 78),8.607999999999999,257.7995312726191,transmilenio
+ID,last_stop,y,Heading,breed
+153,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+154,(vertex 12),8.192,250.14478563067905,transmilenio
+152,(vertex 150),8.192000000000002,68.8387401831717,transmilenio
+ID,last_stop,y,Heading,breed
+154,(vertex 125),7.808,248.8387401831717,transmilenio
+152,(vertex 125),8.607999999999999,70.14478563067905,transmilenio
+153,(vertex 125),8.607999999999999,70.14478563067905,transmilenio

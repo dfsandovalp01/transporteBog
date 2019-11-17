@@ -1,0 +1,40 @@
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+152,(vertex 150),(vertex 30),(vertex 150),[(vertex 150) (vertex 45)],1
+153,(vertex 150),(vertex 30),(vertex 150),[(vertex 45) (vertex 150)],1
+154,(vertex 150),(vertex 30),(vertex 150),[(vertex 150) (vertex 45)],1
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+154,(vertex 125),(vertex 150),(vertex 125),[(vertex 30) (vertex 125)],2
+152,(vertex 125),(vertex 150),(vertex 125),[(vertex 125) (vertex 30)],2
+153,(vertex 30),(vertex 150),(vertex 30),[(vertex 30) (vertex 125)],2
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+154,(vertex 150),(vertex 125),(vertex 150),[(vertex 150)],3
+153,(vertex 150),(vertex 30),(vertex 150),[(vertex 150) (vertex 45)],3
+152,(vertex 150),(vertex 125),(vertex 150),[(vertex 150)],3
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+154,(vertex 125),(vertex 150),(vertex 125),[(vertex 125) (vertex 30)],4
+153,(vertex 30),(vertex 150),(vertex 30),[(vertex 30) (vertex 125)],4
+152,(vertex 30),(vertex 150),(vertex 30),[(vertex 125) (vertex 30)],4
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+154,(vertex 150),(vertex 125),(vertex 150),[(vertex 150)],5
+153,(vertex 150),(vertex 30),(vertex 150),[(vertex 45) (vertex 150)],5
+152,(vertex 150),(vertex 30),(vertex 150),[(vertex 45) (vertex 150)],5
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+152,(vertex 30),(vertex 150),(vertex 30),[(vertex 125) (vertex 30)],6
+154,(vertex 125),(vertex 150),(vertex 125),[(vertex 30) (vertex 125)],6
+153,(vertex 125),(vertex 150),(vertex 125),[(vertex 125) (vertex 30)],6
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+153,(vertex 150),(vertex 125),(vertex 150),[(vertex 150)],7
+152,(vertex 150),(vertex 30),(vertex 150),[(vertex 45) (vertex 150)],7
+154,(vertex 150),(vertex 125),(vertex 150),[(vertex 150)],7
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+154,(vertex 30),(vertex 150),(vertex 30),[(vertex 125) (vertex 30)],8
+152,(vertex 125),(vertex 150),(vertex 125),[(vertex 125) (vertex 30)],8
+153,(vertex 30),(vertex 150),(vertex 30),[(vertex 30) (vertex 125)],8
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+153,(vertex 150),(vertex 30),(vertex 150),[(vertex 150) (vertex 45)],9
+152,(vertex 150),(vertex 125),(vertex 150),[(vertex 150)],9
+154,(vertex 150),(vertex 30),(vertex 150),[(vertex 150) (vertex 45)],9
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+153,(vertex 125),(vertex 150),(vertex 125),[(vertex 125) (vertex 30)],10
+154,(vertex 125),(vertex 150),(vertex 125),[(vertex 30) (vertex 125)],10
+152,(vertex 125),(vertex 150),(vertex 125),[(vertex 125) (vertex 30)],10

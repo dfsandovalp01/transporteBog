@@ -10,6 +10,9 @@ transmilenio-own [
   speed
   path
   last_stop
+  next.stop
+  origen.stop
+  options.stop
   destino_0
   destino_1
 ]

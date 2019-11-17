@@ -6,17 +6,18 @@ __includes [
   "csv/globals.nls"
   "csv/entities.nls"
   "csv/create-graph.nls"
+  "csv/data/export_data.nls"
 
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-647
-448
+1213
+1014
 -1
 -1
-13.0
+30.152
 1
 10
 1
@@ -48,12 +49,12 @@ articulados_x_portal
 Number
 
 BUTTON
-51
-147
-114
-180
-NIL
-go
+17
+258
+132
+415
+GO
+go\ncreate_csv_new
 NIL
 1
 T
@@ -65,12 +66,12 @@ NIL
 1
 
 BUTTON
-48
-204
-121
-237
-NIL
-setup
+15
+472
+162
+605
+SETUP
+setup\nget_date
 NIL
 1
 T

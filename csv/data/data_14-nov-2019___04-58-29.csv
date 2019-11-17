@@ -1,0 +1,4 @@
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+154,(vertex 56),(vertex 30),(vertex 56),[(vertex 45) (vertex 150)],1
+152,(vertex 93),(vertex 30),(vertex 93),[(vertex 45) (vertex 150)],1
+153,(vertex 113),(vertex 30),(vertex 113),[(vertex 150) (vertex 45)],1

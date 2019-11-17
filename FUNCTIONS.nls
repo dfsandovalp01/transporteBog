@@ -39,10 +39,12 @@ to setup-transmilenio
   create-transmilenio 3 [
     setxy [xcor] of portal 151 [ycor] of portal 151;random-xcor random-ycor
     let vertex-to-move min-one-of (portales) [distance myself]
+;    set who.origen item 0 [who] of vertices-on patch-here
     set shape "truck"
     set color red
-    set last_stop vertex-to-move
-;   set last-vertex vertex-to-move
+;    set last_stop vertex (item 0 [who] of vertices-on patch-here)
+    print last_stop 
+;   set last_vertex vertex-to-move
     move-to vertex-to-move
     ]
 
@@ -104,50 +106,65 @@ end
 
 
 to mover-transmi-from-portal
-;  ask transmilenio
-;  [
+
     if any? portales-on patch-here = true
     [
-      let who.origen item 0 [who] of portales-on patch-here
-      let next.stop item 0 [end2] of links with [end1 = portal who.origen]
+      let who.origen item 0 [who] of vertices-on patch-here
+      set next.stop item 0 [end2] of links with [end1 = vertex who.origen and capacity = 1]
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       facexy next.stop_x next.stop_y fd distance next.stop
-      set last_stop portal who.origen
-;      move-to item 0 [end2] of links with [end1 = portal destino.norte]  fd 0.2
-;    ]
-;    [ifelse any? portales-on patch-here = true
-;      [ifelse transmilenio-on portal 0 = true
-;        [move-to estacion 1 fd 1]
-;        [move-to item 0 [end2] of links with [end1 = portal 0] 
-;        set last_vertex min-one-of (estaciones) [distance myself]]
-      ]
-;  ;    [ifelse any? estaciones-on patch-here = true
-;  ;      [while [[who] of portales-on patch-here <  ]]
-;      [];; condicion si falso
-    
-  ;    ]
-
-;    ]
-  
-;  [let estacion-to-move min-one-of (estaciones) [distance myself]
-;    face estacion-to-move fd 0.5]
-;    move-to estacion-to-move ]
+      set last_stop vertex who.origen
+  ]
 end
 
 to mover-transmi-from-stop
-;  ask transmilenio 
-;  [
-;    if any? estaciones-on patch-here = true 
-;      [
-        let who.origen item 0 [who] of vertices-on patch-here
-        let next.stop item 0 [end2] of links with [end1 = vertex who.origen]
-        let next.stop_x [xcor] of next.stop
-        let next.stop_y [ycor] of next.stop
-        facexy next.stop_x next.stop_y fd distance next.stop
-;        let destino.norte item 0 [who] of estaciones-on patch-here
-;        move-to item 0 [end2] of links with [end1 = estacion destino.norte]
-        set last_stop vertex who.origen;min-one-of (estaciones) [distance myself]
-;      ]  
-;  ]
+ 
+  let who.origen item 0 [who] of vertices-on patch-here ;::: AQUI VOY ::::::::::
+  set origen.stop vertex who.origen
+  let id.origen.stop origen.stop
+  set last_stop id.origen.stop
+  let last.stop last_stop
+  
+  ifelse any? portales-on patch-here = true
+    [
+;      let who.origen item 0 [who] of vertices-on patch-here
+      set next.stop item 0 [end2] of links with [end1 = id.origen.stop and capacity = 1]
+      set options.stop  [end2] of links with [end1 = id.origen.stop and capacity = 1]
+      let next.stop_x [xcor] of next.stop
+      let next.stop_y [ycor] of next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
+      set last_stop origen.stop
+      set origen.stop next.stop
+  ]
+  
+  [
+  ifelse any? links with [end1 = id.origen.stop and item 0 [end2] of links with [end1 = id.origen.stop ] != last.stop ] ; 
+  [
+    set next.stop item 0 [end2] of links with [end1 = id.origen.stop ]
+    set options.stop  [end2] of links with [end1 = id.origen.stop]
+    let next.stop_x [xcor] of next.stop
+    let next.stop_y [ycor] of next.stop
+    facexy next.stop_x next.stop_y fd distance next.stop
+      set last_stop origen.stop
+      set origen.stop next.stop
+;      set last_stop id.origen.stop
+  ]
+  
+    [
+  if any? links with [end2 = id.origen.stop and end1 != last.stop ]
+  [
+    set next.stop item 0 [end1] of links with [end2 = id.origen.stop ] 
+    set options.stop [end1] of links with [end2 = id.origen.stop] 
+    let next.stop_x [xcor] of next.stop
+    let next.stop_y [ycor] of next.stop
+    facexy next.stop_x next.stop_y fd distance next.stop
+        set last_stop origen.stop
+      set origen.stop next.stop
+;        set last_stop id.origen.stop
+  ]
+  ]
+  ]
+;   set last_stop origen.stop;min-one-of (estaciones) [distance myself]
+
 end
