@@ -43,7 +43,7 @@ to setup-transmilenio
     set shape "truck"
     set color red
 ;    set last_stop vertex (item 0 [who] of vertices-on patch-here)
-    print last_stop 
+    print last.stop 
 ;   set last_vertex vertex-to-move
     move-to vertex-to-move
     ]
@@ -114,7 +114,7 @@ to mover-transmi-from-portal
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       facexy next.stop_x next.stop_y fd distance next.stop
-      set last_stop vertex who.origen
+      set last.stop vertex who.origen
   ]
 end
 
@@ -123,8 +123,8 @@ to mover-transmi-from-stop
   let who.origen item 0 [who] of vertices-on patch-here ;::: AQUI VOY ::::::::::
   set origen.stop vertex who.origen
   let id.origen.stop origen.stop
-  set last_stop id.origen.stop
-  let last.stop last_stop
+  set last.stop id.origen.stop
+  let last_stop last.stop
   
   ifelse any? portales-on patch-here = true
     [
@@ -134,14 +134,19 @@ to mover-transmi-from-stop
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       facexy next.stop_x next.stop_y fd distance next.stop
-      set last_stop origen.stop
+      set last.stop origen.stop
       set origen.stop next.stop
   ]
   
   [
-  ifelse any? links with [end1 = id.origen.stop and item 0 [end2] of links with [end1 = id.origen.stop ] != last.stop ] ; 
+  ifelse any? links with [end1 = id.origen.stop and item 0 [end2] of links with [end1 = id.origen.stop ] != last_stop ] ; 
   [
     set next.stop item 0 [end2] of links with [end1 = id.origen.stop ]
+      set first.end [end1] of links with [end1 = id.origen.stop ]
+      set second.end [end2] of links with [end1 = id.origen.stop ]
+      set last.link1 link item 0 first.end item 0 second.end 
+      set last.link2 link item 1 first.end item 1 second.end 
+    set last.link link [who] of id.origen.stop [who] of next.stop  
     set options.stop  [end2] of links with [end1 = id.origen.stop]
     let next.stop_x [xcor] of next.stop
     let next.stop_y [ycor] of next.stop
@@ -152,9 +157,17 @@ to mover-transmi-from-stop
   ]
   
     [
-  if any? links with [end2 = id.origen.stop and end1 != last.stop ]
+  if any? links with [end2 = id.origen.stop and end1 != last_stop ]
   [
-    set next.stop item 0 [end1] of links with [end2 = id.origen.stop ] 
+    set next.stop item 0 [end1] of links with [end2 = id.origen.stop ]
+        set first.end [end1] of links with [end1 = id.origen.stop ]
+      set second.end [end2] of links with [end1 = id.origen.stop ]
+      set last.link1 link item 0 first.end item 0 second.end 
+      set last.link2 link item 1 first.end item 1 second.end
+        
+        set last.link link [who] of id.origen.stop [who] of next.stop 
+    let options.link links with [end2 = id.origen.stop ]
+    print options.link    
     set options.stop [end1] of links with [end2 = id.origen.stop] 
     let next.stop_x [xcor] of next.stop
     let next.stop_y [ycor] of next.stop

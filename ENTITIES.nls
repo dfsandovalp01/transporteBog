@@ -9,12 +9,16 @@ breed [portales portal]
 transmilenio-own [
   speed
   path
-  last_stop
+  first.end
+  second.end
+  last.stop
+  last.link1
+  last.link2
+  last.link
   next.stop
   origen.stop
   options.stop
-  destino_0
-  destino_1
+  
 ]
 
 estaciones-own [
