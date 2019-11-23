@@ -18,7 +18,7 @@ to create_csv_new
 	file-open (word "csv/data/data_"date_time".csv")
 	file-type "ID," file-type "id.origen.stop," file-type"last_stop," file-type "next.stop," file-type "options.stop," file-print "tick"
 	ask transmilenio [file-type who file-type "," file-type origen.stop file-type "," file-type last.stop file-type "," file-type next.stop file-type "," file-type options.stop file-type "," file-print ticks ]
-  ask transmilenio [print word "who" who print word "origen.stop" origen.stop print word "last_stop" last.stop print word "options.stop" options.stop print ticks] ;print word "next.stop" next.stop 
+  ask transmilenio [print word "who" who print word "origen.stop" origen.stop print word "last_stop" last.stop print word "last.link" last.link print word "next.stop" next.stop print word "options.stop" options.stop print ticks] ;print word "next.stop" next.stop 
 	;;file-type turtles_list
 	file-close
 end

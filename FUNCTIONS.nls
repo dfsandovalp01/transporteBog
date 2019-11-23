@@ -125,6 +125,8 @@ to mover-transmi-from-stop
   let id.origen.stop origen.stop
   set last.stop id.origen.stop
   let last_stop last.stop
+  set last.link edge 12 125
+  let last_link last.link
   
   ifelse any? portales-on patch-here = true
     [
@@ -136,48 +138,98 @@ to mover-transmi-from-stop
       facexy next.stop_x next.stop_y fd distance next.stop
       set last.stop origen.stop
       set origen.stop next.stop
-  ]
+      set last.link edge [who] of origen.stop [who] of last.stop 
+     ]
+  
+  ;;;;; inicio nuevo codigo ;;;;;;;;
   
   [
-  ifelse any? links with [end1 = id.origen.stop and item 0 [end2] of links with [end1 = id.origen.stop ] != last_stop ] ; 
-  [
-    set next.stop item 0 [end2] of links with [end1 = id.origen.stop ]
-      set first.end [end1] of links with [end1 = id.origen.stop ]
-      set second.end [end2] of links with [end1 = id.origen.stop ]
-      set last.link1 link item 0 first.end item 0 second.end 
-      set last.link2 link item 1 first.end item 1 second.end 
-    set last.link link [who] of id.origen.stop [who] of next.stop  
-    set options.stop  [end2] of links with [end1 = id.origen.stop]
-    let next.stop_x [xcor] of next.stop
-    let next.stop_y [ycor] of next.stop
-    facexy next.stop_x next.stop_y fd distance next.stop
-      set last_stop origen.stop
-      set origen.stop next.stop
-;      set last_stop id.origen.stop
-  ]
-  
+    ifelse edges with [end1 = id.origen.stop ] != 0 
     [
-  if any? links with [end2 = id.origen.stop and end1 != last_stop ]
-  [
-    set next.stop item 0 [end1] of links with [end2 = id.origen.stop ]
-        set first.end [end1] of links with [end1 = id.origen.stop ]
-      set second.end [end2] of links with [end1 = id.origen.stop ]
-      set last.link1 link item 0 first.end item 0 second.end 
-      set last.link2 link item 1 first.end item 1 second.end
-        
-        set last.link link [who] of id.origen.stop [who] of next.stop 
-    let options.link links with [end2 = id.origen.stop ]
-    print options.link    
-    set options.stop [end1] of links with [end2 = id.origen.stop] 
-    let next.stop_x [xcor] of next.stop
-    let next.stop_y [ycor] of next.stop
-    facexy next.stop_x next.stop_y fd distance next.stop
-        set last_stop origen.stop
+      set options.stop [self] of links with [end1 = id.origen.stop]
+      ifelse item 0 options.stop != last.link
+      [
+        set next.stop item 0 [end2] of links with [end1 = id.origen.stop]
+        let next.stop_x [xcor] of next.stop
+      let next.stop_y [ycor] of next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
+      set last.stop origen.stop
       set origen.stop next.stop
-;        set last_stop id.origen.stop
+        set last.link edge [who] of id.origen.stop [who] of next.stop
+      ]  
+      [
+        set next.stop item 1 [end2] of links with [end1 = id.origen.stop]
+        let next.stop_x [xcor] of next.stop
+      let next.stop_y [ycor] of next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
+      set last.stop origen.stop
+      set origen.stop next.stop
+        set last.link edge [who] of id.origen.stop [who] of next.stop
+      ]      
+    ] 
+    [
+      if any? links with [end2 = id.origen.stop]
+      [
+        set options.stop [self] of links with [end2 = id.origen.stop]
+        
+        ifelse item 0 options.stop != last.link
+        [
+          set next.stop item 0 [end1] of links with [end2 = id.origen.stop ]
+          set last.link edge [who] of id.origen.stop [who] of next.stop
+        ]
+        [
+          set next.stop item 1 [end1] of links with [end2 = id.origen.stop]
+          set last.link edge [who] of id.origen.stop [who] of next.stop
+        ]               
+      ]
+    ]
   ]
-  ]
-  ]
+  
+  
+  ;;;;; fin nuevo codigo ;;;;;;;;
+  
+  
+  
+;  [
+;  ifelse any? links with [end1 = id.origen.stop and item 0 [end2] of links with [end1 = id.origen.stop ] != last_stop ] ; 
+;  [
+;    set next.stop item 0 [end2] of links with [end1 = id.origen.stop ]
+;      set first.end [end1] of links with [end1 = id.origen.stop ]
+;      set second.end [end2] of links with [end1 = id.origen.stop ]
+;      set last.link1 link item 0 first.end item 0 second.end 
+;      set last.link2 link item 1 first.end item 1 second.end 
+;    set last.link link [who] of id.origen.stop [who] of next.stop  
+;    set options.stop  [end2] of links with [end1 = id.origen.stop]
+;    let next.stop_x [xcor] of next.stop
+;    let next.stop_y [ycor] of next.stop
+;    facexy next.stop_x next.stop_y fd distance next.stop
+;      set last_stop origen.stop
+;      set origen.stop next.stop
+;;      set last_stop id.origen.stop
+;  ]
+;  
+;    [
+;  if any? links with [end2 = id.origen.stop and end1 != last_stop ]
+;  [
+;    set next.stop item 0 [end1] of links with [end2 = id.origen.stop ]
+;        set first.end [end1] of links with [end1 = id.origen.stop ]
+;      set second.end [end2] of links with [end1 = id.origen.stop ]
+;      set last.link1 link item 0 first.end item 0 second.end 
+;      set last.link2 link item 1 first.end item 1 second.end
+;        
+;        set last.link link [who] of id.origen.stop [who] of next.stop 
+;    let options.link links with [end2 = id.origen.stop ]
+;    print options.link    
+;    set options.stop [end1] of links with [end2 = id.origen.stop] 
+;    let next.stop_x [xcor] of next.stop
+;    let next.stop_y [ycor] of next.stop
+;    facexy next.stop_x next.stop_y fd distance next.stop
+;        set last_stop origen.stop
+;      set origen.stop next.stop
+;;        set last_stop id.origen.stop
+;  ]
+;  ]
+;  ]
 ;   set last_stop origen.stop;min-one-of (estaciones) [distance myself]
 
 end
