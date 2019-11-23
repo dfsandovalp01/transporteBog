@@ -96,6 +96,11 @@ to go
   tick
 end
 
+to info 
+  ask transmilenio [print word "who" who print word "origen.stop" origen.stop print word "last_stop" last.stop print word "last.link" last.link print word "next.stop" next.stop print word "options.stop" options.stop print ticks]
+end
+
+
 to move-people
 ;  ask people
 ;    [
@@ -184,6 +189,7 @@ to mover-transmi-from-stop
       ]
     ]
   ]
+  
   
   
   ;;;;; fin nuevo codigo ;;;;;;;;
