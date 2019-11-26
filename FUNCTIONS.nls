@@ -130,7 +130,7 @@ to mover-transmi-from-stop
   let id.origen.stop origen.stop
   set last.stop id.origen.stop
   let last_stop last.stop
-  set last.link edge 12 125
+;  set last.link edge 12 125
   let last_link last.link
   
   ifelse any? portales-on patch-here = true
@@ -149,7 +149,8 @@ to mover-transmi-from-stop
   ;;;;; inicio nuevo codigo ;;;;;;;;
   
   [
-    ifelse edges with [end1 = id.origen.stop ] != 0 
+;    ifelse edges with [end1 = id.origen.stop ] != 0 
+    ifelse any? edges with [end1 = id.origen.stop];[end1] of last_link] ;if 1
     [
       set options.stop [self] of links with [end1 = id.origen.stop]
       ifelse item 0 options.stop != last.link
@@ -173,7 +174,8 @@ to mover-transmi-from-stop
       ]      
     ] 
     [
-      if any? links with [end2 = id.origen.stop]
+      if any? edges with [end2 = id.origen.stop]; [end1] of last_link] ; else 1
+;      if any? links with [end2 = id.origen.stop]
       [
         set options.stop [self] of links with [end2 = id.origen.stop]
         
