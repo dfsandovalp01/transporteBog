@@ -16,6 +16,7 @@ transmilenio-own [
   last.link2
   last.link
   next.stop
+  next.link
   origen.stop
   options.stop
   

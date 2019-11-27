@@ -1,4 +1,4 @@
-
+extensions [nw table]
 ;;;;;;;;;;;;;;;
 ;; FUNCTIONS ;;
 ;;;;;;;;;;;;;;;
@@ -12,12 +12,12 @@ to setup
   setup-transmilenio
   setup-people
 ;  crear-vias
-  
+  set conectores (list )
   reset-ticks
 end
 
 to setup-portales
-  create-portales 1 [
+  create-portales 3 [
     set shape "house"
     set color green
     set xcor [xcor] of vertex 30
@@ -36,7 +36,7 @@ to setup-estaciones
 end
 
 to setup-transmilenio
-  create-transmilenio 3 [
+  create-transmilenio 1 [
     setxy [xcor] of portal 151 [ycor] of portal 151;random-xcor random-ycor
     let vertex-to-move min-one-of (portales) [distance myself]
 ;    set who.origen item 0 [who] of vertices-on patch-here
@@ -91,13 +91,21 @@ end
 
 to go
 ;  ask transmilenio [mover-transmi-from-portal]
+  
   ask transmilenio [mover-transmi-from-stop]
   ask people [move-people]
   tick
 end
 
 to info 
-  ask transmilenio [print word "who" who print word "origen.stop" origen.stop print word "last_stop" last.stop print word "last.link" last.link print word "next.stop" next.stop print word "options.stop" options.stop print ticks]
+  ask transmilenio [print word "who" who 
+    print word "origen.stop" origen.stop 
+    print word "last_stop" last.stop 
+    print word "last.link" last.link 
+    print word "next_link" next.link 
+    print word "next.stop" next.stop 
+    print word "options.stop" options.stop 
+    print ticks]
 end
 
 
@@ -132,6 +140,7 @@ to mover-transmi-from-stop
   let last_stop last.stop
 ;  set last.link edge 12 125
   let last_link last.link
+  let next_link next.link
   
   ifelse any? portales-on patch-here = true
     [
@@ -147,97 +156,57 @@ to mover-transmi-from-stop
      ]
   
   ;;;;; inicio nuevo codigo ;;;;;;;;
-  
-  [
-;    ifelse edges with [end1 = id.origen.stop ] != 0 
-    ifelse any? edges with [end1 = id.origen.stop];[end1] of last_link] ;if 1
-    [
-      set options.stop [self] of links with [end1 = id.origen.stop]
-      ifelse item 0 options.stop != last.link
-      [
-        set next.stop item 0 [end2] of links with [end1 = id.origen.stop]
-        let next.stop_x [xcor] of next.stop
+  ;remove (edge 30 150) [self] of links with [end1 = vertex 150 or end2 = vertex 150]
+  [         
+      set options.stop [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
+      set next.link item 0 remove last.link [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
+      set last.link item 0 remove next_link [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
+      ifelse id.origen.stop = [end1] of next.link [set next.stop  [end2] of next.link][set next.stop  [end1] of next.link ]
+      let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       facexy next.stop_x next.stop_y fd distance next.stop
       set last.stop origen.stop
       set origen.stop next.stop
-        set last.link edge [who] of id.origen.stop [who] of next.stop
-      ]  
-      [
-        set next.stop item 1 [end2] of links with [end1 = id.origen.stop]
-        let next.stop_x [xcor] of next.stop
-      let next.stop_y [ycor] of next.stop
-      facexy next.stop_x next.stop_y fd distance next.stop
-      set last.stop origen.stop
-      set origen.stop next.stop
-        set last.link edge [who] of id.origen.stop [who] of next.stop
-      ]      
-    ] 
-    [
-      if any? edges with [end2 = id.origen.stop]; [end1] of last_link] ; else 1
-;      if any? links with [end2 = id.origen.stop]
-      [
-        set options.stop [self] of links with [end2 = id.origen.stop]
-        
-        ifelse item 0 options.stop != last.link
-        [
-          set next.stop item 0 [end1] of links with [end2 = id.origen.stop ]
-          set last.link edge [who] of id.origen.stop [who] of next.stop
-        ]
-        [
-          set next.stop item 1 [end1] of links with [end2 = id.origen.stop]
-          set last.link edge [who] of id.origen.stop [who] of next.stop
-        ]               
-      ]
-    ]
+;    set next.link next_link    
+    
   ]
   
-  
-  
-  ;;;;; fin nuevo codigo ;;;;;;;;
-  
-  
-  
-;  [
-;  ifelse any? links with [end1 = id.origen.stop and item 0 [end2] of links with [end1 = id.origen.stop ] != last_stop ] ; 
-;  [
-;    set next.stop item 0 [end2] of links with [end1 = id.origen.stop ]
-;      set first.end [end1] of links with [end1 = id.origen.stop ]
-;      set second.end [end2] of links with [end1 = id.origen.stop ]
-;      set last.link1 link item 0 first.end item 0 second.end 
-;      set last.link2 link item 1 first.end item 1 second.end 
-;    set last.link link [who] of id.origen.stop [who] of next.stop  
-;    set options.stop  [end2] of links with [end1 = id.origen.stop]
-;    let next.stop_x [xcor] of next.stop
-;    let next.stop_y [ycor] of next.stop
-;    facexy next.stop_x next.stop_y fd distance next.stop
-;      set last_stop origen.stop
-;      set origen.stop next.stop
-;;      set last_stop id.origen.stop
-;  ]
-;  
-;    [
-;  if any? links with [end2 = id.origen.stop and end1 != last_stop ]
-;  [
-;    set next.stop item 0 [end1] of links with [end2 = id.origen.stop ]
-;        set first.end [end1] of links with [end1 = id.origen.stop ]
-;      set second.end [end2] of links with [end1 = id.origen.stop ]
-;      set last.link1 link item 0 first.end item 0 second.end 
-;      set last.link2 link item 1 first.end item 1 second.end
-;        
-;        set last.link link [who] of id.origen.stop [who] of next.stop 
-;    let options.link links with [end2 = id.origen.stop ]
-;    print options.link    
-;    set options.stop [end1] of links with [end2 = id.origen.stop] 
-;    let next.stop_x [xcor] of next.stop
-;    let next.stop_y [ycor] of next.stop
-;    facexy next.stop_x next.stop_y fd distance next.stop
-;        set last_stop origen.stop
-;      set origen.stop next.stop
-;;        set last_stop id.origen.stop
-;  ]
-;  ]
-;  ]
-;   set last_stop origen.stop;min-one-of (estaciones) [distance myself]
+end
++
+;;;;;; ASIGNANDO DESTINOS ;;;;;;;;
 
+
+to destinos
+  let who.origen item 0 [who] of vertices-on vertices-here ;::: AQUI VOY ::::::::::
+  set origen.stop vertex who.origen
+  let id.origen.stop origen.stop
+  set last.stop id.origen.stop
+  let last_stop last.stop
+  let last_link last.link
+  let next_link next.link
+  set color white 
+  set options.stop [self] of links with [end1 =  id.origen.stop or end2 = id.origen.stop and end1 = vertex 79 or end2 = vertex 79]
+  set last.link next.link
+  set next.link item 0 [self] of links with [end1 = id.origen.stop or end2 =  id.origen.stop and end1 = vertex 79 or end2 = vertex 79]
+  ifelse id.origen.stop = [end1] of next.link [set next.stop  [end2] of next.link][set next.stop  [end1] of next.link ]
+  let next.stop_x [xcor] of next.stop
+    let next.stop_y [ycor] of next.stop
+    facexy next.stop_x next.stop_y fd distance next.stop
+    set last.stop origen.stop
+    set origen.stop next.stop
+  
+  
+  if vertices-here = vertex 96 
+  [
+    set color green 
+    set options.stop [self] of links with [end1 =  id.origen.stop or end2 = id.origen.stop and end1 = vertex 79 or end2 = 79]
+    set next.link item 0 [self] of links with [end1 = id.origen.stop or end2 =  id.origen.stop and end1 = vertex 79 or end2 = 79]
+    set last.link item 0 remove next_link [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
+    ifelse id.origen.stop = [end1] of next.link [set next.stop  [end2] of next.link][set next.stop  [end1] of next.link ]
+;    let next.stop_x [xcor] of next.stop
+;    let next.stop_y [ycor] of next.stop
+    facexy next.stop_x next.stop_y fd distance next.stop
+    set last.stop origen.stop
+    set origen.stop next.stop
+  ] 
 end
