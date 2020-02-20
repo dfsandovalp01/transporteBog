@@ -54,7 +54,7 @@ BUTTON
 134
 413
 GO
-go\n;create_csv_new\ninfo
+go\n;create_csv_new\n;info
 NIL
 1
 T

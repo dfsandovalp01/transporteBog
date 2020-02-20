@@ -49,9 +49,10 @@ to setup-transmilenio
   
   let Portales.who sort [who] of vertices with [tipo = "PORT"]
   
-  repeat 2 [
+  
   
   while [empty? Portales.who = FALSE] [
+    
     
    let ind.Portal item 0 Portales.who
     
@@ -75,14 +76,16 @@ to setup-transmilenio
       ask articulado item 0 transmiAsig [
         set portOri vertex item 0 Portales.who
         set portDest vertex item 0 portalesTo
+        set origen.stop portOri
       ]
       set transmiAsig remove-item 0 transmiAsig
       set portalesTo remove-item 0 portalesTo
+      
     ]
     set Portales.who remove-item 0 Portales.who
   ] 
   
-]
+
   
    
   
@@ -137,16 +140,16 @@ to go
   tick
 end
 
-to info 
-  ask transmilenio [print word "who" who 
-    print word "origen.stop" origen.stop 
-    print word "last_stop" last.stop 
-    print word "last.link" last.link 
-    print word "next_link" next.link 
-    print word "next.stop" next.stop 
-    print word "options.stop" options.stop 
-    print ticks]
-end
+;to info 
+;  ask transmilenio [print word "who" who 
+;    print word "origen.stop" origen.stop 
+;    print word "last_stop" last.stop 
+;    print word "last.link" last.link 
+;    print word "next_link" next.link 
+;    print word "next.stop" next.stop 
+;    print word "options.stop" options.stop 
+;    print ticks]
+;end
 
 
 to move-people
@@ -159,9 +162,31 @@ end
 
 
 to mover-transmi-from-portal
-
-  set origen.stop vertex item 0 [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
   
+;  if [direct] of transmilenio = "DOWN";any? vertices with [direct = "DOWN"] = TRUE
+  
+  ask transmilenio with [direct = "DOWN"]  
+  [
+    let origen origen.stop
+;      let who.origen item 0 [who] of vertices-on patch-here
+    set next.stop item 0 [end1] of links with [end2 = origen ];of transmilenio]
+;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
+    let next.stop_x [xcor] of next.stop
+    let next.stop_y [ycor] of next.stop
+    facexy next.stop_x next.stop_y fd distance next.stop
+    set last.stop origen.stop
+    set origen.stop next.stop
+    set next.stop item 0 [end1] of links with [end2 = origen ]
+    
+;      set origen.stop next.stop
+;      set last.link edge [who] of origen.stop [who] of last.stop 
+     ]
+    
+  
+  
+  
+;    set origen.stop vertex item 0 sort [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
+  ;set  who.origen
   ;set origen.stop vertex who.origen
   ;let id.origen.stop origen.stop
 ;  set last.stop id.origen.stop
