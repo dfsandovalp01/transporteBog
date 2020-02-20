@@ -49,6 +49,7 @@ to setup-transmilenio
   
   let Portales.who sort [who] of vertices with [tipo = "PORT"]
   
+  repeat 2 [
   
   while [empty? Portales.who = FALSE] [
     
@@ -65,14 +66,12 @@ to setup-transmilenio
       ;     move-to vertex-to-move
       
     ]
-    let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who
-    let portalesTo sort remove-item position item 0 Portales.who Portales.who ;Portales.who ;(Portales.who); [who] of vertices with [tipo = "PORT"]
-    ; ask transmilenio[ set portalesDestino remove-item position item 0 portalesDestino (portalesDestino) (portalesDestino)
-    ;set portOri vertex item 0 enPortal
-    ;  set portDest vertex item 0 portalesDestino]
-    ;set portalesTo remove-item 0 portalesTo
+    let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
+    let portalesTo sort [who] of vertices with [tipo = "PORT"]
+      set portalesTo remove-item position ind.Portal portalesTo portalesTo
     
     while [empty? transmiAsig = FALSE][
+      
       ask articulado item 0 transmiAsig [
         set portOri vertex item 0 Portales.who
         set portDest vertex item 0 portalesTo
@@ -83,7 +82,7 @@ to setup-transmilenio
     set Portales.who remove-item 0 Portales.who
   ] 
   
-  
+]
   
    
   
@@ -131,7 +130,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
 
 to go
-;  ask transmilenio [mover-transmi-from-portal]
+  ask transmilenio [mover-transmi-from-portal]
   
 ;  ask transmilenio [mover-transmi-from-stop]
   ask people [move-people]
@@ -161,14 +160,25 @@ end
 
 to mover-transmi-from-portal
 
-let who.origen item 0 [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
-  set origen.stop vertex who.origen
-  let id.origen.stop origen.stop
-  set last.stop id.origen.stop
-  let last_stop last.stop
-;  set last.link edge 12 125
-  let last_link last.link
-  let next_link next.link
+  set origen.stop vertex item 0 [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
+  
+  ;set origen.stop vertex who.origen
+  ;let id.origen.stop origen.stop
+;  set last.stop id.origen.stop
+;  let last_stop last.stop
+;;  set last.link edge 12 125
+;  let last_link last.link
+;  let next_link next.link
+
+  
+;  let who.origen vertex item 0 [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
+;  set origen.stop vertex who.origen
+;  let id.origen.stop origen.stop
+;  set last.stop id.origen.stop
+;  let last_stop last.stop
+;;  set last.link edge 12 125
+;  let last_link last.link
+;  let next_link next.link
 
   
 ;    if any? portales-on patch-here = true
