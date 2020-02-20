@@ -6,6 +6,7 @@ breed [
 
 vertices-own [
 	id
+  tipo
 	expected-cost
 	visited? 
 	predecessor

@@ -19,6 +19,9 @@ transmilenio-own [
   next.link
   origen.stop
   options.stop
+  direct
+  portOri
+  portDest
   
 ]
 

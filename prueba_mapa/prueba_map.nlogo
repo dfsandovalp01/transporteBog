@@ -1,23 +1,139 @@
-__includes [
-  "GLOBALS.nls"
-  "ENTITIES.nls"
-  "FUNCTIONS.nls"
+; Global variables
 
-  "csv/globals.nls"
-  "csv/entities.nls"
-  "csv/create-graph.nls"
-  "csv/data/export_data.nls"
+globals [
+	;  --- In order to know how big the world is ----
+	max-x
+	max-y
+	; -----------------------------------------------
 
+	default-expected-cost
+	max_capacity
+	inEdge_ponderator
 ]
+
+; Entities file
+
+breed [
+	vertices vertex
+]
+
+vertices-own [
+	id
+	expected-cost
+	visited?
+	predecessor
+]
+
+undirected-link-breed [
+	edges edge
+]
+
+edges-own [
+	pk
+	cost
+	capacity
+	penalty
+	dist
+]
+
+
+; here come all the functions
+
+
+
+
+
+extensions [csv]
+
+to setup-globals-importer
+	set default-expected-cost -1
+	set max-x 32
+	set max-y 32
+end
+
+to setup-importer
+
+	setup-globals-importer
+
+	; read the vertices.csv file and for each line create a vertix (node)
+  file-open "verticesPru2.csv"
+  while [ not file-at-end? ] [
+		; Create variable row which is a list
+    let row csv:from-row file-read-line
+
+    ; Create vertix
+		create-vertices 1 [
+			set id item 0 row
+			setxy item 1 row * max-x item 2 row * max-y
+			set expected-cost default-expected-cost
+			set visited? false
+			set predecessor nobody
+
+			set shape "dot"
+			set size 0.3
+			set color white
+		]
+  ]
+
+	file-close
+
+  file-open "edgesConectores.csv"
+  while [not file-at-end?] [
+    let row csv:from-row file-read-line
+
+
+    let fromElement vertex item 1 row
+    ask fromElement [
+      let toElement vertex item 2 row
+      create-edge-with toElement [ set thickness item 4 row / 6]
+    ]
+
+
+  ]
+  file-close
+
+  reset-ticks
+end
+
+to check_connectivity
+	ask vertices [set color white]
+	ask edges [set color white]
+	confirm_connectivity vertex 0
+	ifelse empty? sort edges with [color = white][
+		user-message "the map is connect"
+	][
+		user-message "the map is NOT connected"
+	]
+end
+
+to confirm_connectivity [some_vertex]
+
+	if some_vertex = nobody [
+		set some_vertex one-of vertices
+		ask edges [
+			set color white
+			set thickness 0.1
+		]	
+		ask vertices [
+			set color white
+		]
+	]
+
+	ask some_vertex [
+		set color blue		
+		ask my-links [set color blue]
+		ask link-neighbors with [color != blue] [confirm_connectivity self]
+	]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
-212
+210
 10
-802
-601
+647
+448
 -1
 -1
-17.64
+13.0
 1
 10
 1
@@ -37,41 +153,13 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
-INPUTBOX
-16
-21
-177
-81
-articulados_x_portal
-8.0
-1
-0
-Number
-
 BUTTON
-19
-256
-134
-413
-GO
-go\n;create_csv_new\ninfo
+62
+79
+201
+112
 NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-15
-472
-162
-605
-SETUP
-setup\nget_date
+setup-importer
 NIL
 1
 T
