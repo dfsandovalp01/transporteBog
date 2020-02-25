@@ -179,6 +179,7 @@ to mover-transmi-from-portal
       set last.stop origen.stop
       set origen.stop next.stop
       ;set next.stop item 0 [end1] of links with [end2 = origen ]
+;      ifelse 
       
     ]
     [
