@@ -94,7 +94,7 @@ end
 
 to crear-vias
   ask estaciones;(min-one-of (estaciones) [who])
-  [ifelse who < [who] of max-one-of (estaciones) [who]
+  [ifelse who <  max-one-of (estaciones) [who]
     [
       set color blue
       create-link-to estacion (who + 1);(if max-one-of );([ifelse  (max-one-of (estaciones) [who]) = true [1][who + 1]])
@@ -110,8 +110,8 @@ to crear-vias
 ;      create-link-to estacion (who + 1);(if max-one-of );([ifelse  (max-one-of (estaciones) [who]) = true [1][who + 1]])
 ;    ]
 ;  ]
-  ask min-one-of (portales) [who]
-  [create-link-to min-one-of (estaciones) [who]]
+  ;ask portal min-one-of (portales) [who]
+  ;[create-link-to min-one-of (estaciones) [who]]
 ;  ask max-one-of (portales) [who]
 ;  [create-link-to max-one-of (estaciones) [who]]
 
@@ -131,13 +131,13 @@ to go
 end
 
 ;to info 
-;  ask transmilenio [print word "who" who 
-;    print word "origen.stop" origen.stop 
-;    print word "last_stop" last.stop 
-;    print word "last.link" last.link 
-;    print word "next_link" next.link 
-;    print word "next.stop" next.stop 
-;    print word "options.stop" options.stop 
+;  ask articulado 148 [print word "" who 
+;;    print word "origen.stop" origen.stop 
+;;    print word "last_stop" last.stop 
+;;    print word "last.link" last.link 
+;;    print word "next_link" next.link 
+;;    print word "next.stop" next.stop 
+;;    print word "options.stop" options.stop 
 ;    print ticks]
 ;end
 
@@ -154,18 +154,20 @@ end
 to mover-transmi-from-portal
   
 ;  if [direct] of transmilenio = "DOWN";any? vertices with [direct = "DOWN"] = TRUE
-  let Portales.who sort [who] of vertices with [tipo = "PORT"]  
-  let connector.id [0 23 26 35 44 50]
+  let Portales.who sort [who] of vertices with [tipo = "PORT"]  ;[54 57 64 78 96 107 123 134 147]
+  let connector.id [0 10 17 24 27 38 47 50]
   let connector.path [
-    [53 57 1 1 1 1 1 1 1] ;0
-    [22 22 60 24 24 24 24 24 24] ;23
-    [25 25 25 76 87 27 27 27 27] ;26
-    [34 34 34 34 34 110 36 52 52] ;35 
-    [43 43 43 43 43 43 43 45 45] ;44
-    [51 51 51 51 51 51 49 132 136] ;50
+    [51 55 1 1 1 1 1 1 1] ;0
+    [9 9 11 12 12 15 15 15 15] ;10
+    [11 11 58 11 11 18 18 18 18] ;17
+    [14 14 14 65 79 25 25 25 25] ;24 
+    [16 16 16 16 16 28 29 28 29] ;27
+    [28 28 28 26 26 97 39 39 39] ;38
+    [37 37 37 37 37 37 108 48 48] ;47
+    [46 46 46 46 46 46 49 124 135];50
   ]
   
-  
+    
   ask transmilenio with [direct = "DOWN"]  
   [
     ifelse member? [who] of origen.stop  connector.id  = TRUE
@@ -176,16 +178,22 @@ to mover-transmi-from-portal
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       facexy next.stop_x next.stop_y fd distance next.stop
+      ifelse [who] of origen.stop < [who] of next.stop 
+      [
+        set direct "UP"
+      ]
+      [
+        set direct "DOWN"
+      ]
       set last.stop origen.stop
       set origen.stop next.stop
-      ;set next.stop item 0 [end1] of links with [end2 = origen ]
-;      ifelse 
+      
       
     ]
     [
       let origen origen.stop
       
-      ;      let who.origen item 0 [who] of vertices-on patch-here
+      
       set next.stop item 0 [end1] of links with [end2 = origen ];of transmilenio]
                                                                 ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
       let next.stop_x [xcor] of next.stop
@@ -195,45 +203,65 @@ to mover-transmi-from-portal
       set origen.stop next.stop
       set next.stop item 0 [end1] of links with [end2 = origen ]
       
-      ;      set origen.stop next.stop
-      ;      set last.link edge [who] of origen.stop [who] of last.stop 
+     
     ]
     
      ]
+  
+  ask transmilenio with [direct = "UP"]  
+  [
+    ifelse member? [who] of origen.stop  connector.id  = TRUE
+    [      
+      let connector.position position [who] of origen.stop connector.id ; posicion del conector en el arreglo
+      let destination.position position [who] of portDest Portales.who ; posicion del portal de destino en el arreglo
+      set next.stop vertex item destination.position item connector.position connector.path
+      let next.stop_x [xcor] of next.stop
+      let next.stop_y [ycor] of next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
+      ifelse [who] of origen.stop < [who] of next.stop 
+      [
+        set direct "UP"
+      ]
+      [
+        set direct "DOWN"
+      ]
+      set last.stop origen.stop
+      set origen.stop next.stop
+     
+
+      
+    ]
+    [
+      let origen origen.stop
+      
+      
+      set next.stop item 0 [end2] of links with [end1 = origen ];of transmilenio]
+                                                                ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
+      let next.stop_x [xcor] of next.stop
+      let next.stop_y [ycor] of next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
+      set last.stop origen.stop
+      set origen.stop next.stop
+      set next.stop item 0 [end2] of links with [end1 = origen ]
+      
+      
+    ]
+    
+     ]
+  
+  ;;; ESTA PARTE DUVUELVE AL ARTICULADO
+  ask transmilenio 
+  [
+    ifelse portdest = origen.stop
+    [
+      set portDest portOri
+      set portOri origen.stop
+      set direct "DOWN"
+    ]
+    []
+  ]
     
   
-  
-  
-;    set origen.stop vertex item 0 sort [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
-  ;set  who.origen
-  ;set origen.stop vertex who.origen
-  ;let id.origen.stop origen.stop
-;  set last.stop id.origen.stop
-;  let last_stop last.stop
-;;  set last.link edge 12 125
-;  let last_link last.link
-;  let next_link next.link
-
-  
-;  let who.origen vertex item 0 [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
-;  set origen.stop vertex who.origen
-;  let id.origen.stop origen.stop
-;  set last.stop id.origen.stop
-;  let last_stop last.stop
-;;  set last.link edge 12 125
-;  let last_link last.link
-;  let next_link next.link
-
-  
-;    if any? portales-on patch-here = true
- ;   [
-  ;    let who.origen item 0 [who] of vertices-on patch-here
-   ;   set next.stop item 0 [end2] of links with [end1 = vertex who.origen and capacity = 1]
-   ;   let next.stop_x [xcor] of next.stop
-  ;    let next.stop_y [ycor] of next.stop
-    ;  facexy next.stop_x next.stop_y fd distance next.stop
-     ; set last.stop vertex who.origen
-  ;]
 end
 
 to mover-transmi-from-stop

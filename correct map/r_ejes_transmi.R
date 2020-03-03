@@ -15,13 +15,14 @@
 
 #### IMPORTANDO DATOS Y DERIVANDO ESTACIONES, PORTALES Y CONECTORES(ORIGENES) ####
 {
-  edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/edges.csv", header = F)  %>%
+  edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/edges (copia).csv", header = F)  %>%
   mutate(#V6 = paste(V2,"-",V3, sep = ""),
          #V7 = paste(V3,"-",V2, sep = ""),
          V2 = as.character(V2),
          V3 = as.character(V3)) %>%
   filter(V5 == 1)
-  
+
+
 
 count.vert1 <- edges1[3]
 names(count.vert1) = c("V2")
@@ -201,27 +202,53 @@ conteo <- final.a %>%
 
 #### ARREGLO MANUAL 1 DE NUMERACION SEGUN GRAFIA ####
 {
-  ejes.ord <- links %>%
-  mutate(source = as.numeric(source),
-         target = as.numeric(target),
-         id.suma = source + target )
+#   ejes.ord <- links %>%
+#   mutate(source = as.numeric(source),
+#          target = as.numeric(target),
+#          id.suma = source + target )
+# 
+# origenes.id <- origenes %>%
+#   mutate(id.ori = ifelse(ori1==23,
+#                      1,
+#                      ifelse(ori1==44,
+#                             2,
+#                             ifelse(ori1==135,
+#                                    3,
+#                                    ifelse(ori1==111,
+#                                           4,
+#                                           ifelse(ori1==47,
+#                                                  5,
+#                                                  ifelse(ori1==96,
+#                                                         6,""))))))) %>%
+#   arrange(id.ori)
+
 
 origenes.id <- origenes %>%
   mutate(id.ori = ifelse(ori1==23,
-                     1,
-                     ifelse(ori1==44, 
-                            2,
-                            ifelse(ori1==135,
-                                   3,
-                                   ifelse(ori1==111,
-                                          4,
-                                          ifelse(ori1==47,
-                                                 5,
-                                                 ifelse(ori1==96,
-                                                        6,""))))))) %>%
+                         1,
+                         ifelse(ori1==43,
+                                2,
+                                ifelse(ori1==96,
+                                       3,
+                                       ifelse(ori1==47,
+                                              4,
+                                              ifelse(ori1==81,
+                                                     5,
+                                                     ifelse(ori1==111,
+                                                            6,ifelse(ori1==44,
+                                                                     7,
+                                                                     ifelse(ori1==135,
+                                                                            8,""))))))))) %>%
   arrange(id.ori)
-} #FIN ARREGLO MANUAL 1
 
+
+
+# ejes.ord <- links %>%
+#   mutate(source = as.numeric(source),  ESTOS ESTABAN BLOQUEADOS
+#          target = as.numeric(target),
+#          id.suma = source + target )
+} #FIN ARREGLO MANUAL 1
+{
 conteo1 <- final.a %>%
   #rbind(final.b)
   semi_join(final.b, by = c("V1"))
@@ -327,88 +354,136 @@ caminos.conectores <- o %>%
                          id.ori.y),
          rowname = as.numeric(rowname),
          id.orden = paste(origen, destino, sep = "."))
-
+}
 ##### INICIO CAMINOS CONECTORES CORREGIDOS Y UTILES #####
 { 
 
   caminos.conectores.corr <- data_frame(rowname=NA,V1=NA,V2=NA,V3=NA,V4=NA,V5=NA,SUMA.x=NA,SUMA.y=NA,id.ori.x=NA,id.ori.y=NA,origen=NA,destino=NA,id.orden=NA,V2.1=NA,V3.1=NA)
   
-  
   for (i in unique(caminos.conectores$id.orden)) {
     
-    if (i == "3.4" | i == "4.5") {
-      camino.filt <- caminos.conectores %>%
-        filter(id.orden == i) %>%
+    camino.filt <- caminos.conectores %>%
+      filter(id.orden == i)
+    
+    if (camino.filt$id.ori.x > camino.filt$id.ori.y) {
+      camino.filt <- camino.filt %>%
+        mutate(V2.1 = V3,
+               V3.1 = V2) %>%
+        arrange(-rowname) 
+        
+    }
+    else {
+      camino.filt <- camino.filt %>%
         mutate(V2.1 = V2,
                V3.1 = V3)
-      
-      caminos.conectores.corr <- caminos.conectores.corr %>%
-        rbind(camino.filt)
-      }
-    
-    else {
-      if (i == "4.6") {
-        camino.filt <- caminos.conectores %>%
-          filter(id.orden == i) %>%
-          arrange(-rowname) %>%
-          mutate(origen = 6,
-                 destino = 4,
-                 V2.1 = V3,
-                 V3.1 = V2)
-        caminos.conectores.corr <- caminos.conectores.corr %>%
-          rbind(camino.filt) %>%
-          filter(!is.na(rowname))
-      }
-      
-      else {
-        camino.filt <- caminos.conectores %>%
-          filter(id.orden == i) %>%
-          arrange(-rowname) %>%
-          mutate(V2.1 = V3,
-                 V3.1 = V2)
-        caminos.conectores.corr <- caminos.conectores.corr %>%
-          rbind(camino.filt) %>%
-          filter(!is.na(rowname)) 
-      }
-      
     }
-  
     
+    caminos.conectores.corr <- caminos.conectores.corr %>%
+      rbind(camino.filt)
   }
-  
-  caminos.conectores.corr <- caminos.conectores.corr %>% # añadiendo rownames para mantener orden
-    add_rownames() %>%
-    arrange(origen, destino)
-  
-  conectores.numerados.1 <- caminos.conectores.corr$V2.1 
-  conectores.numerados.2 <- caminos.conectores.corr$V3.1 
-  names(conectores.numerados.2)  <- c("V2.1")
-  
-  conectores.numerados <- data.frame(V2.1=NA, new.id = 0)
-  
-  for (i in 1:nrow(caminos.conectores.corr)) {
-    conectores.numerados.1 <- data.frame(vertices = caminos.conectores.corr[i,15], new.id = i) %>%
-      add_row(V2.1 =caminos.conectores.corr[i,16], new.id = i+1)
-    
-    conectores.numerados <- conectores.numerados %>%
-      rbind(conectores.numerados.1) %>%
-      filter(!is.na(V2.1)) %>%
-      as.data.frame()%>%
-      distinct()
-    
-  }
-  conectores.numerados <- as.data.frame(conectores.numerados)%>%
-    mutate(V2.1 = as.character(V2.1),
-           new.id = as.character(new.id))%>%
-    distinct()
-  
-  #### nuevos id para vertices de caminos conectores ####
-  conectores.numerados <- conectores.numerados[1:nrow(conectores.numerados)-1,] %>% # se descarta la ultima relacion ya que repite new id para un origen
-    mutate(new.id = as.numeric(new.id)-1)
   
   caminos.conectores.corr <- caminos.conectores.corr %>%
-    left_join(conectores.numerados, by = c("V2.1")) %>%
-    left_join(conectores.numerados, by = c("V3.1" = "V2.1" ))
+    filter(!is.na(V2))
+  
+  
+  # for (i in unique(caminos.conectores$id.orden)) {
+  #   
+  #   if (i == "3.4" | i == "4.5") {
+  #     camino.filt <- caminos.conectores %>%
+  #       filter(id.orden == i) %>%
+  #       mutate(V2.1 = V2,
+  #              V3.1 = V3)
+  #     
+  #     caminos.conectores.corr <- caminos.conectores.corr %>%
+  #       rbind(camino.filt)
+  #     }
+  #   
+  #   else {
+  #     if (i == "4.6") {
+  #       camino.filt <- caminos.conectores %>%
+  #         filter(id.orden == i) %>%
+  #         arrange(-rowname) %>%
+  #         mutate(origen = 6,
+  #                destino = 4,
+  #                V2.1 = V3,
+  #                V3.1 = V2)
+  #       caminos.conectores.corr <- caminos.conectores.corr %>%
+  #         rbind(camino.filt) %>%
+  #         filter(!is.na(rowname))
+  #     }
+  #     
+  #     else {
+  #       camino.filt <- caminos.conectores %>%
+  #         filter(id.orden == i) %>%
+  #         arrange(-rowname) %>%
+  #         mutate(V2.1 = V3,
+  #                V3.1 = V2)
+  #       caminos.conectores.corr <- caminos.conectores.corr %>%
+  #         rbind(camino.filt) %>%
+  #         filter(!is.na(rowname)) 
+  #     }
+  #     
+  #   }
+  # 
+  #   
+  # }
+  # 
+  # caminos.conectores.corr <- caminos.conectores.corr %>% # añadiendo rownames para mantener orden
+  #   add_rownames() %>%
+  #   arrange(origen, destino)
+  
+  conectores.numerados.1 <- caminos.conectores.corr %>%
+    mutate(V2.1 == as.character(V2.1)) %>%
+    select(V2.1) %>%
+    distinct() %>%
+    add_rownames() %>%
+    mutate(new.id = as.numeric(rowname)-1) %>%
+    select(V2.1, new.id)
+  
+  conectores.numerados.2 <- caminos.conectores.corr %>%
+    anti_join(conectores.numerados.1, by = c("V3.1" = "V2.1")) %>%
+    select(V3.1) %>%
+    distinct() %>%
+    mutate(new.id = as.numeric(nrow(conectores.numerados.1)))
+  
+  names(conectores.numerados.2) = c("V2.1", "new.id")
+  
+  conectores.numerados.1 <- conectores.numerados.1 %>%
+    rbind(conectores.numerados.2)
+    
+  
+  
+     ####    ESTA PARTE SE ACTUALIZO
+  # conectores.numerados.2 <- caminos.conectores.corr$V3.1 
+  # names(conectores.numerados.2)  <- c("V2.1")
+  # 
+  # conectores.numerados <- data.frame(V2.1=NA, new.id = 0)
+  # 
+  # for (i in 1:nrow(caminos.conectores.corr)) {
+  #   conectores.numerados.1 <- data.frame(vertices = caminos.conectores.corr[i,15], new.id = i) %>%
+  #     add_row(V2.1 =caminos.conectores.corr[i,16], new.id = i+1)
+  #   
+  #   conectores.numerados <- conectores.numerados %>%
+  #     rbind(conectores.numerados.1) %>%
+  #     filter(!is.na(V2.1)) %>%
+  #     as.data.frame()%>%
+  #     distinct()
+  #   
+  # }
+  # conectores.numerados <- as.data.frame(conectores.numerados)%>%
+  #   mutate(V2.1 = as.character(V2.1),
+  #          new.id = as.character(new.id))%>%
+  #   distinct()
+  # 
+  # #### nuevos id para vertices de caminos conectores ####
+  # conectores.numerados <- conectores.numerados[1:nrow(conectores.numerados)-1,] %>% # se descarta la ultima relacion ya que repite new id para un origen
+  #   mutate(new.id = as.numeric(new.id)-1)
+  
+     ### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  
+  caminos.conectores.corr <- caminos.conectores.corr %>%
+    left_join(conectores.numerados.1, by = c("V2.1")) %>%
+    left_join(conectores.numerados.1, by = c("V3.1" = "V2.1" ))
   
   edges.conectores <- caminos.conectores.corr %>%
     add_rownames() %>%
@@ -431,251 +506,120 @@ caminos.conectores <- o %>%
   network.1 <- graph_from_data_frame(d=links.1, directed=T) 
   
   # plot it
-  plot(network.1, vertex.size=5,vertex.label.dist=3,vertex.label.cex=0.5,edge.arrow.size=.2)
+  plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arrow.size=.2)
 
 } #fin caminos conectores corregidos y utiles
 
 
-#### INICIO AÑADIENDO TRONCALES A LOS ORIGENES ####
+#### INICIO AÑADIENDO TRONCALES A LOS ORIGENES ###############################################################################
 {
- troncales <- conect.wit %>%
-   anti_join(caminos.conectores.corr,  by = c("V1")) %>%
-   left_join(conectores.numerados,  by = c("V2"="V2.1")) %>%
-   left_join(conectores.numerados,  by = c("V3"="V2.1"))
- 
- origen.troncal <- troncales %>%
-   filter(!is.na(new.id.x) | !is.na(new.id.y))
- 
- # identificando salidas y destinos para luego unir
- 
- #salida
- {
-   troncales.secuencia.x <- troncales %>% 
-     filter(!is.na(new.id.x))
-   
-   troncales.secuencia.left <- filter(troncales.secuencia.x[1,], is.na(V2) )
-   
-   for (i in 1:nrow(troncales.secuencia.x)) {
-     
-     troncales.secuencia1 <- troncales.secuencia.x[i,]
-     
-     while (TRUE) {
-       
-       if (troncales.secuencia1[nrow(troncales.secuencia1), 6] == 1 | troncales.secuencia1[nrow(troncales.secuencia1), 7] == 1 ) {
-         break
-       }
-       else {
-         
-         troncal.filt <- filter(troncales, V2 == troncales.secuencia1[nrow(troncales.secuencia1), 3])
-         
-         troncales.secuencia1 <- troncales.secuencia1 %>%
-           rbind(troncal.filt)
-           
-       }
-     }
-     
-     troncales.secuencia.left <- troncales.secuencia.left %>%
-       rbind(troncales.secuencia1)
-     
-   }
-   origen.portal.left <- troncales.secuencia.left %>%
-     #filter(SUMA.x != 2 | SUMA.y != 2) %>%
-     mutate(origen = ifelse(!is.na(new.id.x),
-                            new.id.x,
-                            ""),
-            destino = ifelse(SUMA.y == 1,
-                             V3,
-                             ""),
-            izq = "SI",
-            der = "")
-  }
- 
- #destino
- {
-   troncales.secuencia.y <- troncales %>% 
-     filter(!is.na(new.id.y))
-   
-   troncales.secuencia.right <- filter(troncales.secuencia.y[1,], is.na(V2) )
-   
-   for (i in 1:nrow(troncales.secuencia.y)) {
-     
-     troncales.secuencia1 <- troncales.secuencia.y[i,]
-     
-     while (TRUE) {
-       
-       if (troncales.secuencia1[nrow(troncales.secuencia1), 6] == 1 | troncales.secuencia1[nrow(troncales.secuencia1), 7] == 1 ) {
-         break
-       }
-       else {
-         
-         troncal.filt <- filter(troncales, V3 == troncales.secuencia1[nrow(troncales.secuencia1), 2])
-         
-         troncales.secuencia1 <- troncales.secuencia1 %>%
-           rbind(troncal.filt)
-         
-       }
-     }
-     
-     troncales.secuencia.right <- troncales.secuencia.right %>%
-       rbind(troncales.secuencia1)
-     
-   }
-   
-   origen.portal.right <- troncales.secuencia.right %>%
-     #filter(SUMA.x != 2 | SUMA.y != 2) %>%
-     mutate(origen = ifelse(!is.na(new.id.y),
-                            new.id.y,
-                            ""),
-            destino = ifelse(SUMA.x == 1,
-                             V2,
-                             ""),
-            izq = "",
-            der = "SI")
- }
- 
- 
-#### IDENTIFICANDO ORIGEN Y PORTAL ####
- {
-   origen.portal <- origen.portal.left %>%
-     rbind(origen.portal.right) %>%
-     add_rownames() %>%
-     add_rownames() 
-   
-   
-   marcando.origen.portal <- origen.portal %>%
-     filter(origen != "") 
-   
-   marcando.origen.portal1 <- filter(marcando.origen.portal[1,], is.na(V1))
-   
-  #for (i in 8:9) {
-  for (i in 1:nrow(marcando.origen.portal)) {
+  new.troncales <- troncales
+  new.inicio.troncal <- troncales %>%
+    filter(!is.na(new.id.x) | !is.na(new.id.y))
+  
+  new.orden.troncal <- new.troncales %>%
+    filter(is.na(V1))
+  
+  for (r in 8:9) {
+    new.inicio.troncal.1 <- filter(new.inicio.troncal, is.na(new.inicio.troncal[,r]))
+    for (i in new.inicio.troncal.1$V1) {
       
-    base <- marcando.origen.portal[i,]
-    
-    if (i == nrow(marcando.origen.portal)) {
+      new.orden.bucle <- new.troncales %>%
+        filter(V1 == i)
       
-      base.filt <- origen.portal[as.numeric(marcando.origen.portal1[nrow(marcando.origen.portal1),1]):as.numeric(origen.portal[nrow(origen.portal),1]),] 
+      
+      while (TRUE) {
         
-      base.filt <- base.filt %>%
-        mutate(origen = as.numeric(base[nrow(base), "origen"]))
-      
-      base <- base %>%
-        rbind(base.filt) #%>%
-        #distinct()
-      base <- base[-1,] %>%
-        mutate(destino = as.numeric(base.filt[nrow(base.filt), "destino"]))
-      base<- base[-1,]
-    }
-    else {}
-    
-    while (TRUE) {
-      
-      if (base[nrow(base), 13] != "" | i == nrow(marcando.origen.portal)) {
-       
-        break
+        if (new.orden.bucle[nrow(new.orden.bucle), 6] == 1 | new.orden.bucle[nrow(new.orden.bucle), 7] == 1 ) {
+          break
+        }
+        else {
+          
+          if (r == 8) {
+            new.orden.filt <- filter(new.troncales, V3 == new.orden.bucle[nrow(new.orden.bucle), 2]) %>%
+              mutate(new.id.y = new.orden.bucle[nrow(new.orden.bucle), 9])
+            
+            new.orden.bucle <- new.orden.bucle %>%
+              rbind(new.orden.filt)
+            
+          }
+          else {
+            new.orden.filt <- filter(new.troncales, V2 == new.orden.bucle[nrow(new.orden.bucle), 3]) %>%
+              mutate(new.id.x = new.orden.bucle[nrow(new.orden.bucle), 8])
+            
+            new.orden.bucle <- new.orden.bucle %>%
+              rbind(new.orden.filt)
+          }
+          
+          
+          
+        }
       }
-      else {
-        base.filt <- origen.portal[as.numeric(marcando.origen.portal[i,1]):as.numeric(marcando.origen.portal[i+1,1])-1,] %>%
-          mutate(origen = as.numeric(base[nrow(base), "origen"]))
-        
-        base.filt <- base.filt[-1,] %>%
-          mutate(destino = as.numeric(base.filt[nrow(base.filt), "destino"]))
-        
-        #base.filt <- base.filt[-1,]
-        
-        base <- base %>%
-          rbind(base.filt) %>%
-          distinct()
-       
-      }
+      
+      new.orden.troncal <- new.orden.troncal %>%
+        rbind(new.orden.bucle)
+      
     }
     
-    marcando.origen.portal1 <- marcando.origen.portal1 %>%
-      rbind(base)
-    
   }
-   
-  marcando.origen.portal1 <- marcando.origen.portal1 %>%
-    mutate(destino = ifelse(V1 == 0,
-                            14,
-                            destino))%>%
-    filter(destino != "") %>%
-    arrange(origen, destino, rowname) %>%
+  
+  new.orden.troncal <- new.orden.troncal %>%
+    mutate(V2.1 = ifelse(is.na(new.id.x),
+                         V2,
+                         V3),
+           V3.1 = ifelse(is.na(new.id.y),
+                         V2,
+                         V3),
+           new.id.x = ifelse(is.na(new.id.x),
+                             new.id.y,
+                             new.id.x),
+           new.id.y = ifelse(is.na(new.id.y),
+                             new.id.x,
+                             new.id.y)) %>%
     add_rownames() %>%
-    mutate(id.destino = paste(origen, destino, sep = "."))
-  
-  
-  troncales.numerados <- data.frame(V2=NA)
-  
-  for (i in 1:nrow(marcando.origen.portal1)) {
-    
-    if (marcando.origen.portal1[i, "izq"] == "SI") {
-      
-      base <- data.frame(vertices = marcando.origen.portal1[i,5]) %>%
-        add_row(V2 = marcando.origen.portal1[i, 6])
-      
-      troncales.numerados <- troncales.numerados %>%
-        rbind(base)
-    }
-    else {
-      if (marcando.origen.portal1[i, "der"] == "SI") {
-        
-        base <- data.frame(vertices = marcando.origen.portal1[i,6]) %>%
-          add_row(V3 = marcando.origen.portal1[i, 5])
-        
-        names(base) <- c("V2") 
-        
-        troncales.numerados <- troncales.numerados %>%
-          rbind(base)
-      }
-      
-    }
-    
-    
-  }
-  
-}
- 
- troncales.numerados11 <- troncales.numerados %>%
-   mutate(vertices = as.character(V2)) %>%
-   add_rownames() %>%
- select(vertices) %>%
-   # group_by(vertices) %>%
-   # summarise(count = n())
-   anti_join(conectores.numerados, by = c("vertices" = "V2.1")) %>%
-   add_rownames()
- 
- unicos.para.numerar <- troncales.numerados11 %>%
-   select(vertices) %>%
-   distinct() %>%
-   add_rownames() %>%
-   mutate(id = as.numeric(rowname)+nrow(edges.conectores)-2) %>%
-   select(vertices, id) 
- 
- unicos.para.numerar <- unicos.para.numerar[-1,] %>%
-   select(vertices, id) #%>%
-   #rename(V2.1=vertices, new.id=id)
- 
- numerados.completo.troncales <- marcando.origen.portal1 %>%
-   left_join(unicos.para.numerar, by = c("V2" = "vertices")) %>%
-   left_join(unicos.para.numerar, by = c("V3" = "vertices")) %>%
-   mutate(id.x = ifelse(is.na(id.x),
-                        origen,
-                        id.x),
-          id.y = ifelse(is.na(id.y),
-                        origen,
-                        id.y), 
-          eje.id = as.numeric(rowname)+(nrow(edges.conectores)-1)
-          ) %>%
-   select(eje.id, id.x, id.y, V4, V5) %>%
-   rename(V1=eje.id, V2=id.x, V3=id.y)
    
- #### LISTA COMPLETA DE EDGES CORREGIDOS ####
+    mutate(rowname1 = ifelse(nchar(rowname) == 1,
+                            paste("0", rowname, sep = ""),
+                            rowname)) %>%
+    arrange(new.id.y, rowname1) %>%
+    select(V1, V2.1, V3.1, V4, V5) 
+  
+  new.id.troncales <- new.orden.troncal %>%
+    select(V2.1) %>%
+    add_rownames() %>%
+    mutate(new.id = as.numeric(nrow(conectores.numerados.1)-1) + as.numeric(rowname)) %>%
+    select(V2.1, new.id)
+  
+  
+  new.all.id <- conectores.numerados.1 %>%
+    rbind(new.id.troncales)
+  
+  new.orden.troncal <- new.orden.troncal %>%
+    left_join(new.all.id, by = c("V2.1")) %>%
+    left_join(new.all.id, by = c("V3.1" = "V2.1")) %>%
+    select(V1, new.id.x, new.id.y, V4, V5) 
+  
+  names(new.orden.troncal) = c("V1", "V2", "V3", "V4", "V5")
+  #Graficando
+  
+  links.troncales <- new.orden.troncal %>%
+    mutate(source = V2,
+           target = V3) %>%
+    select(source, target)
+  names(links.troncales) = c("source", "target")
+  network.1 <- graph_from_data_frame(d=links.troncales, directed=T) 
+  
+  # plot it
+  plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arrow.size=.2)
+}
+
+   
+ #### LISTA COMPLETA DE EDGES CORREGIDOS #######################################################################################
  
  
  
  TOTAL.EDGES <- edges.conectores %>%
-   rbind(numerados.completo.troncales) %>%
+   rbind(new.orden.troncal) %>% #(numerados.completo.troncales) %>%
    mutate(V1 = as.numeric(V1),
           V2 = as.numeric(V2),
           V3 = as.numeric(V3))
@@ -691,56 +635,65 @@ caminos.conectores <- o %>%
  
  # plot it
  plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arrow.size=.2)
- 
- 
- 
-}
 
-
-
-
-write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/prueba_mapa/edgesTOTAL.csv", sep = "\t", col.names = FALSE, row.names = FALSE )
 
 
 #### ACTUALIZANDO VERTICES ####
-
-unicos.para.numerar <- unicos.para.numerar %>%
-  rename(V2.1=vertices, new.id=id)
-
-NEW.VERTEX.ID <- conectores.numerados %>%
-  rbind(unicos.para.numerar) #%>%
-  select(new.id, V2.1) %>%
-  rename(V1=new.id, V2=V2.1)
-
-
+{
 vertices1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/vertices.csv", header = F)
 
-vertices.origen <- vertices1 %>%
-  mutate(V1 = as.character(V1))%>%
-  #semi_join(conectores.numerados, by = c("V1"="V2.1")) %>%
-  left_join(NEW.VERTEX.ID, by = c("V1"="V2.1")) %>%
-  select(new.id, V2, V3) %>%
-  mutate(new.id = as.numeric(new.id),
-         new.id = ifelse(is.na(new.id),
-                         nrow(vertices.origen)+1,
-                         new.id)) %>%
-  arrange(new.id) %>%
-  rename(V1=new.id) %>%
-  as.data.frame()
-  
 
-write.table(format(vertices.origen, scientific = T), "/home/dfsandovalp/WORK/transporteBog/prueba_mapa/verticesTOTAL.csv", sep = "\t", col.names = FALSE, row.names = FALSE )
+new.vertices <- vertices1 %>%
+  mutate(V1 = as.character(V1)) %>%
+  semi_join(new.all.id, by = c("V1"="V2.1")) %>%
+  left_join(new.all.id, by = c("V1"="V2.1")) 
 
-#write.csv(vertices.origen, "/home/dfsandovalp/WORK/transporteBog/prueba_mapa/verticesConectores.csv", col.names = FALSE, row.names = FALSE )
 
-nodos.conectores <- m[,1:ncol(m)-1] %>%
-  left_join(caminos.conectores, by = c("rowname","V1","V2","V3","V4","V5","SUMA.x","SUMA.y","id.ori.x" )) %>%
-  arrange(id.ori.x,id.ori.y, rowname) 
 
-origen.destinino.conect <- ejes.base %>%
-  filter(!is.na(id.ori.x) | !is.na(id.ori.y)) %>%
-  mutate(rowname = as.numeric(rowname)) %>%
-  left_join(caminos.conectores, by = c("rowname","V1","V2","V3","V4","V5","SUMA.x","SUMA.y")) %>%
-  arrange(origen, destino, rowname) 
+add_atribut_transmi <-new.vertices %>%
+  semi_join(portales, by = c("V1"="port")) %>%
+  mutate(attri = "PORT") %>%
+  select("new.id", "attri") %>%
+  mutate(new.id = as.character(new.id))
+
+dsfz <- caminos.conectores.corr %>%
+  add_rownames() %>%
+  filter(SUMA.x > 2 | SUMA.y > 2) %>%
+  select(V2, V3, SUMA.x, SUMA.y, new.id.x, new.id.y, V4, V5) 
+
+origen.para.marcar <- origenes.id %>%
+  select(ori1) %>%
+  distinct() %>%
+  left_join(new.vertices, by = c("ori1"="V1")) %>%
+  mutate(attri = "ORI",
+         new.id = as.character(new.id)) %>%
+  select(new.id, attri)
+
+
+VERTEX <- new.vertices %>%
+  mutate (new.id= as.character(new.id)) %>%
+  left_join(add_atribut_transmi, by = c("new.id")) %>%
+  left_join(origen.para.marcar, by = c("new.id")) %>%
+  mutate(V4 = ifelse(!is.na(attri.x) == T,
+                     attri.x,
+                     ifelse(!is.na(attri.y) == T,
+                            attri.y,
+                            "STOP")))%>%
+  select(new.id, V2, V3, V4) %>%
+  rename("V1" = "new.id")
+}
+
+##                        HASTA AQUIIIIIIIIIIIIIIIIIII
+
+ 
+ 
+ write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/streets/new.edges.csv", sep = "\t", col.names = FALSE, row.names = FALSE )
+ write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/streets/new.vertices.csv", sep = "\t", col.names = FALSE, row.names = FALSE)
+
+
+
+
+
+
 
 
