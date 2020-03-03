@@ -8,14 +8,10 @@ breed [portales portal]
 
 transmilenio-own [
   speed
-  path
-  
-  last.stop
-  
-  next.stop
-  
-  origen.stop
-  
+  path  
+  last.stop  
+  next.stop  
+  origen.stop  
   direct
   portOri
   portDest
@@ -25,4 +21,9 @@ transmilenio-own [
 
 estaciones-own [
   name-troncal
+]
+
+people-own [
+  inicio
+  llegada
 ]

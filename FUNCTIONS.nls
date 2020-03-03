@@ -63,6 +63,7 @@ to setup-transmilenio
       set size 0.6
       set path list ("x") (origen.stop)
       
+      
     ]
     let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
     let portalesTo sort [who] of vertices with [tipo = "PORT"]
@@ -85,11 +86,15 @@ to setup-transmilenio
 end
 
 to setup-people
-  create-people 10 [
+  create-people 1 [
     setxy random-xcor random-ycor
     set shape "person"
     set color white
     set size 0.5
+;    set inicio one-of vertices
+    set llegada one-of vertices
+;    set inicio vertex 56
+;    set llegada vertex 53
     
   ]
 end
@@ -119,21 +124,11 @@ to go
   ]
   
 ;  ask transmilenio [mover-transmi-from-stop]
-  ask people [move-people]
+  move-people
   tick
 end
 
-
-
-
-to move-people ;; lleva a las personas a la estacion mas cercana
-;  ask people
-;    [
-      let vertex-to-move min-one-of (vertices) [distance myself]
-      move-to vertex-to-move
-;    ]
-end
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; PROCEDIMIENTOS TRANSMILENIO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to move-articulado
   
@@ -171,7 +166,7 @@ to move-articulado
       ]
       set last.stop origen.stop
       set origen.stop next.stop
-      
+      set path remove-duplicates path
       
     ]
     [
@@ -186,10 +181,10 @@ to move-articulado
       set last.stop origen.stop
       set origen.stop next.stop
       set next.stop item 0 [end1] of links with [end2 = origen ]
-      
+      set path remove-duplicates path
      
     ]
-    
+    set path remove-duplicates path
      ]
   
   ask transmilenio with [direct = "UP"]  
@@ -211,7 +206,7 @@ to move-articulado
       ]
       set last.stop origen.stop
       set origen.stop next.stop
-     
+      set path remove-duplicates path
 
       
     ]
@@ -227,9 +222,11 @@ to move-articulado
       set last.stop origen.stop
       set origen.stop next.stop
       set next.stop item 0 [end2] of links with [end1 = origen ]
+      set path remove-duplicates path
       
       
     ]
+    set path remove-duplicates path
     
      ]
   
@@ -252,28 +249,37 @@ to return-articulado
   ]
 end
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; IDENTIFICANDO CAMINOS ;;;;;;;;;;;;;;;;;;;;;;
+
 to give-path
-  ask transmilenio [
-    
+  ask transmilenio [    
     set path lput origen.stop path 
   ]
 end
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; IDENTIFICANDO CAMINOS ;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-to stop-articulado
-;  ask transmilenio 
-  ask articulado 148
-  [
-    ifelse portdest = origen.stop
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; PROCEDIMIENTOS PERSONAS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+to move-people ;; lleva a las personas a la estacion mas cercana
+  ask people
     [
-      print (word portOri "-" portDest )
-      set path remove-duplicates path      
-      print path
-;      die
+      let vertex-to-move min-one-of (vertices) [distance myself]
+      move-to vertex-to-move
+      set inicio vertex-to-move
+      
+      ifelse any? transmilenio with [origen.stop = inicio] = TRUE 
+      [
+        ifelse member? llegada [path] of transmilenio with [origen.stop = inicio] = TRUE 
+        [
+          set color green
+          user-message (word "SOY " who " Y ESTE ME SIRVE :)")
+          beep
+        ]
+        []
+      ]
+      []
     ]
-    []
-    
-  ]
-
+  
 end

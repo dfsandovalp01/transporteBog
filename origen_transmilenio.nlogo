@@ -88,7 +88,7 @@ BUTTON
 174
 179
 Give-path
-move-articulado\nstop-articulado\nreturn-articulado\ngive-path
+move-articulado\n\nreturn-articulado\ngive-path
 T
 1
 T
