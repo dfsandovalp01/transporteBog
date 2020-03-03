@@ -638,7 +638,7 @@ caminos.conectores <- o %>%
 
 
 
-#### ACTUALIZANDO VERTICES ####
+  #### ACTUALIZANDO VERTICES ####
 {
 vertices1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/vertices.csv", header = F)
 

@@ -9,19 +9,17 @@ breed [portales portal]
 transmilenio-own [
   speed
   path
-  first.end
-  second.end
+  
   last.stop
-  last.link1
-  last.link2
-  last.link
+  
   next.stop
-  next.link
+  
   origen.stop
-  options.stop
+  
   direct
   portOri
   portDest
+  completed
   
 ]
 

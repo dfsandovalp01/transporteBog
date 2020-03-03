@@ -47,8 +47,7 @@ end
 
 to setup-transmilenio 
   
-  let Portales.who sort [who] of vertices with [tipo = "PORT"]
-  
+  let Portales.who sort [who] of vertices with [tipo = "PORT"]  
   
   
   while [empty? Portales.who = FALSE] [
@@ -61,6 +60,8 @@ to setup-transmilenio
       set color red           
       setxy [xcor] of vertex item 0 Portales.who  [ycor] of vertex item 0 Portales.who      
       set direct "DOWN"     
+      set size 0.6
+      set path list ("x") (origen.stop)
       
     ]
     let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
@@ -84,15 +85,16 @@ to setup-transmilenio
 end
 
 to setup-people
-  create-people 3 [
+  create-people 10 [
     setxy random-xcor random-ycor
     set shape "person"
     set color white
+    set size 0.5
     
   ]
 end
 
-to crear-vias
+to crear-vias ;; EJERCICIO DE PRACTICA
   ask estaciones;(min-one-of (estaciones) [who])
   [ifelse who <  max-one-of (estaciones) [who]
     [
@@ -104,45 +106,27 @@ to crear-vias
     ]
   set name-troncal "nacional"
   ]
-;  [while [who < [who] of max-one-of (estaciones) [who]]
-;    [
-;      set color blue
-;      create-link-to estacion (who + 1);(if max-one-of );([ifelse  (max-one-of (estaciones) [who]) = true [1][who + 1]])
-;    ]
-;  ]
-  ;ask portal min-one-of (portales) [who]
-  ;[create-link-to min-one-of (estaciones) [who]]
-;  ask max-one-of (portales) [who]
-;  [create-link-to max-one-of (estaciones) [who]]
 
-
-
-  ;]
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
 
 to go
-  ask transmilenio [mover-transmi-from-portal]
+  ask transmilenio [
+    move-articulado
+    return-articulado
+    give-path
+  ]
   
 ;  ask transmilenio [mover-transmi-from-stop]
   ask people [move-people]
   tick
 end
 
-;to info 
-;  ask articulado 148 [print word "" who 
-;;    print word "origen.stop" origen.stop 
-;;    print word "last_stop" last.stop 
-;;    print word "last.link" last.link 
-;;    print word "next_link" next.link 
-;;    print word "next.stop" next.stop 
-;;    print word "options.stop" options.stop 
-;    print ticks]
-;end
 
 
-to move-people
+
+to move-people ;; lleva a las personas a la estacion mas cercana
 ;  ask people
 ;    [
       let vertex-to-move min-one-of (vertices) [distance myself]
@@ -151,7 +135,7 @@ to move-people
 end
 
 
-to mover-transmi-from-portal
+to move-articulado
   
 ;  if [direct] of transmilenio = "DOWN";any? vertices with [direct = "DOWN"] = TRUE
   let Portales.who sort [who] of vertices with [tipo = "PORT"]  ;[54 57 64 78 96 107 123 134 147]
@@ -249,6 +233,12 @@ to mover-transmi-from-portal
     
      ]
   
+  
+    
+  
+end
+
+to return-articulado
   ;;; ESTA PARTE DUVUELVE AL ARTICULADO
   ask transmilenio 
   [
@@ -260,86 +250,30 @@ to mover-transmi-from-portal
     ]
     []
   ]
-    
-  
 end
 
-to mover-transmi-from-stop
- 
-  let who.origen item 0 [who] of vertices-on transmilenio ;::: AQUI VOY ::::::::::
-  set origen.stop vertex who.origen
-  let id.origen.stop origen.stop
-  set last.stop id.origen.stop
-  let last_stop last.stop
-;  set last.link edge 12 125
-  let last_link last.link
-  let next_link next.link
-  
-  ifelse any? portales-on patch-here = true
+to give-path
+  ask transmilenio [
+    
+    set path lput origen.stop path 
+  ]
+end
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; IDENTIFICANDO CAMINOS ;;;;;;;;;;;;;;;;;;;;;;
+
+to stop-articulado
+;  ask transmilenio 
+  ask articulado 148
+  [
+    ifelse portdest = origen.stop
     [
-;      let who.origen item 0 [who] of vertices-on patch-here
-      set next.stop item 0 [end2] of links with [end1 = id.origen.stop and capacity = 1]
-      set options.stop  [end2] of links with [end1 = id.origen.stop and capacity = 1]
-      let next.stop_x [xcor] of next.stop
-      let next.stop_y [ycor] of next.stop
-      facexy next.stop_x next.stop_y fd distance next.stop
-      set last.stop origen.stop
-      set origen.stop next.stop
-      set last.link edge [who] of origen.stop [who] of last.stop 
-     ]
-  
-  ;;;;; inicio nuevo codigo ;;;;;;;;
-  ;remove (edge 30 150) [self] of links with [end1 = vertex 150 or end2 = vertex 150]
-  [         
-      set options.stop [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
-      set next.link item 0 remove last.link [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
-      set last.link item 0 remove next_link [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
-      ifelse id.origen.stop = [end1] of next.link [set next.stop  [end2] of next.link][set next.stop  [end1] of next.link ]
-      let next.stop_x [xcor] of next.stop
-      let next.stop_y [ycor] of next.stop
-      facexy next.stop_x next.stop_y fd distance next.stop
-      set last.stop origen.stop
-      set origen.stop next.stop
-;    set next.link next_link    
+      print (word portOri "-" portDest )
+      set path remove-duplicates path      
+      print path
+;      die
+    ]
+    []
     
   ]
-  
-end
 
-;;;;;; ASIGNANDO DESTINOS ;;;;;;;;
-
-
-to destinos
-  let who.origen item 0 [who] of vertices-on vertices-here ;::: AQUI VOY ::::::::::
-  set origen.stop vertex who.origen
-  let id.origen.stop origen.stop
-  set last.stop id.origen.stop
-  let last_stop last.stop
-  let last_link last.link
-  let next_link next.link
-  set color white 
-  set options.stop [self] of links with [end1 =  id.origen.stop or end2 = id.origen.stop and end1 = vertex 79 or end2 = vertex 79]
-  set last.link next.link
-  set next.link item 0 [self] of links with [end1 = id.origen.stop or end2 =  id.origen.stop and end1 = vertex 79 or end2 = vertex 79]
-  ifelse id.origen.stop = [end1] of next.link [set next.stop  [end2] of next.link][set next.stop  [end1] of next.link ]
-  let next.stop_x [xcor] of next.stop
-    let next.stop_y [ycor] of next.stop
-    facexy next.stop_x next.stop_y fd distance next.stop
-    set last.stop origen.stop
-    set origen.stop next.stop
-  
-  
-  if vertices-here = vertex 96 
-  [
-    set color green 
-    set options.stop [self] of links with [end1 =  id.origen.stop or end2 = id.origen.stop and end1 = vertex 79 or end2 = 79]
-    set next.link item 0 [self] of links with [end1 = id.origen.stop or end2 =  id.origen.stop and end1 = vertex 79 or end2 = 79]
-    set last.link item 0 remove next_link [self] of links with [end1 = id.origen.stop or end2 = id.origen.stop]
-    ifelse id.origen.stop = [end1] of next.link [set next.stop  [end2] of next.link][set next.stop  [end1] of next.link ]
-;    let next.stop_x [xcor] of next.stop
-;    let next.stop_y [ycor] of next.stop
-    facexy next.stop_x next.stop_y fd distance next.stop
-    set last.stop origen.stop
-    set origen.stop next.stop
-  ] 
 end
