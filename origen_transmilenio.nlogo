@@ -13,8 +13,8 @@ __includes [
 GRAPHICS-WINDOW
 328
 13
-808
-495
+712
+398
 -1
 -1
 11.4
@@ -42,8 +42,8 @@ INPUTBOX
 21
 177
 81
-articulados_x_portal
-8.0
+cant_cuadrillas
+2.0
 1
 0
 Number

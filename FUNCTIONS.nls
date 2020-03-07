@@ -10,13 +10,15 @@ to setup
   setup-portales
   setup-conectores
 ;  setup-estaciones
+  
+  set all_portales sort [who] of vertices with [tipo = "PORT"] 
  
   set prob_of_service read_table "distributions/prob.csv"
 	set gm_org read_gm "distributions/org.csv"
 	set gm_dest read_gm "distributions/dest.csv"
-  
-;  repeat 2 [setup-transmilenio]
-  setup-transmilenio
+  setuptrans
+;  repeat 2 [setuptrans]
+;  setup-transmilenio
   setup-people
 ;  crear-vias
 ;  set conectores (list )
@@ -42,51 +44,91 @@ to setup-conectores
 end
 
 
-to setup-transmilenio 
+;to setup-transmilenio 
+;  
+;  let Portales.who sort [who] of vertices with [tipo = "PORT"]  
+;
+;  
+;  while [empty? Portales.who = FALSE] [
+;    
+;    
+;   let ind.Portal item 0 Portales.who
+;    
+;     create-transmilenio 8 [
+;      set shape "truck"
+;      set color red           
+;      setxy [xcor] of vertex item 0 Portales.who  [ycor] of vertex item 0 Portales.who      
+;      set direct "DOWN"     
+;      set size 0.6
+;      set path [];list ("x") (origen.stop)
+;      set speed 0.1 + random-float 0.9
+;      
+;      
+;    ]
+;    let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
+;    let portalesTo sort [who] of vertices with [tipo = "PORT"]
+;      set portalesTo remove-item position ind.Portal portalesTo portalesTo
+;    
+;    while [empty? transmiAsig = FALSE][
+;      
+;      ask articulado item 0 transmiAsig [
+;        set portOri vertex item 0 Portales.who
+;        set portDest vertex item 0 portalesTo
+;        set origen.stop portOri
+;      ]
+;      set transmiAsig remove-item 0 transmiAsig
+;      set portalesTo remove-item 0 portalesTo
+;      
+;    ]
+;    set Portales.who remove-item 0 Portales.who
+;  ] 
+;  
+;
+;
+;end
+
+to setuptrans
   
-  let Portales.who sort [who] of vertices with [tipo = "PORT"]  
-;  let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
+  let Portales.who sort [who] of vertices with [tipo = "PORT"]
+
+  repeat cant_cuadrillas [
+    foreach all_portales [
+      n -> set portalesTo lput n []
+      
+    ]
+  ]  
 ;  let portalesTo sort [who] of vertices with [tipo = "PORT"]
-;  let ind.Portal item 0 Portales.who
   
-  while [empty? Portales.who = FALSE] [
-    
-    
-   let ind.Portal item 0 Portales.who
-    
-     create-transmilenio 8 [
+  foreach Portales.who [ 
+    n -> create-transmilenio 8 [
       set shape "truck"
       set color red           
-      setxy [xcor] of vertex item 0 Portales.who  [ycor] of vertex item 0 Portales.who      
+      setxy [xcor] of vertex n [ycor] of vertex n
       set direct "DOWN"     
       set size 0.6
       set path [];list ("x") (origen.stop)
       set speed 0.1 + random-float 0.9
-      
-      
-    ]
-    let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
-    let portalesTo sort [who] of vertices with [tipo = "PORT"]
-      set portalesTo remove-item position ind.Portal portalesTo portalesTo
+       
     
-    while [empty? transmiAsig = FALSE][
       
-      ask articulado item 0 transmiAsig [
-        set portOri vertex item 0 Portales.who
-        set portDest vertex item 0 portalesTo
-        set origen.stop portOri
-      ]
-      set transmiAsig remove-item 0 transmiAsig
-      set portalesTo remove-item 0 portalesTo
-      
-    ]
-    set Portales.who remove-item 0 Portales.who
-  ] 
+      ]  
+  ]
+    
+;    foreach Portales.who [
+;      m -> 
+;      (foreach (sort [who] of transmilenio-on vertex m) (remove m portalesTo)
+;        [ [o p] -> ask articulado o [
+;;          set portalesTo remove m portalesTo
+;          set portOri vertex m
+;          set portDest vertex p
+;          set origen.stop portOri
+;        ]
+;      ])
+;    ]
   
-;  set Portales.who sort [who] of vertices with [tipo = "PORT"]
-;  set transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
-;  set portalesTo sort [who] of vertices with [tipo = "PORT"]
 
+       
+  
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -151,7 +193,7 @@ to move-articulado
       set next.stop vertex item destination.position item connector.position connector.path
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
-      facexy next.stop_x next.stop_y fd speed;distance next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
       ifelse [who] of origen.stop < [who] of next.stop 
       [
         set direct "UP"
@@ -172,7 +214,7 @@ to move-articulado
                                                                 ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
-      facexy next.stop_x next.stop_y fd speed ;distance next.stop
+      facexy next.stop_x next.stop_y fd distance next.stop
       set last.stop origen.stop
       set origen.stop next.stop
       set next.stop item 0 [end1] of links with [end2 = origen ]
@@ -229,6 +271,8 @@ to move-articulado
     
   
 end
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to return-articulado
   ;;; ESTA PARTE DUVUELVE AL ARTICULADO
