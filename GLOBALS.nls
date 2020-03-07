@@ -2,8 +2,13 @@
 ;; GLOBALS ;;
 ;;;;;;;;;;;;;
 globals [
-  portal.norte-x portal.norte-y
-  portal.sur-x portal.sur-y
-  conectores
+  prob_of_service
+	gm_org
+	gm_dest
+  time
+	time_string
+;  portal.norte-x portal.norte-y
+;  portal.sur-x portal.sur-y
+;  conectores
  
 ]

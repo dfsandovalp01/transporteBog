@@ -10,10 +10,16 @@ to setup
   setup-portales
   setup-conectores
 ;  setup-estaciones
+ 
+  set prob_of_service read_table "distributions/prob.csv"
+	set gm_org read_gm "distributions/org.csv"
+	set gm_dest read_gm "distributions/dest.csv"
+  
+;  repeat 2 [setup-transmilenio]
   setup-transmilenio
   setup-people
 ;  crear-vias
-  set conectores (list )
+;  set conectores (list )
   reset-ticks
 end
 
@@ -35,33 +41,27 @@ to setup-conectores
   ]
 end
 
-to setup-estaciones
-  create-estaciones 5 [
-    set shape "circle"
-    set color white
-    set size 0.2
-    set xcor random-xcor
-    set ycor random-ycor
-  ]
-end
 
 to setup-transmilenio 
   
   let Portales.who sort [who] of vertices with [tipo = "PORT"]  
-  
+;  let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
+;  let portalesTo sort [who] of vertices with [tipo = "PORT"]
+;  let ind.Portal item 0 Portales.who
   
   while [empty? Portales.who = FALSE] [
     
     
    let ind.Portal item 0 Portales.who
     
-     create-transmilenio articulados_x_portal [
+     create-transmilenio 8 [
       set shape "truck"
       set color red           
       setxy [xcor] of vertex item 0 Portales.who  [ycor] of vertex item 0 Portales.who      
       set direct "DOWN"     
       set size 0.6
-      set path list ("x") (origen.stop)
+      set path [];list ("x") (origen.stop)
+      set speed 0.1 + random-float 0.9
       
       
     ]
@@ -82,37 +82,32 @@ to setup-transmilenio
     ]
     set Portales.who remove-item 0 Portales.who
   ] 
+  
+;  set Portales.who sort [who] of vertices with [tipo = "PORT"]
+;  set transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
+;  set portalesTo sort [who] of vertices with [tipo = "PORT"]
 
 end
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 to setup-people
-  create-people 1 [
+  create-people number_of_people [
     setxy random-xcor random-ycor
     set shape "person"
     set color white
     set size 0.5
 ;    set inicio one-of vertices
     set llegada one-of vertices
+    set destination place_from_gaussian_mixture 0 0 -1 gm_dest
+		span_from_gaussian_mixture 0 0 -1 gm_org
 ;    set inicio vertex 56
 ;    set llegada vertex 53
     
   ]
 end
 
-to crear-vias ;; EJERCICIO DE PRACTICA
-  ask estaciones;(min-one-of (estaciones) [who])
-  [ifelse who <  max-one-of (estaciones) [who]
-    [
-      set color blue
-      create-link-to estacion (who + 1);(if max-one-of );([ifelse  (max-one-of (estaciones) [who]) = true [1][who + 1]])
-    ]
-    [
-      create-link-to portal 1
-    ]
-  set name-troncal "nacional"
-  ]
 
-end
 
 ;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
 
@@ -156,7 +151,7 @@ to move-articulado
       set next.stop vertex item destination.position item connector.position connector.path
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
-      facexy next.stop_x next.stop_y fd distance next.stop
+      facexy next.stop_x next.stop_y fd speed;distance next.stop
       ifelse [who] of origen.stop < [who] of next.stop 
       [
         set direct "UP"
@@ -177,7 +172,7 @@ to move-articulado
                                                                 ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
-      facexy next.stop_x next.stop_y fd distance next.stop
+      facexy next.stop_x next.stop_y fd speed ;distance next.stop
       set last.stop origen.stop
       set origen.stop next.stop
       set next.stop item 0 [end1] of links with [end2 = origen ]
@@ -259,8 +254,9 @@ end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; PROCEDIMIENTOS PERSONAS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;  PROCEDIMIENTOS PERSONAS  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to move-people ;; lleva a las personas a la estacion mas cercana
   ask people
@@ -269,17 +265,122 @@ to move-people ;; lleva a las personas a la estacion mas cercana
       move-to vertex-to-move
       set inicio vertex-to-move
       
-      ifelse any? transmilenio with [origen.stop = inicio] = TRUE 
+      ifelse any? transmilenio-here = TRUE
+;      ifelse inicio = [origen.stop] of transmilenio-here
       [
-        ifelse member? llegada [path] of transmilenio with [origen.stop = inicio] = TRUE 
-        [
+;        ifelse member? llegada [path] of transmilenio-here; with [origen.stop = inicio] = TRUE 
+;        [
           set color green
           user-message (word "SOY " who " Y ESTE ME SIRVE :)")
           beep
-        ]
-        []
+;        ]
+;        []
       ]
       []
     ]
   
 end
+
+; ------- read distribution from csv -------
+to-report read_table [file]
+	let prob []
+	let counter 0
+
+	file-close-all
+	file-open file
+	let data csv:from-row file-read-line
+
+	while [not file-at-end?][
+		let row csv:from-row file-read-line
+		repeat item 0 row - counter + 1 [
+			let entry []
+			set entry lput counter entry
+			set entry lput item 1 row entry
+			set prob lput entry prob
+			set counter counter + 1
+		]
+	]
+
+	file-close
+	report prob
+end
+
+to-report read_gm [file]
+	; create list
+	let gm []
+
+	file-close-all
+	;file-open "distributions/org.csv"
+	file-open file
+	let data csv:from-row file-read-line
+	let hour -1
+	let hour_old 100
+	let gm_hour []
+
+	while [not file-at-end?][
+		let row csv:from-row file-read-line
+		set hour item 1 row
+
+		if hour > hour_old [
+			set gm lput gm_hour gm
+			set gm_hour []
+		]
+
+		set gm_hour lput row gm_hour
+		set hour_old hour
+	]
+	set gm lput gm_hour gm
+
+	file-close
+	report gm
+end
+; -----------------------------------------
+
+; ------- span from gaussian mixture distribution --------
+
+to-report place_from_gaussian_mixture [ m n threshold dists ]
+	ifelse item 1 item 0 item m dists < floor time [
+		; recursive
+		set m m + 1
+		report place_from_gaussian_mixture m n threshold dists
+	][
+		if threshold = -1 [
+			set threshold random-float 1
+		]
+		ifelse item 5 item n item m dists >= threshold [
+			let mean_x item 2 item n item m dists
+			let mean_y item 3 item n item m dists
+			let std item 4 item n item m dists
+			report place_with_mean_and_std mean_x mean_y std
+		][
+			set n n + 1
+			report place_from_gaussian_mixture m n threshold dists
+		]
+	]
+end
+
+to-report place_with_mean_and_std [ mean_x mean_y std ]
+	let xcord random-normal mean_x std
+	let ycord random-normal mean_y std
+
+	if xcord > max-x [set xcord max-x]
+	if ycord > max-y [set ycord max-y]
+	if xcord < 0 [set xcord 0]
+	if ycord < 0 [set ycord 0]
+
+	let vertex-to-move min-one-of (vertices) [ distancexy xcord ycord ]
+
+	; old code back where this function spaned the agent
+	;set xcor xcord
+	;set ycor ycord
+
+	report vertex-to-move
+
+end
+
+to span_from_gaussian_mixture [ m n threshold dists ]
+	let vertex-to-move place_from_gaussian_mixture 0 0 -1 dists
+	set current_vertice vertex-to-move
+	move-to vertex-to-move
+end
+; -----------------------------------------------------------

@@ -11,13 +11,13 @@ __includes [
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
-212
-10
-802
-601
+328
+13
+712
+398
 -1
 -1
-17.64
+11.4
 1
 10
 1
@@ -42,17 +42,17 @@ INPUTBOX
 21
 177
 81
-articulados_x_portal
-8.0
+cant_cuadrillas
+2.0
 1
 0
 Number
 
 BUTTON
-19
-256
-134
-413
+202
+107
+317
+264
 GO
 go\n;create_csv_new\n;info
 T
@@ -66,10 +66,10 @@ NIL
 1
 
 BUTTON
-15
-472
-162
-605
+199
+24
+318
+83
 SETUP
 setup\nget_date
 NIL
@@ -83,10 +83,10 @@ NIL
 1
 
 BUTTON
-74
-146
-174
-179
+209
+282
+309
+315
 Give-path
 move-articulado\n\nreturn-articulado\ngive-path
 T
@@ -98,6 +98,17 @@ P
 NIL
 NIL
 1
+
+INPUTBOX
+17
+109
+179
+169
+number_of_people
+50.0
+1
+0
+Number
 
 @#$#@#$#@
 ## WHAT IS IT?

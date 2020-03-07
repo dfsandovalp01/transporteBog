@@ -26,4 +26,6 @@ estaciones-own [
 people-own [
   inicio
   llegada
+  destination
+  current_vertice
 ]
