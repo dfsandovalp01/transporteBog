@@ -91,13 +91,13 @@ to setuptrans
   
   let Portales.who sort [who] of vertices with [tipo = "PORT"]
 
-  repeat cant_cuadrillas [
-    foreach all_portales [
-      n -> set portalesTo lput n []
-      
-    ]
-  ]  
-;  let portalesTo sort [who] of vertices with [tipo = "PORT"]
+;  repeat cant_cuadrillas [
+;    foreach all_portales [
+;      n -> set portalesTo lput n []
+;      
+;    ]
+;  ]  
+  set portalesTo sort [who] of vertices with [tipo = "PORT"]
   
   foreach Portales.who [ 
     n -> create-transmilenio 8 [
@@ -114,17 +114,17 @@ to setuptrans
       ]  
   ]
     
-;    foreach Portales.who [
-;      m -> 
-;      (foreach (sort [who] of transmilenio-on vertex m) (remove m portalesTo)
-;        [ [o p] -> ask articulado o [
-;;          set portalesTo remove m portalesTo
-;          set portOri vertex m
-;          set portDest vertex p
-;          set origen.stop portOri
-;        ]
-;      ])
-;    ]
+    foreach Portales.who [
+      m -> 
+      (foreach (sort [who] of transmilenio-on vertex m) (remove m portalesTo)
+        [ [o p] -> ask articulado o [
+;          set portalesTo remove m portalesTo
+          set portOri vertex m
+          set portDest vertex p
+          set origen.stop portOri
+        ]
+      ])
+    ]
   
 
        
@@ -162,7 +162,7 @@ to go
   
 ;  ask transmilenio [mover-transmi-from-stop]
   move-people
-  tick
+  tick-advance 0.1
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; PROCEDIMIENTOS TRANSMILENIO ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

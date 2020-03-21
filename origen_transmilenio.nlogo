@@ -105,7 +105,7 @@ INPUTBOX
 179
 169
 number_of_people
-50.0
+1.0
 1
 0
 Number
