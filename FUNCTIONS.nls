@@ -183,7 +183,7 @@ to move-articulado
     [46 46 46 46 46 46 49 124 135];50
   ]
   
-    
+  ;;;;;;; ARTICULADOS BAJANDO ;;;;;;;;;;;;;;
   ask transmilenio with [direct = "DOWN"]  
   [
     ifelse member? [who] of origen.stop  connector.id  = TRUE
@@ -193,6 +193,10 @@ to move-articulado
       set next.stop vertex item destination.position item connector.position connector.path
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
+      ;;; PRUEBA
+;      face next.stop
+;      fd 0.2
+      ;;;
       facexy next.stop_x next.stop_y fd distance next.stop
       ifelse [who] of origen.stop < [who] of next.stop 
       [
@@ -214,6 +218,10 @@ to move-articulado
                                                                 ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
+      ;;; PRUEBA
+;      face next.stop
+;      fd 0.2
+      ;;;
       facexy next.stop_x next.stop_y fd distance next.stop
       set last.stop origen.stop
       set origen.stop next.stop
@@ -224,6 +232,7 @@ to move-articulado
     set path remove-duplicates path
      ]
   
+  ;;;;;;; ARTICULADOS SUBIENDO;;;;;;;;;;;;;;
   ask transmilenio with [direct = "UP"]  
   [
     ifelse member? [who] of origen.stop  connector.id  = TRUE
@@ -233,6 +242,10 @@ to move-articulado
       set next.stop vertex item destination.position item connector.position connector.path
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
+      ;;; PRUEBA
+;      face next.stop
+;      fd 0.2
+      ;;;
       facexy next.stop_x next.stop_y fd distance next.stop
       ifelse [who] of origen.stop < [who] of next.stop 
       [
@@ -255,6 +268,10 @@ to move-articulado
                                                                 ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
+      ;;; PRUEBA
+;      face next.stop
+;      fd 0.2
+      ;;;
       facexy next.stop_x next.stop_y fd distance next.stop
       set last.stop origen.stop
       set origen.stop next.stop

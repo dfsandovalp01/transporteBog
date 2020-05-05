@@ -16,6 +16,7 @@
 #### IMPORTANDO DATOS Y DERIVANDO ESTACIONES, PORTALES Y CONECTORES(ORIGENES) ####
 {
   edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/edges (copia).csv", header = F)  %>%
+  # edges1 <- read.csv("/home/dfsandovalp/Descargas/edges.csv", header = F)  %>%
   mutate(#V6 = paste(V2,"-",V3, sep = ""),
          #V7 = paste(V3,"-",V2, sep = ""),
          V2 = as.character(V2),
@@ -26,17 +27,18 @@
 
 count.vert1 <- edges1[3]
 names(count.vert1) = c("V2")
-count.vert <- edges1[2] %>%
+
+count.vert <- edges1[2] %>% ###conteo de vertices
   rbind(count.vert1) %>%
   group_by(V2) %>%
   summarise(SUMA = n())
 
-# Tabla con origenes
+# Tabla con origenes (ejes con conteo)
 conect.wit <- edges1 %>%
   left_join(count.vert, by = c("V2")) %>%
   left_join(count.vert, by = c("V3" = "V2"))
 
-# Origenes
+# Origenes *(Puntos union entre troncales)
 origenes <- conect.wit %>%
   filter(SUMA.x > 2) %>%
   rbind(filter(conect.wit, SUMA.y >2)) %>%
@@ -46,7 +48,7 @@ origenes <- conect.wit %>%
   distinct() %>% 
   arrange(ori1)
 
-origenes.comp <-  conect.wit %>%
+origenes.comp <-  conect.wit %>% 
   filter(V2 == origenes[1,1] & V3 == origenes[1,2] | V2 == origenes[1,2] & V3 == origenes[1,1] )
 
 
@@ -200,7 +202,7 @@ conteo <- final.a %>%
 
   } #FIN DE GRAFICA
 
-#### ARREGLO MANUAL 1 DE NUMERACION SEGUN GRAFIA ####
+  #### ARREGLO MANUAL 1 DE NUMERACION SEGUN GRAFIA ####
 {
 #   ejes.ord <- links %>%
 #   mutate(source = as.numeric(source),
@@ -487,7 +489,7 @@ caminos.conectores <- o %>%
   
   edges.conectores <- caminos.conectores.corr %>%
     add_rownames() %>%
-    select(rowname, new.id.x, new.id.y, V4, V5) 
+    select(rowname, new.id.x, new.id.y, V4, V5)
     
   names(edges.conectores) <-c("V1", "V2", "V3", "V4", "V5")
   
@@ -513,6 +515,12 @@ caminos.conectores <- o %>%
 
 #### INICIO AÑADIENDO TRONCALES A LOS ORIGENES ###############################################################################
 {
+  
+  ##reconstruccion troncales
+  
+  troncales <- ejes.cont %>%
+    anti_join(caminos.conectores.corr, by = c("V1"))
+  
   new.troncales <- troncales
   new.inicio.troncal <- troncales %>%
     filter(!is.na(new.id.x) | !is.na(new.id.y))
