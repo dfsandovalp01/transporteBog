@@ -16,12 +16,13 @@
 #### IMPORTANDO DATOS Y DERIVANDO ESTACIONES, PORTALES Y CONECTORES(ORIGENES) ####
 {
   # edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/edges (copia).csv", header = F)  %>%
-    edges1 <- read.csv("/home/dfsandovalp/Descargas/edges.csv", header = F)  %>%
+    edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_1/base/edges.csv", header = F)  %>%
     mutate(#V6 = paste(V2,"-",V3, sep = ""),
       #V7 = paste(V3,"-",V2, sep = ""),
       V2 = as.character(V2),
       V3 = as.character(V3)) %>%
-    filter(V5 == 9)
+    filter(V5 == 9) %>%
+      mutate(V5 = 4)
   
   #Graficando
   
@@ -585,7 +586,7 @@ plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arro
 #### ACTUALIZANDO VERTICES ####
 {
   # vertices1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/vertices.csv", header = F)
-  vertices1 <- read.csv("/home/dfsandovalp/Descargas/vertices.csv", header = F)
+  vertices1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_1/base/vertices.csv", header = F)
   
   
   new.vertices <- vertices1 %>%
@@ -625,15 +626,49 @@ plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arro
                               attri.y,
                               "STOP")))%>%
     select(new.id, V2, V3, V4) %>%
-    rename("V1" = "new.id")
-}
+    rename("V1" = "new.id") %>%
+    mutate(V1 = ifelse(nchar(V1) == 1,
+                       paste("00", V1, sep = ""),
+                       ifelse(nchar(V1) == 2,
+                              paste("0", V1, sep = ""),
+                              V1))) %>%
+           # V4 = ifelse(V1 == "027",
+           #             "ORI",
+           #             V4)) %>%
+    arrange(V1)
+    
+  }
 
 ##                        HASTA AQUIIIIIIIIIIIIIIIIIII
 
 
 
-write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/streets/new.edges.csv", sep = "\t", col.names = FALSE, row.names = FALSE )
-write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/streets/new.vertices.csv", sep = "\t", col.names = FALSE, row.names = FALSE)
+# write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/edges.csv", sep = "\t", col.names = FALSE, row.names = FALSE )
+# write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/vertices.csv", sep = "\t", col.names = FALSE, row.names = FALSE)
+write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/edges1.csv", sep = ",", col.names = FALSE, row.names = FALSE )
+write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/vertices1.csv", sep = ",", col.names = FALSE, row.names = FALSE)
 
 
+####      ARREGLOS FUNCIONALES
+
+
+arreglos.edges <-  TOTAL.EDGES
+
+arreglos.edges <- arreglos.edges %>%
+  filter(V1 != 29) %>%
+  filter(V1 != 30) %>%
+  mutate(V3 = ifelse(V1 == 38,
+                     50,
+                     V3))
+
+# arreglos.vertex <- VERTEX
+# 
+# arreglos.vertex <- filter(arreglos.vertex, V1 != "027") %>%
+#   filter(V1 != "028")
+
+
+#EDGES
+write.table(arreglos.edges, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/edges2.csv", sep = ",", col.names = FALSE, row.names = FALSE )
+  #VERTEX
+# write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/vertices1.csv", sep = ",", col.names = FALSE, row.names = FALSE)
 

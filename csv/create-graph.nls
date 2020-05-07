@@ -14,7 +14,8 @@ to setup-importer
 
 	; read the vertices.csv file and for each line create a vertix (node)
   ;file-open "streets/verticesPru2.1.csv"
-  file-open "streets/new.verticesTOTAL.csv"
+;  file-open "streets/new.verticesTOTAL.csv"
+  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/vertices1.csv"
   while [ not file-at-end? ] [
 		; Create variable row which is a list
     let row csv:from-row file-read-line
@@ -36,7 +37,8 @@ to setup-importer
   file-close 
 	; read the edges.csv file and for each line create a link
 	;file-open "streets/edgesConectores1.csv"
-  file-open "streets/new.edgesTOTAL.csv"
+;  file-open "streets/new.edgesTOTAL.csv"
+  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/edges1.csv"
 	while [not file-at-end?] [
 		; Create variable row which is a list
 		let row csv:from-row file-read-line

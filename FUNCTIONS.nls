@@ -30,6 +30,7 @@ to setup-portales
   [if tipo = "PORT" 
     [set shape "house"
      set color green
+     set label who
      set size 0.6]
   ]
 end
@@ -37,9 +38,12 @@ end
 to setup-conectores
   ask vertices
   [if tipo = "ORI" 
-    [set shape "circle"
-     set color yellow
-     set size 0.4]
+    [
+      set shape "circle"
+      set color yellow
+      set label who
+      set size 0.4
+    ]
   ]
 end
 
@@ -170,17 +174,18 @@ end
 to move-articulado
   
 ;  if [direct] of transmilenio = "DOWN";any? vertices with [direct = "DOWN"] = TRUE
-  let Portales.who sort [who] of vertices with [tipo = "PORT"]  ;[54 57 64 78 96 107 123 134 147]
-  let connector.id [0 10 17 24 27 38 47 50]
+  let Portales.who sort [who] of vertices with [tipo = "PORT"]  ;[56	60	67	81	99	110	127	138	151]
+  let connector.id [0 11 19 26 27 37 41 50 53] 
   let connector.path [
-    [51 55 1 1 1 1 1 1 1] ;0
-    [9 9 11 12 12 15 15 15 15] ;10
-    [11 11 58 11 11 18 18 18 18] ;17
-    [14 14 14 65 79 25 25 25 25] ;24 
-    [16 16 16 16 16 28 29 28 29] ;27
-    [28 28 28 26 26 97 39 39 39] ;38
-    [37 37 37 37 37 37 108 48 48] ;47
-    [46 46 46 46 46 46 49 124 135];50
+    [54	57	1	1	1	1	1	1	1] ;0
+    [10	10	12	16	16	16	13	16	16] ;11
+    [12	12	12	12	12	12	20	12	12] ;19
+    [15	15	25	15	15	40	29	40	40] ;26
+    [36 36  36  36  36  36  28  28  28] ;27 COLADO
+    [18	18	18	68	82	37	37	37	37] ;37
+    [39	39	41	39	39	100	42	42	42] ;41
+    [28	28	28	28	28	28	111	50	50] ;50
+    [52	52	52	49	49	49	52	128	139];53
   ]
   
   ;;;;;;; ARTICULADOS BAJANDO ;;;;;;;;;;;;;;

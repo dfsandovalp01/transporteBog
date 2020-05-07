@@ -1,0 +1,14 @@
+to move-articulado
+  
+;  if [direct] of transmilenio = "DOWN";any? vertices with [direct = "DOWN"] = TRUE
+  let Portales.who sort [who] of vertices with [tipo = "PORT"]  ;[54 57 64 78 96 107 123 134 147]
+  let connector.id [0 10 17 24 27 38 47 50]
+  let connector.path [
+    [51 55 1 1 1 1 1 1 1] ;0
+    [9 9 11 12 12 15 15 15 15] ;10
+    [11 11 58 11 11 18 18 18 18] ;17
+    [14 14 14 65 79 25 25 25 25] ;24 
+    [16 16 16 16 16 28 29 28 29] ;27
+    [28 28 28 26 26 97 39 39 39] ;38
+    [37 37 37 37 37 37 108 48 48] ;47
+    [46 46 46 46 46 46 49 124 135];50
