@@ -1,12 +1,18 @@
 __includes [
-  "GLOBALS.nls"
-  "ENTITIES.nls"
-  "FUNCTIONS.nls"
+  ;GLOBAL
+  "global/GLOBALS.nls"
+  "global/ENTITIES.nls"
+  "global/FUNCTIONS.nls"
+  ;BUS
+  "bus_code/b_functions.nls"
+  ;PERSON
+  "person_code/p_functions.nls"
+ ; MAPA
+  "mapa/globals.nls"
+  "mapa/entities.nls"
+  "mapa/create-graph.nls"
 
-  "csv/globals.nls"
-  "csv/entities.nls"
-  "csv/create-graph.nls"
-  "csv/data/export_data.nls"
+  "../csv/data/export_data.nls"
 
 ]
 @#$#@#$#@
@@ -43,7 +49,7 @@ INPUTBOX
 177
 81
 cant_cuadrillas
-2.0
+0.0
 1
 0
 Number
@@ -105,7 +111,18 @@ INPUTBOX
 179
 169
 number_of_people
-1.0
+0.0
+1
+0
+Number
+
+INPUTBOX
+16
+184
+177
+244
+valor_pasaje
+0.0
 1
 0
 Number

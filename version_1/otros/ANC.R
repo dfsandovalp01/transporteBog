@@ -16,7 +16,7 @@
 #### IMPORTANDO DATOS Y DERIVANDO ESTACIONES, PORTALES Y CONECTORES(ORIGENES) ####
 {
   # edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/edges (copia).csv", header = F)  %>%
-    edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_1/base/edges.csv", header = F)  %>%
+    edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_1/mapa/base/edges.csv", header = F)  %>%
     mutate(#V6 = paste(V2,"-",V3, sep = ""),
       #V7 = paste(V3,"-",V2, sep = ""),
       V2 = as.character(V2),
@@ -526,7 +526,7 @@ conteo <- final.a %>%
     mutate(rowname1 = ifelse(nchar(rowname) == 1,
                              paste("0", rowname, sep = ""),
                              rowname)) %>%
-    arrange(new.y, rowname1) %>%
+    arrange(new.y, rowname1) #%>%
     select(V1, V2.1, V3.1, V4, V5) 
   
   new.id.troncales <- new.orden.troncal %>%
@@ -561,26 +561,26 @@ conteo <- final.a %>%
 
 #### LISTA COMPLETA DE EDGES CORREGIDOS #######################################################################################
 
+{
 
-
-TOTAL.EDGES <- edges.conectores %>%
-  rbind(new.orden.troncal) %>% #(numerados.completo.troncales) %>%
-  mutate(V1 = as.numeric(V1),
-         V2 = as.numeric(V2),
-         V3 = as.numeric(V3))
-
-#Graficando
-
-links.1 <- TOTAL.EDGES %>%
-  mutate(source = V2,
-         target = V3) %>%
-  select(source, target)
-names(links.1) = c("source", "target")
-network.1 <- graph_from_data_frame(d=links.1, directed=T) 
-
-# plot it
-plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arrow.size=.2)
-
+  TOTAL.EDGES <- edges.conectores %>%
+    rbind(new.orden.troncal) %>% #(numerados.completo.troncales) %>%
+    mutate(V1 = as.numeric(V1),
+           V2 = as.numeric(V2),
+           V3 = as.numeric(V3))
+  
+  #Graficando
+  
+  links.1 <- TOTAL.EDGES %>%
+    mutate(source = V2,
+           target = V3) %>%
+    select(source, target)
+  names(links.1) = c("source", "target")
+  network.1 <- graph_from_data_frame(d=links.1, directed=T) 
+  
+  # plot it
+  plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arrow.size=.2)
+}
 
 
 #### ACTUALIZANDO VERTICES ####
@@ -645,8 +645,8 @@ plot(network.1, vertex.size=5,vertex.label.dist=0,vertex.label.cex=0.5,edge.arro
 
 # write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/edges.csv", sep = "\t", col.names = FALSE, row.names = FALSE )
 # write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/vertices.csv", sep = "\t", col.names = FALSE, row.names = FALSE)
-write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/edges1.csv", sep = ",", col.names = FALSE, row.names = FALSE )
-write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/vertices1.csv", sep = ",", col.names = FALSE, row.names = FALSE)
+write.table(TOTAL.EDGES, "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/transmilenio/edges1.csv", sep = ",", col.names = FALSE, row.names = FALSE )
+write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/transmilenio/vertices1.csv", sep = ",", col.names = FALSE, row.names = FALSE)
 
 
 ####      ARREGLOS FUNCIONALES
@@ -668,7 +668,7 @@ arreglos.edges <- arreglos.edges %>%
 
 
 #EDGES
-write.table(arreglos.edges, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/edges2.csv", sep = ",", col.names = FALSE, row.names = FALSE )
+write.table(arreglos.edges, "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/transmilenio/edges2.csv", sep = ",", col.names = FALSE, row.names = FALSE )
   #VERTEX
-# write.table(VERTEX, "/home/dfsandovalp/WORK/transporteBog/version_1/transmilenio/vertices1.csv", sep = ",", col.names = FALSE, row.names = FALSE)
+# write.table(VERTEX, "/home/df sandovalp/WORK/transporteBog/version_1/transmilenio/vertices1.csv", sep = ",", col.names = FALSE, row.names = FALSE)
 
