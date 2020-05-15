@@ -639,7 +639,7 @@ conteo <- final.a %>%
     
   }
 
-##                        HASTA AQUIIIIIIIIIIIIIIIIIII
+##  ======================== HASTA AQUIIIIIIIIIIIIIIIIIII SOLO TRANSMILENIO
 
 
 
@@ -672,3 +672,4 @@ write.table(arreglos.edges, "/home/dfsandovalp/WORK/transporteBog/version_1/mapa
   #VERTEX
 # write.table(VERTEX, "/home/df sandovalp/WORK/transporteBog/version_1/transmilenio/vertices1.csv", sep = ",", col.names = FALSE, row.names = FALSE)
 
+##  ======================== HASTA AQUIIIIIIIIIIIIIIIIIII SOLO TRANSMILENIO

@@ -9,7 +9,8 @@ globals [
 	gm_dest
   time
 	time_string
-  horas_pico 
+  horas_pico
+  indice_rec 
 ;  portal.norte-x portal.norte-y
 ;  portal.sur-x portal.sur-y
 ;  conectores

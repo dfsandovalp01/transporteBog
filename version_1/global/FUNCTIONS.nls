@@ -6,6 +6,7 @@ extensions [nw table]
 
 to setup
   clear-all
+  ask patch 2 30 [set pcolor red]
   setup-importer
   setup-portales
   setup-conectores
@@ -20,10 +21,32 @@ to setup
 ;  repeat 2 [setuptrans]
 ;  setup-transmilenio
   setup-people
+  set indice_rec [recorridos] of transmilenio
 ;  crear-vias
 ;  set conectores (list )
   reset-ticks
 end
+
+
+;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
+
+to go
+;  set indice_rec [recorridos] of transmilenio
+  ask transmilenio [
+    move-articulado
+    return-articulado
+    give-path
+  ]
+  if [pcolor] of patch 2 30 = green [stop]
+  state_tm 
+  
+;  ask transmilenio [mover-transmi-from-stop]
+;  move-people
+  tick
+end
+
+;=================== funciones =====================
+
 
 to setup-portales
   ask vertices
@@ -37,81 +60,33 @@ end
 
 to setup-conectores
   ask vertices
-  [if tipo = "ORI" 
+  [
+    if tipo = "ORI" 
     [
       set shape "circle"
       set color yellow
       set label who
       set size 0.4
+    ]    
+  ]
+
+end
+
+to state_tm 
+  ask patch 2 30 
+  [
+    ifelse [recorridos] of min-one-of (transmilenio) [recorridos] > 0
+    [
+      set pcolor green
+      
     ]
+    []
   ]
 end
 
-
-;to setup-transmilenio 
-;  
-;  let Portales.who sort [who] of vertices with [tipo = "PORT"]  
-;
-;  
-;  while [empty? Portales.who = FALSE] [
-;    
-;    
-;   let ind.Portal item 0 Portales.who
-;    
-;     create-transmilenio 8 [
-;      set shape "truck"
-;      set color red           
-;      setxy [xcor] of vertex item 0 Portales.who  [ycor] of vertex item 0 Portales.who      
-;      set direct "DOWN"     
-;      set size 0.6
-;      set path [];list ("x") (origen.stop)
-;      set speed 0.1 + random-float 0.9
-;      
-;      
-;    ]
-;    let transmiAsig sort [who] of transmilenio-on vertex item 0 Portales.who       
-;    let portalesTo sort [who] of vertices with [tipo = "PORT"]
-;      set portalesTo remove-item position ind.Portal portalesTo portalesTo
-;    
-;    while [empty? transmiAsig = FALSE][
-;      
-;      ask articulado item 0 transmiAsig [
-;        set portOri vertex item 0 Portales.who
-;        set portDest vertex item 0 portalesTo
-;        set origen.stop portOri
-;      ]
-;      set transmiAsig remove-item 0 transmiAsig
-;      set portalesTo remove-item 0 portalesTo
-;      
-;    ]
-;    set Portales.who remove-item 0 Portales.who
-;  ] 
-;  
-;
-;
-;end
-
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
-
-to go
-  ask transmilenio [
-    move-articulado
-    return-articulado
-    give-path
-  ]
+to paint_tm
   
-;  ask transmilenio [mover-transmi-from-stop]
-  move-people
-  tick-advance 0.1
 end
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; APLICANDO DISTRIBUCION GAUSIANA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

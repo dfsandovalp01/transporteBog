@@ -22,6 +22,7 @@ to setuptrans
       set size 0.6
       set path [];list ("x") (origen.stop)
       set speed 0.1 + random-float 0.9
+      set recorridos 0
        
     
       
@@ -35,7 +36,8 @@ to setuptrans
 ;          set portalesTo remove m portalesTo
           set portOri vertex m
           set portDest vertex p
-          set origen.stop portOri
+          set origen.stop portOri 
+          set name_route word portOri portDest
         ]
       ])
     ]
@@ -43,6 +45,25 @@ to setuptrans
 
        
   
+end
+
+to setup-bus-on-demand
+  create-transmilenio number_of_people / 2 [
+    setxy random-xcor random-ycor
+    set shape "truck"
+    set color blue
+    let sentido_bus ["DOWN" "UP"]
+    set direct item random 2 sentido_bus
+    set size 0.7
+    set path []
+;    set inicio one-of vertices
+;    set llegada one-of vertices
+    set destination place_from_gaussian_mixture 0 0 -1 gm_dest
+		span_from_gaussian_mixture 0 0 -1 gm_org
+;    set inicio vertex 56
+;    set llegada vertex 53
+    
+  ]
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,12 +79,11 @@ to move-articulado
   let connector.path [
     [54	57	1	1	1	1	1	1	1] ;0
     [10	10	12	16	16	16	13	16	16] ;11
-    [12	12	12	12	12	12	20	12	12] ;19
+    [12	12	61	12	12	12	20	12	12] ;19
     [15	15	25	15	15	40	29	40	40] ;26
-;    [36 36  36  36  36  36  28  28  28] ;27 COLADO
-    [18	18	18	68	82	37	37	37	37] ;37
-    [39	39	41	39	39	100	42	42	42] ;41
-    [36	36  36  36  36  36  111	50	50] ;50
+    [18	18	18	68	82	38	38	38	38] ;37
+    [39	39	40	39	39	100	42	42	42] ;41
+    [36	36  36  36  36  36  111	51	51] ;50
     [52	52	52	49	49	49	52	128	139];53
   ]
   
@@ -98,7 +118,7 @@ to move-articulado
       let origen origen.stop
       
       
-      set next.stop item 0 [end1] of links with [end2 = origen ];of transmilenio]
+      set next.stop item 0 [end1] of links with [end2 = origen];of transmilenio]
                                                                 ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
@@ -184,6 +204,8 @@ to return-articulado
       set portDest portOri
       set portOri origen.stop
       set direct "DOWN"
+      set recorridos recorridos + 1
+      
     ]
     []
   ]

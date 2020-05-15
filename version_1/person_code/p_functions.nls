@@ -4,7 +4,7 @@ to setup-people
   create-people number_of_people [
     setxy random-xcor random-ycor
     set shape "person"
-    set color white
+    set color magenta
     set size 0.5
 ;    set inicio one-of vertices
     set llegada one-of vertices

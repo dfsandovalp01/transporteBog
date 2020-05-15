@@ -8,14 +8,16 @@ breed [portales portal]
 
 transmilenio-own [
   speed
-  path  
-  last.stop  
-  next.stop  
+  path 
   origen.stop  
+  last.stop  
+  next.stop   
   direct
   portOri
   portDest
   completed
+  name_route
+  recorridos
   
 ]
 

@@ -111,7 +111,7 @@ INPUTBOX
 179
 169
 number_of_people
-0.0
+100.0
 1
 0
 Number
@@ -126,6 +126,23 @@ valor_pasaje
 1
 0
 Number
+
+BUTTON
+50
+283
+184
+316
+nuevo servicio
+setup-bus-on-demand
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
