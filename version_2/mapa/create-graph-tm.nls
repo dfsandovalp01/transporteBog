@@ -2,20 +2,20 @@
 
 extensions [csv]
 
-to setup-globals-importer
+to setup-globals-importer-tm
 	set default-expected-cost -1
 	set max-x 32
 	set max-y 32
 end
 
-to setup-importer
+to setup-importer-tm
 
-	setup-globals-importer
+	setup-globals-importer-tm
 
 	; read the vertices.csv file and for each line create a vertix (node)
   
   ;====== MAPA COMPLETO =========
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/completo/vertices.csv"
+  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/vertices_e.csv"
   ;====== SOLO TRANSMILENIO ====================
   ;file-open "streets/verticesPru2.1.csv"
 ;  file-open "streets/new.verticesTOTAL.csv"
@@ -25,7 +25,7 @@ to setup-importer
     let row csv:from-row file-read-line
 
     ; Create vertix
-		create-vertices 1 [
+		create-nodos 1 [
 			set id item 0 row
 			setxy item 1 row * max-x item 2 row * max-y
       set tipo item 3 row
@@ -42,7 +42,7 @@ to setup-importer
 	; read the edges.csv file and for each line create a link
 	
   ;============= MAPA COMPLETO ================
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/completo/edges.csv"
+  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/edges_e.csv"
   ;============= SOLO TRANSMILENIO ===============
   ;file-open "streets/edgesConectores1.csv"
 ;  file-open "streets/new.edgesTOTAL.csv"
@@ -53,22 +53,22 @@ to setup-importer
 
 		; Create link --- this is a little inefficient
 
-		let fromElement item 0 sort vertices with [id = item 1 row]
+		let fromElement item 0 sort nodos with [id = item 1 row]
 		ask fromElement [
 			; Get vertex at the other end
-			let toElement item 0 sort vertices with [id = item 2 row]
+			let toElement item 0 sort nodos with [id = item 2 row]
 
 			; create the link
-			create-edge-with toElement [ set thickness item 4 row / 6 ]
+			create-edge_tm-with toElement [ set thickness item 4 row / 6 set color sky]
 
 			; Set the cost for that new link
-			ask edges with [end1 = fromElement and end2 = toElement] [
+			ask edges_tm with [end1 = fromElement and end2 = toElement] [
 				set pk item 0 row
 				set cost item 3 row
 				set dist item 3 row
 				set capacity item 4 row
 			]
-			ask edges with [end1 = toElement and end2 = fromElement] [
+			ask edges_tm with [end1 = toElement and end2 = fromElement] [
 				set pk item 0 row
 				set cost item 3 row
 				set dist item 3 row
@@ -83,33 +83,4 @@ to setup-importer
   reset-ticks
 end
 
-to check_connectivity
-	ask vertices [set color white]
-	ask edges [set color white]
-	confirm_connectivity vertex 0
-	ifelse empty? sort edges with [color = white][
-		user-message "the map is connect"
-	][
-		user-message "the map is NOT connected"
-	]
-end
 
-to confirm_connectivity [some_vertex]
-
-	if some_vertex = nobody [
-		set some_vertex one-of vertices
-		ask edges [
-			set color white
-			set thickness 0.1
-		]	
-		ask vertices [
-			set color white
-		]
-	]
-
-	ask some_vertex [
-		set color blue		
-		ask my-links [set color blue]
-		ask link-neighbors with [color != blue] [confirm_connectivity self]
-	]
-end

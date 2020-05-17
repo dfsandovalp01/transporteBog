@@ -22,6 +22,8 @@ to setup
 ;  setup-transmilenio
   setup-people
   set indice_rec [recorridos] of transmilenio
+  
+  correcciones
 ;  crear-vias
 ;  set conectores (list )
   reset-ticks
@@ -37,7 +39,7 @@ to go
     return-articulado
     give-path
   ]
-  if [pcolor] of patch 2 30 = green [stop]
+  ;if [pcolor] of patch 2 30 = green [stop]
   state_tm 
   
 ;  ask transmilenio [mover-transmi-from-stop]
@@ -197,3 +199,13 @@ to span_from_gaussian_mixture [ m n threshold dists ]
 	move-to vertex-to-move
 end
 ; -----------------------------------------------------------
+
+
+; ===== CORRECCIONES =========
+
+to correcciones
+  ;ask vertex 102 [create-edge_tm-with vertex 103]
+  ask edges with [capacity = 4] [
+    set color sky
+  ]
+end

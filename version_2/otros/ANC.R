@@ -740,7 +740,7 @@ TOTAL.EDGES.COMPLETE <- e_sistema_completo %>%
                      4,
                      V5))
 
-####   ========================   ARREGLOS FUNCIONALES MAPA COMPLETO ========================================
+####      ARREGLOS FUNCIONALES MAPA COMPLETO
 
 
 arreglos.edges.complete <-  TOTAL.EDGES.COMPLETE
@@ -762,52 +762,4 @@ write.table(VERTEX.COMPLETE, "/home/dfsandovalp/WORK/transporteBog/version_1/map
 
 write.table(arreglos.edges.complete, "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/completo/edges.csv", sep = ",", col.names = FALSE, row.names = FALSE )
 
-### =========================== GENERANDO TRANSMILENIO ELEVADO ===============================================
 
-
-v_elevado_base <- VERTEX %>%
-  mutate(new.id = as.numeric(V1),
-         new.id2 = (nrow(VERTEX.COMPLETE) ) + new.id,
-         new.id2 = as.character(new.id2)) 
-  
-
-VERTEX.ELEVADO <- v_elevado_base %>% 
-  select(new.id2, V2, V3, V4) %>%
-  rename(V1 = new.id2)
-
-e_elevado_base <- arreglos.edges %>%
-  left_join(select(v_elevado_base, new.id, new.id2), by = c("V2" = "new.id")) %>%
-  left_join(select(v_elevado_base, new.id, new.id2), by = c("V3" = "new.id")) %>%
-  mutate(V1 = nrow(VERTEX.COMPLETE) + V1) %>%
-  select(V1, new.id2.x, new.id2.y, V4, V5) 
-
-
-
-write.table(e_elevado_base, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/edges_e.csv", sep = ",", col.names = FALSE, row.names = FALSE )
-write.table(VERTEX.ELEVADO, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/vertices_e.csv", sep = ",", col.names = FALSE, row.names = FALSE)
-
-vertices_mike <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/vertices.csv", header = F)
-
-VERTEX.MIKE <- vertices_mike %>%
-  mutate(V4 = "NA")
-
-edges_mike <- read.csv("/home/dfsandovalp/WORK/uber/streets/edges.csv", header = F)
-
-
-
-vertices_brian <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices.csv", header = F)
-
-VERTEX.BRIAN <- vertices_brian %>%
-  mutate(V4 = "NA") 
-
-
-write.table(VERTEX.BRIAN, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices_brian.csv", sep = ",", col.names = FALSE, row.names = FALSE)
-
-
-edges_brian <- read.csv("/home/dfsandovalp/Descargas/edges.csv", header = F) %>%
-  mutate(V5 = ifelse(V5 == 9,
-                     3,
-                     V5)) %>%
-  filter(!(V1 %in% c(207, 142, 342, 203, 293, 300, 283, 343, 159, 65, 372, 212, 437, 404, 406, 308, 100, 408, 351, 92, 36)))
-
-write.table(edges_brian, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/edges_brian.csv", sep = ",", col.names = FALSE, row.names = FALSE)
