@@ -7,8 +7,9 @@ extensions [nw table]
 to setup
   clear-all
   ask patch 2 30 [set pcolor red]
-  setup-importer-tm
+  
   setup-importer
+  setup-importer-tm
   setup-portales
   setup-conectores
 

@@ -3,16 +3,18 @@
 
 to setuptrans
   
-  let Portales.who sort [id] of nodos with [tipo = "PORT"]
+  let Portales.id sort [id] of nodos with [tipo = "PORT"]
+  let Portales.who sort [who] of nodos with [tipo = "PORT"]
 
 
-  set portalesTo sort [id] of nodos with [tipo = "PORT"]
+  set portalesTo sort [who] of nodos with [tipo = "PORT"]
   
   foreach Portales.who [ 
     n -> create-transmilenio length all_portales - 1 [
       set shape "truck"
       set color red           
-      setxy item 0 [xcor] of nodos with [id = n] item 0 [ycor] of nodos with [id = n]
+
+      setxy [xcor] of nodo n [ycor] of nodo n
       set direct "DOWN"     
       set size 0.6
       set path [];list ("x") (origen.stop)
@@ -28,8 +30,8 @@ to setuptrans
       (foreach (sort [who] of transmilenio-on nodo item 0 [who] of nodos with [id = m]) (remove m portalesTo)
         [ [o p] -> ask articulado o [
 ;          set portalesTo remove m portalesTo
-          set portOri nodo item 0 [who] of nodos with [id = m]
-          set portDest nodo item 0 [who] of nodos with [id = p]
+          set portOri nodo m
+          set portDest nodo p
           set origen.stop portOri 
           set name_route word portOri portDest
         ]
@@ -51,17 +53,19 @@ end
 to move-articulado
   
 ;  if [direct] of transmilenio = "DOWN";any? vertices with [direct = "DOWN"] = TRUE
-  let Portales.who sort [id] of nodos with [tipo = "PORT"]  ;[56	60	67	81	99	110	127	138	151]
+  let Portales.id sort [id] of nodos with [tipo = "PORT"]  ;[56	60	67	81	99	110	127	138	151]
+  let Portales.who sort [who] of nodos with [tipo = "PORT"]
   let connector.id sort [id] of nodos with [tipo = "ORI"];[0 11 19 26  37 41 50 53] 
+  let connector.who sort [who] of nodos with [tipo = "ORI"]
   let connector.path [
     [419	422	366	366	366	366	366	366	366] ;0
     [375	375	377	381	381	381	378	381	381] ;11
     [377	377	426	377	377	377	377	377	377] ;19
     [380	380	390	380	380	405	394	405	405] ;26
     [383	383	383	433	447	403	403	403	403] ;37
-    [404	404	405	404	404	100	407	407	407] ;41
+    [404	404	405	404	404	465	407	407	407] ;41
     [401	401 401 401 401 401 476	416	416] ;50
-    [417	417	417	49	414	414	417	493	504];53
+    [417	417	417	414	414	414	417	493	504];53
   ]
 ;  let connector.path [
 ;    [54	57	1	1	1	1	1	1	1] ;0
@@ -80,8 +84,8 @@ to move-articulado
     ifelse member? [id] of origen.stop  connector.id  = TRUE
     [      
       let connector.position position [id] of origen.stop connector.id ; posicion del conector en el arreglo
-      let destination.position position [id] of portDest Portales.who ; posicion del portal de destino en el arreglo
-      set next.stop nodo item 0 [who] of nodos with [id = item destination.position item connector.position connector.path]
+      let destination.position position [id] of portDest Portales.id ; posicion del portal de destino en el arreglo
+      set next.stop nodo item 0 [who] of nodos with [id = (item destination.position item connector.position connector.path)]
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       ;;; PRUEBA
@@ -129,8 +133,8 @@ to move-articulado
     ifelse member? [id] of origen.stop  connector.id  = TRUE
     [      
       let connector.position position [who] of origen.stop connector.id ; posicion del conector en el arreglo
-      let destination.position position [who] of portDest Portales.who ; posicion del portal de destino en el arreglo
-      set next.stop nodo item 0 [who] of nodos with [id = item destination.position item connector.position connector.path];nodo item destination.position item connector.position connector.path
+      let destination.position position [who] of portDest Portales.id ; posicion del portal de destino en el arreglo
+      set next.stop nodo item 0 [who] of nodos with [id = (item destination.position item connector.position connector.path)];nodo item destination.position item connector.position connector.path
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       ;;; PRUEBA
