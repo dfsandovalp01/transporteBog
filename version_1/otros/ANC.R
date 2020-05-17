@@ -788,6 +788,10 @@ write.table(VERTEX.ELEVADO, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa
 
 vertices_mike <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/vertices.csv", header = F)
 
+## ================ COMPARANDO MAPAS PARA INTEGRACION ====================
+
+# ----- mapa Mike -------
+
 VERTEX.MIKE <- vertices_mike %>%
   mutate(V4 = "NA")
 
@@ -795,19 +799,28 @@ edges_mike <- read.csv("/home/dfsandovalp/WORK/uber/streets/edges.csv", header =
 
 
 
-vertices_brian <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices.csv", header = F)
-
-VERTEX.BRIAN <- vertices_brian %>%
-  mutate(V4 = "NA") 
-
-
-write.table(VERTEX.BRIAN, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices_brian.csv", sep = ",", col.names = FALSE, row.names = FALSE)
+# ----- mapa Brian ------
 
 
 edges_brian <- read.csv("/home/dfsandovalp/Descargas/edges.csv", header = F) %>%
   mutate(V5 = ifelse(V5 == 9,
                      3,
                      V5)) %>%
-  filter(!(V1 %in% c(207, 142, 342, 203, 293, 300, 283, 343, 159, 65, 372, 212, 437, 404, 406, 308, 100, 408, 351, 92, 36)))
+  filter((V1 %in% c(207, 142, 342, 203, 293, 300, 283, 343, 159, 65, 372, 212, 437, 404, 406, 308, 100, 408, 351, 92, 36))) ##correccion no conexidad
+
 
 write.table(edges_brian, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/edges_brian.csv", sep = ",", col.names = FALSE, row.names = FALSE)
+
+v_para_eliminar <- select(edges_brian, V2) %>%
+  rbind(rename(select(edges_brian, V3), V2 = V3)) %>%
+  distinct() 
+
+# v_para_eliminar <- v_para_eliminar[1]
+vertices_brian <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices.csv", header = F)
+
+VERTEX.BRIAN <- vertices_brian %>%
+  mutate(V4 = "NA") %>%
+  anti_join(v_para_eliminar, by = c("V1" = "V2"))
+
+
+write.table(VERTEX.BRIAN, "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices_brian.csv", sep = ",", col.names = FALSE, row.names = FALSE)

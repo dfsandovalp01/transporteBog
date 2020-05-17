@@ -27,7 +27,7 @@ to setuptrans
     
     foreach Portales.who [
       m -> 
-      (foreach (sort [who] of transmilenio-on nodo item 0 [who] of nodos with [id = m]) (remove m portalesTo)
+      (foreach (sort [who] of transmilenio-on nodo m ) (remove m portalesTo)
         [ [o p] -> ask articulado o [
 ;          set portalesTo remove m portalesTo
           set portOri nodo m
@@ -83,9 +83,10 @@ to move-articulado
   [
     ifelse member? [id] of origen.stop  connector.id  = TRUE
     [      
-      let connector.position position [id] of origen.stop connector.id ; posicion del conector en el arreglo
-      let destination.position position [id] of portDest Portales.id ; posicion del portal de destino en el arreglo
-      set next.stop nodo item 0 [who] of nodos with [id = (item destination.position item connector.position connector.path)]
+      let connector.position position [who] of origen.stop connector.who ; posicion del conector en el arreglo
+      let destination.position position [who] of portDest Portales.who ; posicion del portal de destino en el arreglo
+      let nodo_salida nodo item 0 [who] of nodos with [id = item destination.position item connector.position connector.path]
+      set next.stop nodo_salida 
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       ;;; PRUEBA
@@ -93,7 +94,7 @@ to move-articulado
 ;      fd 0.2
       ;;;
       facexy next.stop_x next.stop_y fd distance next.stop
-      ifelse [id] of origen.stop < [id] of next.stop 
+      ifelse [who] of origen.stop < [who] of next.stop 
       [
         set direct "UP"
       ]
@@ -130,11 +131,13 @@ to move-articulado
   ;;;;;;; ARTICULADOS SUBIENDO;;;;;;;;;;;;;;
   ask transmilenio with [direct = "UP"]  
   [
-    ifelse member? [id] of origen.stop  connector.id  = TRUE
+    ifelse member? [who] of origen.stop  connector.who  = TRUE
     [      
-      let connector.position position [who] of origen.stop connector.id ; posicion del conector en el arreglo
-      let destination.position position [who] of portDest Portales.id ; posicion del portal de destino en el arreglo
-      set next.stop nodo item 0 [who] of nodos with [id = (item destination.position item connector.position connector.path)];nodo item destination.position item connector.position connector.path
+      let connector.position position [who] of origen.stop connector.who ; posicion del conector en el arreglo
+      let destination.position position [who] of portDest Portales.who ; posicion del portal de destino en el arreglo
+      let nodo_salida nodo item 0 [who] of nodos with [id = item destination.position item connector.position connector.path]
+      set next.stop nodo_salida 
+;      set next.stop nodo  (item destination.position item connector.position connector.path);nodo item destination.position item connector.position connector.path
       let next.stop_x [xcor] of next.stop
       let next.stop_y [ycor] of next.stop
       ;;; PRUEBA
@@ -142,7 +145,7 @@ to move-articulado
 ;      fd 0.2
       ;;;
       facexy next.stop_x next.stop_y fd distance next.stop
-      ifelse [id] of origen.stop < [id] of next.stop 
+      ifelse [who] of origen.stop < [who] of next.stop 
       [
         set direct "UP"
       ]
