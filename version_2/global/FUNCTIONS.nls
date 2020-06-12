@@ -1,3 +1,4 @@
+
 extensions [nw table]
 ;;;;;;;;;;;;;;;
 ;; FUNCTIONS ;;
@@ -14,7 +15,7 @@ to setup
   setup-conectores
 
   
-  set all_portales sort [id] of nodos with [tipo = "PORT"] 
+  set all_portales sort [id] of nodos with [tipo = "PORT"] ; [421 425 432 446 464 475 492 503 516]
  
  
   setuptrans
@@ -36,8 +37,13 @@ to go
     return-articulado
     give-path
   ]
-  ;if [pcolor] of patch 2 30 = green [stop]
+  if [pcolor] of patch 2 30 = green [
+    setup_transmi_med
+    stop    
+  ]
   state_tm 
+  
+   
   
 
   tick
@@ -82,9 +88,9 @@ to state_tm
   ]
 end
 
-to paint_tm
-  
-end
+;to paint_tm
+;  
+;end
 
 
 ; ===== CORRECCIONES =========

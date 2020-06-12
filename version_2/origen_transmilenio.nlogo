@@ -127,6 +127,28 @@ valor_pasaje
 0
 Number
 
+INPUTBOX
+13
+254
+174
+314
+mid_freq
+0.7
+1
+0
+Number
+
+INPUTBOX
+13
+321
+175
+381
+fast_freq
+0.3
+1
+0
+Number
+
 @#$#@#$#@
 ## WHAT IS IT?
 

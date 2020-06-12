@@ -4,7 +4,7 @@
 to setuptrans
   
   let Portales.id sort [id] of nodos with [tipo = "PORT"]
-  let Portales.who sort [who] of nodos with [tipo = "PORT"]
+  let Portales.who sort [who] of nodos with [tipo = "PORT"] ;[387 391 398 412 430 441 458 469 482]
 
 
   set portalesTo sort [who] of nodos with [tipo = "PORT"]
@@ -33,15 +33,43 @@ to setuptrans
           set portOri nodo m
           set portDest nodo p
           set origen.stop portOri 
-          set name_route word portOri portDest
+          set genes m
+          set apoc p
+        set name_route word [who] of portOri [who] of portDest
         ]
       ])
     ]
-  
+end
 
-       
+to setup_transmi_med
+  let gen_x_route sort [genes] of transmilenio
+  let apoc_x_route sort [apoc] of transmilenio
+  let nameR_x_route sort [name_route] of transmilenio
+  let who_x_route sort [who] of transmilenio
+  
+;  foreach gen_x_route [
+  (foreach (gen_x_route ) (apoc_x_route) (who_x_route )(nameR_x_route) [
+    [g a w n] ->
+    create-t_middle 1 [
+      set shape "truck"
+      set color gray
+      setxy [xcor] of nodo g [ycor] of nodo g
+      set direct "DOWN"     
+      set size 0.6
+      set portOri nodo g
+      set portDest nodo a
+      set origen.stop portOri 
+      set route but-last [path] of articulado w;[];list ("x") (origen.stop)
+      set recorridos 0
+      set name_route n
+      set freq_middle round ((length route) / ((length route) mod (round ((length route) * mid_freq))))
+    ]
+  ])
+  
+  
   
 end
+
 
 
 
@@ -93,7 +121,8 @@ to move-articulado
 ;      face next.stop
 ;      fd 0.2
       ;;;
-      facexy next.stop_x next.stop_y fd distance next.stop
+      facexy next.stop_x next.stop_y 
+      fd distance next.stop
       ifelse [who] of origen.stop < [who] of next.stop 
       [
         set direct "UP"
@@ -103,6 +132,7 @@ to move-articulado
       ]
       set last.stop origen.stop
       set origen.stop next.stop
+      set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
       
     ]
@@ -118,10 +148,12 @@ to move-articulado
 ;      face next.stop
 ;      fd 0.2
       ;;;
-      facexy next.stop_x next.stop_y fd distance next.stop
+      facexy next.stop_x next.stop_y 
+      fd distance next.stop
       set last.stop origen.stop
       set origen.stop next.stop
       set next.stop item 0 [end1] of links with [end2 = origen ]
+      set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
      
     ]
@@ -154,6 +186,7 @@ to move-articulado
       ]
       set last.stop origen.stop
       set origen.stop next.stop
+      set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
 
       
@@ -174,6 +207,7 @@ to move-articulado
       set last.stop origen.stop
       set origen.stop next.stop
       set next.stop item 0 [end2] of links with [end1 = origen ]
+      set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
       
       
@@ -209,6 +243,9 @@ end
 
 to give-path
   ask transmilenio [    
-    set path lput origen.stop path 
+;    set path lput origen.stop path 
+    if portdest = origen.stop and recorridos = 1 [
+      set route path
+    ]
   ]
 end

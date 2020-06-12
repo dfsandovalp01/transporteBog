@@ -2,6 +2,8 @@
 ;; ENTITIES ;;
 ;;;;;;;;;;;;;;
 breed [transmilenio articulado]
+breed [t_middle middle ]
+breed [t_fast fast]
 breed [people person]
 breed [estaciones estacion]
 breed [portales portal]
@@ -20,6 +22,48 @@ transmilenio-own [
   completed
   name_route
   recorridos
+  genes
+  apoc
+  route
+  
+]
+
+t_middle-own [
+  speed
+  speed-limit 
+  speed-min 
+  path 
+  origen.stop  
+  last.stop  
+  next.stop   
+  direct
+  portOri
+  portDest
+  completed
+  name_route
+  recorridos
+  genes
+  apoc
+  route
+  freq_middle
+]
+
+t_fast-own [
+  speed
+  speed-limit 
+  speed-min 
+  path 
+  origen.stop  
+  last.stop  
+  next.stop   
+  direct
+  portOri
+  portDest
+  completed
+  name_route
+  recorridos
+  genesis
+  route
   
 ]
 
