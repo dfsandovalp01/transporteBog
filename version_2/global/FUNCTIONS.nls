@@ -32,16 +32,16 @@ end
 
 to go
 ;  set indice_rec [recorridos] of transmilenio
-  ask transmilenio [
+;  move_middle
+;  ask transmilenio [
     move-articulado
     return-articulado
     give-path
-  ]
-  if [pcolor] of patch 2 30 = green [
-    setup_transmi_med
-    stop    
-  ]
-  state_tm 
+;  ]
+  
+;  if all_routes_ok = "OK" [setup_transmi_med]
+
+  if length [who] of t_middle = 0  [state_tm] 
   
    
   
@@ -77,15 +77,15 @@ to setup-conectores
 end
 
 to state_tm 
-  ask patch 2 30 
-  [
+  
     ifelse [recorridos] of min-one-of (transmilenio) [recorridos] > 0
-    [
-      set pcolor green
-      
+    [      
+      set all_routes_ok "OK"
+      setup_transmi_med
+      ask patch 2 30 [ set pcolor green ]
     ]
     []
-  ]
+  
 end
 
 ;to paint_tm

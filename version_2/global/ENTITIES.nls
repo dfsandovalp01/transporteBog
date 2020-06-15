@@ -64,6 +64,7 @@ t_fast-own [
   recorridos
   genesis
   route
+  freq_fast
   
 ]
 

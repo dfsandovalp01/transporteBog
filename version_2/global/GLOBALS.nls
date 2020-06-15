@@ -11,6 +11,7 @@ globals [
 	time_string
   horas_pico
   indice_rec
+  all_routes_ok
   
    
 ;  portal.norte-x portal.norte-y
