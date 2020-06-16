@@ -35,7 +35,7 @@ to setuptrans
           set origen.stop portOri 
           set genes m
           set apoc p
-        set name_route word [who] of portOri [who] of portDest
+        set name_route word [id] of portOri [id] of portDest
         ]
       ])
     ]
@@ -88,7 +88,7 @@ to setup_transmi_med
       set route []
       set recorridos 0
       set name_route n
-      set freq_fast floor ((length path) / ((length path) mod (floor ((length path) * fast_freq))))
+      set freq_fast round ((length path) / ((length path) mod ( ((length path) * fast_freq))))
       foreach path [
         b ->
         if ((position b path + 1) mod freq_fast) = 0 [

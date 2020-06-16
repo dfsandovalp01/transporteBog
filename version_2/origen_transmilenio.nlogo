@@ -6,6 +6,9 @@ __includes [
   ;BUS
   "bus_code/b_functions.nls"
 
+   ;PERSON
+  "person_code/p_functions.nls"
+
  ; MAPA
   "mapa/globals.nls"
   "mapa/entities.nls"
@@ -19,11 +22,11 @@ __includes [
 GRAPHICS-WINDOW
 328
 13
-712
-398
+1034
+720
 -1
 -1
-11.4
+21.152
 1
 10
 1
@@ -61,7 +64,7 @@ BUTTON
 264
 GO
 go\n;create_csv_new\n;info
-NIL
+T
 1
 T
 OBSERVER
@@ -111,7 +114,7 @@ INPUTBOX
 179
 169
 number_of_people
-100.0
+10.0
 1
 0
 Number
@@ -144,7 +147,7 @@ INPUTBOX
 175
 381
 fast_freq
-0.3
+0.34
 1
 0
 Number

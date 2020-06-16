@@ -7,7 +7,7 @@ to setup-people
     set color magenta
     set size 0.5
 ;    set inicio one-of vertices
-    set llegada one-of vertices
+    set llegada one-of nodos
     set destination place_from_gaussian_mixture 0 0 -1 gm_dest
 		span_from_gaussian_mixture 0 0 -1 gm_org
 ;    set inicio vertex 56
@@ -23,9 +23,9 @@ end
 to move-people ;; lleva a las personas a la estacion mas cercana
   ask people
     [
-      let vertex-to-move min-one-of (vertices) [distance myself]
-      move-to vertex-to-move
-      set inicio vertex-to-move
+      let nodo-to-move min-one-of (nodos) [distance myself]
+      move-to nodo-to-move
+      set inicio nodo-to-move
       
       ifelse any? transmilenio-here = TRUE
 ;      ifelse inicio = [origen.stop] of transmilenio-here
@@ -33,12 +33,25 @@ to move-people ;; lleva a las personas a la estacion mas cercana
 ;        ifelse member? llegada [path] of transmilenio-here; with [origen.stop = inicio] = TRUE 
 ;        [
           set color green
-          user-message (word "SOY " who " Y ESTE ME SIRVE :)")
+          user-message (word "SOY " who " Y ESTE ARTICULADO ME SIRVE :)")
           beep
 ;        ]
-;        []
+;        [
       ]
-      []
+      [ifelse member? llegada [route] of t_middle-here
+        [
+          set color green
+          user-message (word "SOY " who " Y ESTE ME MIDDLE SIRVE :)")
+          beep
+        ]
+        [if member? llegada [route] of t_fast-here
+          [
+            set color green
+            user-message (word "SOY " who " Y ESTE ME FAST SIRVE :)")
+            beep
+          ]
+      ]
     ]
+  ]
   
 end

@@ -77,4 +77,5 @@ people-own [
   llegada
   destination
   current_vertice
+  current_nodo
 ]
