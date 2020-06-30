@@ -92,12 +92,12 @@ NIL
 1
 
 BUTTON
-209
-282
-325
-315
-Ruta_media
-setup_transmi_med
+75
+427
+257
+460
+Transmi_ON_Demand
+setup-tm_on_demand
 NIL
 1
 T

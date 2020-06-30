@@ -12,6 +12,7 @@ globals [
   horas_pico
   indice_rec
   all_routes_ok
+;  on_demand_route
   
    
 ;  portal.norte-x portal.norte-y

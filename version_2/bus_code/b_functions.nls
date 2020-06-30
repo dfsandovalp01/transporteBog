@@ -41,7 +41,7 @@ to setuptrans
     ]
 end
 
-to setup_transmi_med
+to setup_transmi_med_fast
   let gen_x_route sort [genes] of transmilenio
   let apoc_x_route sort [apoc] of transmilenio
   let nameR_x_route sort [name_route] of transmilenio
@@ -59,7 +59,7 @@ to setup_transmi_med
       set portOri nodo [genes] of articulado w
       set portDest nodo [apoc] of articulado w
       set origen.stop portOri 
-      set path but-last [path] of articulado w;[];list ("x") (origen.stop)
+      set path but-last [path] of articulado w
       set route []
       set recorridos 0
       set name_route n
@@ -84,7 +84,7 @@ to setup_transmi_med
       set portOri nodo [genes] of articulado w
       set portDest nodo [apoc] of articulado w
       set origen.stop portOri 
-      set path but-last [path] of articulado w;[];list ("x") (origen.stop)
+      set path but-last [path] of articulado w
       set route []
       set recorridos 0
       set name_route n
@@ -104,6 +104,34 @@ to setup_transmi_med
   
   
   
+end
+
+to setup-tm_on_demand
+  create-t_middle 4 [
+    setxy random-xcor random-ycor
+    set shape "truck"
+    set color yellow
+    set size 0.6
+;    set inicio one-of vertices
+    
+;    setxy [xcor] of portOri [ycor] of portOri
+    set portDest place_from_gaussian_mixture 0 0 -1 gm_dest   
+		span_from_gaussian_mixture 0 0 -1 gm_org
+    set origen.stop current_nodo
+    let on_demand_route []
+    ask transmilenio [if member? (origen.stop) path and member? (portDest) path [set on_demand_route lput name_route on_demand_route ]]
+    let name_route_1 item 0 shuffle on_demand_route    
+    set path [path] of transmilenio with [name_route = name_route_1]
+    set portOri item 0 item 0 path
+    set name_route name_route_1 
+    set route path
+    set recorridos 0
+    set next.stop item (position origen.stop route ) item 1 route 
+    
+;    set inicio vertex 56
+;    set llegada vertex 53
+    
+  ]
 end
 
 
@@ -131,18 +159,10 @@ to move-articulado
     [401	401 401 401 401 401 476	416	416] ;50
     [417	417	417	414	414	414	417	493	504];53
   ]
-;  let connector.path [
-;    [54	57	1	1	1	1	1	1	1] ;0
-;    [10	10	12	16	16	16	13	16	16] ;11
-;    [12	12	61	12	12	12	20	12	12] ;19
-;    [15	15	25	15	15	40	29	40	40] ;26
-;    [18	18	18	68	82	38	38	38	38] ;37
-;    [39	39	40	39	39	100	42	42	42] ;41
-;    [36	36  36  36  36  36  111	51	51] ;50
-;    [52	52	52	49	49	49	52	128	139];53
-;  ]
+
   
   ;;;;;;; ARTICULADOS BAJANDO ;;;;;;;;;;;;;;
+  
   ask transmilenio with [direct = "DOWN"]  
   [
     ifelse member? [id] of origen.stop  connector.id  = TRUE

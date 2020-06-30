@@ -46,6 +46,7 @@ t_middle-own [
   apoc
   route
   freq_middle
+  current_nodo
 ]
 
 t_fast-own [
@@ -65,6 +66,7 @@ t_fast-own [
   genesis
   route
   freq_fast
+  current_nodo
   
 ]
 
