@@ -15,18 +15,18 @@ __includes [
   "mapa/create-graph.nls"
   "mapa/create-graph-tm.nls"
 
-  "../csv/data/export_data.nls"
+;  "../csv/data/export_data.nls"
 
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
 328
 13
-1034
-720
+826
+512
 -1
 -1
-21.152
+14.85
 1
 10
 1
@@ -80,7 +80,7 @@ BUTTON
 318
 83
 SETUP
-setup\nget_date
+setup\n;get_date
 NIL
 1
 T
@@ -94,7 +94,7 @@ NIL
 BUTTON
 75
 427
-257
+272
 460
 Transmi_ON_Demand
 setup-tm_on_demand
@@ -136,7 +136,7 @@ INPUTBOX
 174
 314
 mid_freq
-0.7
+0.56
 1
 0
 Number
@@ -148,6 +148,39 @@ INPUTBOX
 381
 fast_freq
 0.34
+1
+0
+Number
+
+INPUTBOX
+75
+459
+143
+519
+#_middle
+1.0
+1
+0
+Number
+
+INPUTBOX
+143
+459
+209
+519
+#_fast
+0.0
+1
+0
+Number
+
+INPUTBOX
+208
+459
+272
+519
+#_easy
+3.0
 1
 0
 Number

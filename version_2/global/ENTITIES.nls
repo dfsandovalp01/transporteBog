@@ -2,6 +2,7 @@
 ;; ENTITIES ;;
 ;;;;;;;;;;;;;;
 breed [transmilenio articulado]
+breed [t_easy easy ]
 breed [t_middle middle ]
 breed [t_fast fast]
 breed [people person]
@@ -28,6 +29,29 @@ transmilenio-own [
   
 ]
 
+t_easy-own [
+  speed
+  speed-limit 
+  speed-min 
+  path 
+  origen.stop  
+  last.stop  
+  next.stop   
+  direct
+  portOri
+  portDest
+  completed
+  name_route
+  recorridos
+  genes
+  apoc
+  route
+  freq_middle
+  current_nodo
+  optionsRoute
+  
+]
+
 t_middle-own [
   speed
   speed-limit 
@@ -47,6 +71,8 @@ t_middle-own [
   route
   freq_middle
   current_nodo
+  optionsRoute
+  
 ]
 
 t_fast-own [
@@ -67,6 +93,7 @@ t_fast-own [
   route
   freq_fast
   current_nodo
+  optionsRoute
   
 ]
 

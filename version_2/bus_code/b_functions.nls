@@ -35,7 +35,7 @@ to setuptrans
           set origen.stop portOri 
           set genes m
           set apoc p
-        set name_route word [id] of portOri [id] of portDest
+          set name_route word [id] of portOri [id] of portDest
         ]
       ])
     ]
@@ -63,7 +63,8 @@ to setup_transmi_med_fast
       set route []
       set recorridos 0
       set name_route n
-      set freq_middle floor ((length path) / ((length path) mod (floor ((length path) * mid_freq))))
+      set freq_middle floor ((length path) / ((length path) mod (((length path) * mid_freq))))
+;      show freq_middle
       foreach path [
         b ->
         if ((position b path + 1) mod freq_middle) = 0 [
@@ -107,7 +108,7 @@ to setup_transmi_med_fast
 end
 
 to setup-tm_on_demand
-  create-t_middle 4 [
+  create-t_easy #_easy [
     setxy random-xcor random-ycor
     set shape "truck"
     set color yellow
@@ -115,19 +116,37 @@ to setup-tm_on_demand
 ;    set inicio one-of vertices
     
 ;    setxy [xcor] of portOri [ycor] of portOri
-    set portDest place_from_gaussian_mixture 0 0 -1 gm_dest   
+    set od_dest place_from_gaussian_mixture 0 0 -1 gm_dest 
+     
 		span_from_gaussian_mixture 0 0 -1 gm_org
+    set od_ori current_nodo 
+;    set current_nodo
     set origen.stop current_nodo
-    let on_demand_route []
-    ask transmilenio [if member? (origen.stop) path and member? (portDest) path [set on_demand_route lput name_route on_demand_route ]]
+    set on_demand_route [name_route] of transmilenio with [member? od_ori path and member? od_dest path]
+;    ask transmilenio [if member? (current_nodo) path and member? (portDest) path [set on_demand_route lput name_route on_demand_route ]]
     let name_route_1 item 0 shuffle on_demand_route    
-    set path [path] of transmilenio with [name_route = name_route_1]
-    set portOri item 0 item 0 path
+    let whoRouteRef item 0 [who] of transmilenio with [name_route = name_route_1]
+    set path [path] of articulado whoRouteRef
+    set portOri nodo [genes] of articulado whoRouteRef
+    set portDest nodo [apoc] of articulado whoRouteRef
+    set genes od_ori
+    set apoc od_dest
+    set path remove portOri path  set path remove portDest path
+    set path fput portOri path set path lput portDest path
     set name_route name_route_1 
     set route path
-    set recorridos 0
-    set next.stop item (position origen.stop route ) item 1 route 
-    
+    set recorridos 0    
+    ifelse position origen.stop route + 1 >= length route [
+      set next.stop origen.stop
+    ][
+      set next.stop item (position origen.stop route + 1) route
+    ]
+    set od_ori 0
+    set od_dest 0
+    set optionsRoute on_demand_route
+    if length on_demand_route = 0 [user-message (word "bus " who " murio") die ]
+    show who show optionsRoute
+    set on_demand_route 0
 ;    set inicio vertex 56
 ;    set llegada vertex 53
     
@@ -150,10 +169,10 @@ to move-articulado
   let connector.id sort [id] of nodos with [tipo = "ORI"];[0 11 19 26  37 41 50 53] 
   let connector.who sort [who] of nodos with [tipo = "ORI"]
   let connector.path [
-    [419	422	366	366	366	366	366	366	366] ;0
-    [375	375	377	381	381	381	378	381	381] ;11
-    [377	377	426	377	377	377	377	377	377] ;19
-    [380	380	390	380	380	405	394	405	405] ;26
+    [419	422	366	366	366	366	366	366	366] ;366
+    [375	375	377	381	381	381	378	381	381] ;
+    [377	377	426	377	377	377	377	377	377] ;426
+    [380	380	390	380	380	405	394	405	405] ;
     [383	383	383	433	447	403	403	403	403] ;37
     [404	404	405	404	404	465	407	407	407] ;41
     [401	401 401 401 401 401 476	416	416] ;50
@@ -272,6 +291,33 @@ to move-articulado
     set path remove-duplicates path
     
      ]
+ 
+    ;;;;;;; RUTA FACIL;;;;;;;;;;;;;;
+  
+  ask t_easy [
+;    let origen origen.stop      
+;    set next.stop item (position origen route ) route
+    let next.stop_x [xcor] of next.stop
+    let next.stop_y [ycor] of next.stop
+    ;;; PRUEBA
+;      face next.stop
+;      fd 0.2
+    ;;;
+    facexy next.stop_x next.stop_y fd distance next.stop
+;    fd distance next.stop
+;    set heading towards next.stop
+;    forward 1.0E-500
+;		move-to next.stop
+    set last.stop origen.stop
+    set origen.stop next.stop
+;    ifelse portdest != origen.stop [set next.stop item (position next.stop route + 1) route][]
+    ifelse position origen.stop route + 1 >= length route [
+      set next.stop origen.stop
+    ][
+      set next.stop item (position origen.stop route + 1) route
+    ]
+
+  ] 
   
    ;;;;;;; RUTA MEDIA;;;;;;;;;;;;;;
   
@@ -382,6 +428,18 @@ to return-articulado
       set portDest portOri
       set portOri origen.stop
       set direct "DOWN"
+      set recorridos recorridos + 1
+      
+    ]
+    []
+  ]
+  ask t_easy
+  [
+     ifelse portdest = origen.stop
+    [
+      set portDest portOri
+      set portOri origen.stop
+      set route reverse route
       set recorridos recorridos + 1
       
     ]
