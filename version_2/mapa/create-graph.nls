@@ -17,7 +17,7 @@ to setup-importer
 	; read the vertices.csv file and for each line create a vertix (node)
   
   ;====== MAPA COMPLETO =========
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices_brian.csv"
+  file-open "/mapa/base/vertices_brian.csv"
   ;====== SOLO TRANSMILENIO ====================
   ;file-open "streets/verticesPru2.1.csv"
 ;  file-open "streets/new.verticesTOTAL.csv"
@@ -44,7 +44,7 @@ to setup-importer
 	; read the edges.csv file and for each line create a link
 	
   ;============= MAPA COMPLETO ================
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/edges_brian.csv"
+  file-open "/mapa/base/edges_brian.csv"
   ;============= SOLO TRANSMILENIO ===============
   ;file-open "streets/edgesConectores1.csv"
 ;  file-open "streets/new.edgesTOTAL.csv"

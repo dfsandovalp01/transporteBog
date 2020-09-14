@@ -50,6 +50,35 @@ to setup_transmi_med_fast
 ;  foreach gen_x_route [
   (foreach (gen_x_route )(who_x_route )(nameR_x_route) [
     [g w n] ->
+    create-t_easy 1 [
+      set shape "truck"
+      set color yellow
+      setxy [xcor] of nodo g [ycor] of nodo g
+         
+      set size 0.6
+      set portOri nodo [genes] of articulado w
+      set portDest nodo [apoc] of articulado w
+      set origen.stop portOri 
+      set path  [path] of articulado w
+      set route path
+      set recorridos 0
+      set direCt "DOWN"
+      set name_route (word "e" n)
+      set genes [genes] of articulado w
+      set apoc [apoc] of articulado w
+;      set freq_fast round ((length path) / ((length path) mod ( ((length path) * fast_freq))))
+;      foreach path [
+;        b ->
+;        if ((position b path + 1) mod freq_fast) = 0 [
+;          set route lput b route
+;        ]
+;      ]
+      set route fput portOri route
+      set route lput portDest route
+      set route remove-duplicates route
+      if portOri = last path [set path reverse path set route path set route fput portOri route]
+      set next.stop item (position origen.stop route ) route 
+    ]
     create-t_middle 1 [
       set shape "truck"
       set color gray
@@ -62,7 +91,10 @@ to setup_transmi_med_fast
       set path but-last [path] of articulado w
       set route []
       set recorridos 0
-      set name_route n
+      set direCt "DOWN"
+      set name_route (word "m" n)
+      set genes [genes] of articulado w
+      set apoc [apoc] of articulado w
       set freq_middle floor ((length path) / ((length path) mod (((length path) * mid_freq))))
 ;      show freq_middle
       foreach path [
@@ -88,7 +120,10 @@ to setup_transmi_med_fast
       set path but-last [path] of articulado w
       set route []
       set recorridos 0
-      set name_route n
+      set direCt "DOWN"
+      set name_route (word "f" n)
+      set genes [genes] of articulado w
+      set apoc [apoc] of articulado w
       set freq_fast round ((length path) / ((length path) mod ( ((length path) * fast_freq))))
       foreach path [
         b ->
@@ -133,7 +168,7 @@ to setup-tm_on_demand
     set apoc od_dest
     set path remove portOri path  set path remove portDest path
     set path fput portOri path set path lput portDest path
-    set name_route name_route_1 
+    set name_route (name_route_1) 
     set route path
     set recorridos 0    
     ifelse position origen.stop route + 1 >= length route [
@@ -309,13 +344,20 @@ to move-articulado
 ;    forward 1.0E-500
 ;		move-to next.stop
     set last.stop origen.stop
-    set origen.stop next.stop
+    set origen.stop next.stop    
 ;    ifelse portdest != origen.stop [set next.stop item (position next.stop route + 1) route][]
     ifelse position origen.stop route + 1 >= length route [
       set next.stop origen.stop
     ][
       set next.stop item (position origen.stop route + 1) route
     ]
+    ifelse [who] of origen.stop < [who] of next.stop 
+      [
+        set direct "UP"
+      ]
+      [
+        set direct "DOWN"
+      ]
 
   ] 
   
@@ -338,6 +380,13 @@ to move-articulado
     set last.stop origen.stop
     set origen.stop next.stop
     ifelse portdest != origen.stop [set next.stop item (position next.stop route + 1) route][]
+    ifelse [who] of origen.stop < [who] of next.stop 
+      [
+        set direct "UP"
+      ]
+      [
+        set direct "DOWN"
+      ]
 
   ]
     
@@ -360,6 +409,13 @@ to move-articulado
     set last.stop origen.stop
     set origen.stop next.stop
     ifelse portdest != origen.stop [set next.stop item (position next.stop route + 1) route][]
+    ifelse [who] of origen.stop < [who] of next.stop 
+      [
+        set direct "UP"
+      ]
+      [
+        set direct "DOWN"
+      ]
 
   ]
     
@@ -419,6 +475,7 @@ to driver-act
 end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;; RETORNO DE BUSES
 to return-articulado
   ;;; ESTA PARTE DUVUELVE AL ARTICULADO
   ask transmilenio 
@@ -435,7 +492,7 @@ to return-articulado
   ]
   ask t_easy
   [
-     ifelse portdest = origen.stop
+     ifelse portdest = origen.stop ;or portori = next.stop
     [
       set portDest portOri
       set portOri origen.stop

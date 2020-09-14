@@ -89,7 +89,8 @@ t_fast-own [
   completed
   name_route
   recorridos
-  genesis
+  genes
+  apoc
   route
   freq_fast
   current_nodo
@@ -107,4 +108,9 @@ people-own [
   destination
   current_vertice
   current_nodo
+  icu
+  stop_icu
+  top_icu 
+  def_icu
+  my_route
 ]

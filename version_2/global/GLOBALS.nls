@@ -15,6 +15,10 @@ globals [
   on_demand_route
   od_ori
   od_dest
+  all_route_transmilenio
+  all_route_t_easy
+  all_route_t_middle
+  all_route_t_fast
   
    
 ;  portal.norte-x portal.norte-y

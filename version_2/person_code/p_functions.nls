@@ -6,10 +6,10 @@ to setup-people
     set shape "person"
     set color magenta
     set size 0.5
-;    set inicio one-of vertices
-    set llegada one-of nodos
+;    set inicio one-of vertices    
     set destination place_from_gaussian_mixture 0 0 -1 gm_dest
 		span_from_gaussian_mixture 0 0 -1 gm_org
+    set llegada current_nodo
 ;    set inicio vertex 56
 ;    set llegada vertex 53
     
@@ -26,35 +26,198 @@ to move-people ;; lleva a las personas a la estacion mas cercana
       let nodo-to-move min-one-of (nodos) [distance myself]
       move-to nodo-to-move
       set inicio nodo-to-move
-      
-      ifelse any? transmilenio-here = TRUE
-;      ifelse inicio = [origen.stop] of transmilenio-here
-      [
-;        ifelse member? llegada [path] of transmilenio-here; with [origen.stop = inicio] = TRUE 
-;        [
-          set color green
-          user-message (word "SOY " who " Y ESTE ARTICULADO ME SIRVE :)")
-          beep
-;        ]
-;        [
-      ]
-      [ifelse member? llegada [route] of t_middle-here
-        [
-          set color green
-          user-message (word "SOY " who " Y ESTE ME MIDDLE SIRVE :)")
-          beep
-        ]
-        [if member? llegada [route] of t_fast-here
-          [
-            set color green
-            user-message (word "SOY " who " Y ESTE ME FAST SIRVE :)")
-            beep
-          ]
-      ]
-    ]
   ]
   
 end
+
+      
+to take-bus ; personas toman el servicio   
+  ask people
+  [
+    
+    let type_route [
+      "all_route_transmilenio"
+      "all_route_t_easy"
+      "all_route_t_middle"
+      "all_route_t_fast"
+    ]
+    
+;    I Can Use
+    set icu []
+    let icu_e []
+    let icu_m []
+    let icu_f []
+    let max_ori last sort [who] of nodos with [tipo = "ORI"]
+    let d_icu "DOWN"
+    set stop_icu []
+    set top_icu []
+    set def_icu []
+    
+;    if is-empty?
+    ;; listado ruta facil
+    foreach all_route_t_easy [
+      m ->
+      if member? (current_nodo) m and member? (destination) m
+      [
+        if length [name_route] of t_easy with [route = m] != 0 
+        [
+          let p_t_t m
+          ifelse position current_nodo m < position destination m 
+          [
+            set p_t_t length sublist m (position current_nodo m) (position destination m)
+            set stop_icu fput p_t_t stop_icu
+          ]
+          [
+            set p_t_t length sublist m (position destination m) (position (last m) m) +
+                      length sublist m  (position current_nodo m) (position (last m) m)
+            set stop_icu fput p_t_t stop_icu            
+          ] 
+;          set p_t_t
+          set icu fput item 0 [name_route] of t_easy with [route = m] icu
+          set icu remove-duplicates icu
+          set icu_e fput item 0 [name_route] of t_easy with [route = m] icu_e
+          set icu_e remove-duplicates icu_e
+        ]
+      ]
+    ]
+    
+    ;; listado ruta media
+     foreach all_route_t_middle [
+      m ->
+      if member? (current_nodo) m and member? (destination) m
+      [
+        if length [name_route] of t_middle with [route = m] != 0 
+        [
+          let p_t_t m
+          ifelse position current_nodo m < position destination m 
+          [
+            set p_t_t length sublist m (position current_nodo m) (position destination m)
+            set stop_icu fput p_t_t stop_icu
+          ]
+          [
+             set p_t_t length sublist m (position destination m) (position (last m) m) +
+                      length sublist m  (position current_nodo m) (position (last m) m)
+            set stop_icu fput p_t_t stop_icu
+          ] 
+          set icu fput item 0 [name_route] of t_middle with [route = m] icu
+          set icu remove-duplicates icu
+          set icu_m fput item 0 [name_route] of t_middle with [route = m] icu_m
+          set icu_m remove-duplicates icu_m
+        ]
+
+      ]
+    ]
+   
+   ;; listado ruta rapida 
+    foreach all_route_t_fast [
+      m ->
+      if member? (current_nodo) m and member? (destination) m
+      [
+        if length [name_route] of t_fast with [route = m] != 0
+        [
+          let p_t_t m
+          ifelse position current_nodo m < position destination m 
+          [
+            set p_t_t length sublist m (position current_nodo m) (position destination m)
+            set stop_icu fput p_t_t stop_icu
+          ]
+          [
+            set p_t_t length sublist m (position destination m) (position (last m) m) +
+                      length sublist m  (position current_nodo m) (position (last m) m)
+            set stop_icu fput p_t_t stop_icu
+          ] 
+          set icu fput item 0 [name_route] of t_fast with [route = m] icu
+          set icu remove-duplicates icu
+          set icu_f fput item 0 [name_route] of t_fast with [route = m] icu_f
+          set icu_f remove-duplicates icu_f
+        ]
+
+      ]
+    ]
+   
+    ifelse [who] of current_nodo < max_ori
+    [
+      ifelse [who] of destination > [who] of current_nodo 
+      [set d_icu "UP"]
+      [set d_icu "DOWN"]      
+    ]
+    [
+;      ifelse [who] of current_nodo 
+    ]
+
+    
+;   identificando mejor ruta                                                 ERROR AQUI
+    let unique_stop_icu remove-duplicates stop_icu
+    ifelse length unique_stop_icu >= 2 
+    [
+      set top_icu sublist sort unique_stop_icu 0 2
+      (foreach stop_icu icu [
+        [n m] -> 
+        if n = item 0 top_icu or n = item 1 top_icu [set def_icu lput m def_icu] 
+      ])
+    ]
+    [
+      let id_usi item 0 unique_stop_icu
+      set top_icu fput id_usi [] 
+      (foreach stop_icu icu [
+        [n m] -> 
+        if n = item 0 top_icu [set def_icu lput m def_icu] 
+      ])
+    ]      
+    
+;    Select bus to travel
+    foreach def_icu 
+    [
+      r -> 
+      let fast_here []
+      let middle_here []
+      let easy_here []
+      
+      ifelse any? t_fast-on self and length filter [i -> i = r] [name_route] of t_fast-on self != 0
+      [
+        set fast_here filter [i -> i = r] [name_route] of t_fast-on self
+        set my_route item 0 fast_here
+;          user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
+;        die
+      ]
+      [ifelse any? t_middle-on self and length filter [i -> i = r] [name_route] of t_middle-on self != 0
+      [
+          set middle_here filter [i -> i = r] [name_route] of t_middle-on self
+          set my_route item 0 middle_here
+;                    user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
+;        die
+        ]
+      [ifelse any? t_easy-on self and length filter [i -> i = r] [name_route] of t_easy-on self != 0
+        [
+          set easy_here filter [i -> i = r] [name_route] of t_easy-on self
+          set my_route item 0 easy_here
+;                      user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
+;        die
+          ]
+        [] ] ]
+      
+    ]
+    
+
+  ]
+  
+  
+   
+  
+end
+
+;to get-in
+;	set_state_person 2
+;	hide-turtle
+;end
+;
+;to get-out
+;	set_state_person 0
+;	set current_vertice destination
+;	move-to destination
+;	show-turtle
+;end
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; APLICANDO DISTRIBUCION GAUSIANA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

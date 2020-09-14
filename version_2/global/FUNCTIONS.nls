@@ -43,6 +43,8 @@ to go
     move-articulado
     return-articulado
     give-path
+    if all_routes_ok = "OK" [take-bus]
+    
 
 
   if length [who] of t_middle = 0  [state_tm] 
@@ -87,16 +89,15 @@ to state_tm
       set all_routes_ok "OK"
       setup_transmi_med_fast
       ask patch 2 30 [ set pcolor green ]
+      ask transmilenio [set route path]
+      set all_route_transmilenio [route] of transmilenio
+      set all_route_t_easy [route] of t_easy
+      set all_route_t_middle [route] of t_middle
+      set all_route_t_fast [route] of t_fast
     ]
     []
   
 end
-
-;to paint_tm
-;  
-;end
-
-
 
 
 ; ===== CORRECCIONES =========

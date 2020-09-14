@@ -16,7 +16,7 @@
 #### IMPORTANDO DATOS Y DERIVANDO ESTACIONES, PORTALES Y CONECTORES(ORIGENES) ####
 {
   # edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/streets/edges (copia).csv", header = F)  %>%
-    edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_1/mapa/base/edges.csv", header = F)  %>%
+         edges1 <- read.csv("/home/dfsandovalp/WORK/transporteBog/version_1/mapa/base/edges.csv", header = F)  %>%
     mutate(#V6 = paste(V2,"-",V3, sep = ""),
       #V7 = paste(V3,"-",V2, sep = ""),
       V2 = as.character(V2),
