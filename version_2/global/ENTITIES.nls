@@ -30,9 +30,12 @@ transmilenio-own [
 ]
 
 t_easy-own [
-  speed
-  speed-limit 
-  speed-min 
+;  speed
+;  speed-limit 
+;  speed-min 
+  pass_capacity
+  on_board
+  cap_status ;capacity status
   path 
   origen.stop  
   last.stop  
@@ -53,9 +56,12 @@ t_easy-own [
 ]
 
 t_middle-own [
-  speed
-  speed-limit 
-  speed-min 
+;  speed
+;  speed-limit 
+;  speed-min 
+  pass_capacity
+  on_board
+  cap_status ;capacity status
   path 
   origen.stop  
   last.stop  
@@ -76,9 +82,12 @@ t_middle-own [
 ]
 
 t_fast-own [
-  speed
-  speed-limit 
-  speed-min 
+;  speed
+;  speed-limit 
+;  speed-min 
+  pass_capacity
+  on_board
+  cap_status ;capacity status
   path 
   origen.stop  
   last.stop  

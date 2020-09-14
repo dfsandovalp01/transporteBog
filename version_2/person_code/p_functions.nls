@@ -43,167 +43,206 @@ to take-bus ; personas toman el servicio
     ]
     
 ;    I Can Use
-    set icu []
+
     let icu_e []
     let icu_m []
     let icu_f []
     let max_ori last sort [who] of nodos with [tipo = "ORI"]
     let d_icu "DOWN"
-    set stop_icu []
-    set top_icu []
-    set def_icu []
-    
-;    if is-empty?
-    ;; listado ruta facil
-    foreach all_route_t_easy [
-      m ->
-      if member? (current_nodo) m and member? (destination) m
-      [
-        if length [name_route] of t_easy with [route = m] != 0 
+
+;    if empty, search routes
+    if icu = 0[
+      set icu []
+      set stop_icu []
+      set top_icu []
+      set def_icu []
+      ;; lis easy route
+      foreach all_route_t_easy [
+        m ->
+        if member? (current_nodo) m and member? (destination) m
         [
-          let p_t_t m
-          ifelse position current_nodo m < position destination m 
+          if length [name_route] of t_easy with [route = m] != 0 
           [
-            set p_t_t length sublist m (position current_nodo m) (position destination m)
-            set stop_icu fput p_t_t stop_icu
+            let p_t_t m
+            ifelse position current_nodo m < position destination m 
+            [
+              set p_t_t length sublist m (position current_nodo m) (position destination m)
+              set stop_icu fput p_t_t stop_icu
+            ]
+            [
+              set p_t_t length sublist m (position destination m) (position (last m) m) +
+              length sublist m  (position current_nodo m) (position (last m) m)
+              set stop_icu fput p_t_t stop_icu            
+            ] 
+            ;          set p_t_t
+            set icu fput item 0 [name_route] of t_easy with [route = m] icu
+            set icu remove-duplicates icu
+            set icu_e fput item 0 [name_route] of t_easy with [route = m] icu_e
+            set icu_e remove-duplicates icu_e
           ]
-          [
-            set p_t_t length sublist m (position destination m) (position (last m) m) +
-                      length sublist m  (position current_nodo m) (position (last m) m)
-            set stop_icu fput p_t_t stop_icu            
-          ] 
-;          set p_t_t
-          set icu fput item 0 [name_route] of t_easy with [route = m] icu
-          set icu remove-duplicates icu
-          set icu_e fput item 0 [name_route] of t_easy with [route = m] icu_e
-          set icu_e remove-duplicates icu_e
         ]
       ]
-    ]
-    
-    ;; listado ruta media
-     foreach all_route_t_middle [
-      m ->
-      if member? (current_nodo) m and member? (destination) m
-      [
-        if length [name_route] of t_middle with [route = m] != 0 
+      
+      ;; listado ruta media
+      foreach all_route_t_middle [
+        m ->
+        if member? (current_nodo) m and member? (destination) m
         [
-          let p_t_t m
-          ifelse position current_nodo m < position destination m 
+          if length [name_route] of t_middle with [route = m] != 0 
           [
-            set p_t_t length sublist m (position current_nodo m) (position destination m)
-            set stop_icu fput p_t_t stop_icu
+            let p_t_t m
+            ifelse position current_nodo m < position destination m 
+            [
+              set p_t_t length sublist m (position current_nodo m) (position destination m)
+              set stop_icu fput p_t_t stop_icu
+            ]
+            [
+              set p_t_t length sublist m (position destination m) (position (last m) m) +
+              length sublist m  (position current_nodo m) (position (last m) m)
+              set stop_icu fput p_t_t stop_icu
+            ] 
+            set icu fput item 0 [name_route] of t_middle with [route = m] icu
+            set icu remove-duplicates icu
+            set icu_m fput item 0 [name_route] of t_middle with [route = m] icu_m
+            set icu_m remove-duplicates icu_m
           ]
-          [
-             set p_t_t length sublist m (position destination m) (position (last m) m) +
-                      length sublist m  (position current_nodo m) (position (last m) m)
-            set stop_icu fput p_t_t stop_icu
-          ] 
-          set icu fput item 0 [name_route] of t_middle with [route = m] icu
-          set icu remove-duplicates icu
-          set icu_m fput item 0 [name_route] of t_middle with [route = m] icu_m
-          set icu_m remove-duplicates icu_m
+          
         ]
-
       ]
-    ]
-   
-   ;; listado ruta rapida 
-    foreach all_route_t_fast [
-      m ->
-      if member? (current_nodo) m and member? (destination) m
-      [
-        if length [name_route] of t_fast with [route = m] != 0
+      
+      ;; listado ruta rapida 
+      foreach all_route_t_fast [
+        m ->
+        if member? (current_nodo) m and member? (destination) m
         [
-          let p_t_t m
-          ifelse position current_nodo m < position destination m 
+          if length [name_route] of t_fast with [route = m] != 0
           [
-            set p_t_t length sublist m (position current_nodo m) (position destination m)
-            set stop_icu fput p_t_t stop_icu
+            let p_t_t m
+            ifelse position current_nodo m < position destination m 
+            [
+              set p_t_t length sublist m (position current_nodo m) (position destination m)
+              set stop_icu fput p_t_t stop_icu
+            ]
+            [
+              set p_t_t length sublist m (position destination m) (position (last m) m) +
+              length sublist m  (position current_nodo m) (position (last m) m)
+              set stop_icu fput p_t_t stop_icu
+            ] 
+            set icu fput item 0 [name_route] of t_fast with [route = m] icu
+            set icu remove-duplicates icu
+            set icu_f fput item 0 [name_route] of t_fast with [route = m] icu_f
+            set icu_f remove-duplicates icu_f
           ]
-          [
-            set p_t_t length sublist m (position destination m) (position (last m) m) +
-                      length sublist m  (position current_nodo m) (position (last m) m)
-            set stop_icu fput p_t_t stop_icu
-          ] 
-          set icu fput item 0 [name_route] of t_fast with [route = m] icu
-          set icu remove-duplicates icu
-          set icu_f fput item 0 [name_route] of t_fast with [route = m] icu_f
-          set icu_f remove-duplicates icu_f
+          
         ]
-
       ]
-    ]
-   
-    ifelse [who] of current_nodo < max_ori
-    [
-      ifelse [who] of destination > [who] of current_nodo 
-      [set d_icu "UP"]
-      [set d_icu "DOWN"]      
-    ]
-    [
-;      ifelse [who] of current_nodo 
-    ]
+      
+      if empty? icu [user-message (word "soy " who " y no me sirve nada >:(")];evaluate points without coverage
+    
+    
+    
+;; validating customer direction   
+;    ifelse [who] of current_nodo < max_ori
+;    [
+;      ifelse [who] of destination > [who] of current_nodo 
+;      [set d_icu "UP"]
+;      [set d_icu "DOWN"]      
+;    ]
+;    [
+;;      ifelse [who] of current_nodo 
+;    ]
 
     
-;   identificando mejor ruta                                                 ERROR AQUI
+;   identifying best route (suprime direction)                                                 
     let unique_stop_icu remove-duplicates stop_icu
     ifelse length unique_stop_icu >= 2 
     [
       set top_icu sublist sort unique_stop_icu 0 2
       (foreach stop_icu icu [
         [n m] -> 
-        if n = item 0 top_icu or n = item 1 top_icu [set def_icu lput m def_icu] 
+;        if n = item 0 top_icu or n = item 1 top_icu [set def_icu lput m def_icu]
+        if member? n top_icu [set def_icu lput m def_icu]
       ])
     ]
-    [
-      let id_usi item 0 unique_stop_icu
-      set top_icu fput id_usi [] 
-      (foreach stop_icu icu [
+    [ifelse empty? unique_stop_icu 
+      [
+        user-message (word "soy " who " no pasa ninguno >:(")
+      ]
+      [
+        let id_usi item 0 unique_stop_icu ;; error
+        set top_icu fput id_usi [] 
+        (foreach stop_icu icu [
         [n m] -> 
         if n = item 0 top_icu [set def_icu lput m def_icu] 
       ])
-    ]      
+      ]
+      
+    ]
+    ]; end validation empty icu      
     
 ;    Select bus to travel
-    foreach def_icu 
+    select-bus
+    
+
+;    let bus_leave 0
+;    let bsb item 1 my_route ;breed_selected_bus 
+;    let nsb item 0 my_route;name_selected_bus 
+;
+;      
+;
+    if [cap_status] of my_route = "empty" [user-message (word "Me pude subir :D")   ]
+    
+    
+
+  ]
+  
+end
+
+;   -------------------------- Select bus to travel ---------------------------
+to select-bus
+  foreach def_icu 
     [
       r -> 
       let fast_here []
       let middle_here []
       let easy_here []
       
-      ifelse any? t_fast-on self and length filter [i -> i = r] [name_route] of t_fast-on self != 0
+      ifelse any? t_fast-on self AND length filter [i -> i = r] [name_route] of t_fast-on self != 0 
       [
         set fast_here filter [i -> i = r] [name_route] of t_fast-on self
-        set my_route item 0 fast_here
+;        set my_route lput item 0 fast_here []
+;        set my_route lput (word item 0 [breed] of t_fast with [name_route = item 0 fast_here]) my_route
+        set my_route turtle item 0 [who] of t_fast with [name_route = item 0 fast_here]
 ;          user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
 ;        die
+        
+;        hide-turtle
       ]
-      [ifelse any? t_middle-on self and length filter [i -> i = r] [name_route] of t_middle-on self != 0
+      [ifelse any? t_middle-on self AND length filter [i -> i = r] [name_route] of t_middle-on self != 0
       [
           set middle_here filter [i -> i = r] [name_route] of t_middle-on self
-          set my_route item 0 middle_here
+;          set my_route lput item 0 middle_here []
+;        set my_route lput (word item 0 [breed] of t_middle with [name_route = item 0 middle_here]) my_route
+           set my_route turtle item 0 [who] of t_middle with [name_route = item 0 middle_here]
 ;                    user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
 ;        die
+;          hide-turtle
         ]
-      [ifelse any? t_easy-on self and length filter [i -> i = r] [name_route] of t_easy-on self != 0
+      [ifelse any? t_easy-on self AND length filter [i -> i = r] [name_route] of t_easy-on self != 0
         [
           set easy_here filter [i -> i = r] [name_route] of t_easy-on self
-          set my_route item 0 easy_here
+;            set my_route lput item 0 easy_here []
+;        set my_route lput (word item 0 [breed] of t_easy with [name_route = item 0 easy_here]) my_route
+           set my_route turtle item 0 [who] of t_easy with [name_route = item 0 easy_here]
 ;                      user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
 ;        die
+;            hide-turtle
           ]
         [] ] ]
       
     ]
+  if my_route = 0 [user-message (word "soy " who " y no me sirve nada >:(")];evaluate points without coverage
     
-
-  ]
-  
-  
-   
-  
 end
 
 ;to get-in

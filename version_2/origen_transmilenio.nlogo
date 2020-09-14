@@ -46,17 +46,6 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
-INPUTBOX
-16
-21
-177
-81
-cant_cuadrillas
-0.0
-1
-0
-Number
-
 BUTTON
 202
 107
@@ -109,21 +98,21 @@ NIL
 1
 
 INPUTBOX
-17
-109
-179
-169
+16
+80
+178
+140
 number_of_people
-10.0
+100.0
 1
 0
 Number
 
 INPUTBOX
 16
-184
+139
 177
-244
+199
 valor_pasaje
 0.0
 1
@@ -131,10 +120,10 @@ valor_pasaje
 Number
 
 INPUTBOX
-13
-254
-174
-314
+16
+198
+102
+258
 mid_freq
 0.56
 1
@@ -142,10 +131,10 @@ mid_freq
 Number
 
 INPUTBOX
-13
-321
-175
-381
+98
+198
+180
+258
 fast_freq
 0.34
 1
@@ -180,6 +169,17 @@ INPUTBOX
 272
 519
 #_easy
+3.0
+1
+0
+Number
+
+INPUTBOX
+16
+22
+178
+82
+bus_capacity
 3.0
 1
 0
@@ -527,7 +527,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.0.4
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

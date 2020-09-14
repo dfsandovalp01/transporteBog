@@ -54,7 +54,8 @@ to setup_transmi_med_fast
       set shape "truck"
       set color yellow
       setxy [xcor] of nodo g [ycor] of nodo g
-         
+      set pass_capacity bus_capacity
+      set cap_status "empty";capacity status   
       set size 0.6
       set portOri nodo [genes] of articulado w
       set portDest nodo [apoc] of articulado w
@@ -63,7 +64,7 @@ to setup_transmi_med_fast
       set route path
       set recorridos 0
       set direCt "DOWN"
-      set name_route (word "e" n)
+      set name_route (word "e" n "-" who)
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
 ;      set freq_fast round ((length path) / ((length path) mod ( ((length path) * fast_freq))))
@@ -83,7 +84,8 @@ to setup_transmi_med_fast
       set shape "truck"
       set color gray
       setxy [xcor] of nodo g [ycor] of nodo g
-         
+      set pass_capacity bus_capacity   
+      set cap_status "empty";capacity status
       set size 0.6
       set portOri nodo [genes] of articulado w
       set portDest nodo [apoc] of articulado w
@@ -92,7 +94,7 @@ to setup_transmi_med_fast
       set route []
       set recorridos 0
       set direCt "DOWN"
-      set name_route (word "m" n)
+      set name_route (word "m" n "-" who)
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
       set freq_middle floor ((length path) / ((length path) mod (((length path) * mid_freq))))
@@ -112,7 +114,8 @@ to setup_transmi_med_fast
       set shape "truck"
       set color green
       setxy [xcor] of nodo g [ycor] of nodo g
-         
+      set pass_capacity bus_capacity   
+      set cap_status "empty";capacity status
       set size 0.6
       set portOri nodo [genes] of articulado w
       set portDest nodo [apoc] of articulado w
@@ -121,7 +124,7 @@ to setup_transmi_med_fast
       set route []
       set recorridos 0
       set direCt "DOWN"
-      set name_route (word "f" n)
+      set name_route (word "f" n "-" who)
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
       set freq_fast round ((length path) / ((length path) mod ( ((length path) * fast_freq))))
@@ -149,7 +152,8 @@ to setup-tm_on_demand
     set color yellow
     set size 0.6
 ;    set inicio one-of vertices
-    
+    set pass_capacity bus_capacity   
+    set cap_status "empty";capacity status
 ;    setxy [xcor] of portOri [ycor] of portOri
     set od_dest place_from_gaussian_mixture 0 0 -1 gm_dest 
      
