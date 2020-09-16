@@ -36,6 +36,7 @@ t_easy-own [
   pass_capacity
   on_board
   cap_status ;capacity status
+  id_pass
   path 
   origen.stop  
   last.stop  
@@ -62,6 +63,7 @@ t_middle-own [
   pass_capacity
   on_board
   cap_status ;capacity status
+  id_pass
   path 
   origen.stop  
   last.stop  
@@ -88,6 +90,7 @@ t_fast-own [
   pass_capacity
   on_board
   cap_status ;capacity status
+  id_pass
   path 
   origen.stop  
   last.stop  
@@ -122,4 +125,5 @@ people-own [
   top_icu 
   def_icu
   my_route
+  traveling
 ]

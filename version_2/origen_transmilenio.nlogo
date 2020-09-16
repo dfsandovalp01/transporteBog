@@ -47,10 +47,10 @@ ticks
 30.0
 
 BUTTON
-202
-107
-317
-264
+200
+81
+315
+238
 GO
 go\n;create_csv_new\n;info
 T
@@ -103,7 +103,7 @@ INPUTBOX
 178
 140
 number_of_people
-100.0
+50.0
 1
 0
 Number
@@ -184,6 +184,78 @@ bus_capacity
 1
 0
 Number
+
+BUTTON
+62
+306
+213
+339
+Show-name-stop
+ifelse show-name-stop = true \n[ask nodos [set label who]]\n[ask nodos [set label \"\"]]
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SWITCH
+72
+356
+247
+389
+show-name-stop
+show-name-stop
+0
+1
+-1000
+
+MONITOR
+17
+259
+74
+304
+people
+length [who] of people
+17
+1
+11
+
+MONITOR
+73
+259
+146
+304
+Full_easy
+length [who] of t_easy with [cap_status = \"full\"]
+17
+1
+11
+
+MONITOR
+146
+259
+232
+304
+Full_middle
+length [who] of t_middle with [cap_status = \"full\"]
+17
+1
+11
+
+MONITOR
+232
+259
+299
+304
+Full_fast
+length [who] of t_fast with [cap_status = \"full\"]
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

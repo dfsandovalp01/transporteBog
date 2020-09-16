@@ -6,13 +6,23 @@ to setup-people
     set shape "person"
     set color magenta
     set size 0.5
-;    set inicio one-of vertices    
+    set traveling "no" 
     set destination place_from_gaussian_mixture 0 0 -1 gm_dest
 		span_from_gaussian_mixture 0 0 -1 gm_org
-    set llegada current_nodo
-;    set inicio vertex 56
-;    set llegada vertex 53
-    
+    set llegada current_nodo    
+  ]
+end
+
+to setup-people-new
+  create-people 1 [
+    setxy random-xcor random-ycor
+    set shape "person"
+    set color magenta
+    set size 0.5
+    set traveling "no" 
+    set destination place_from_gaussian_mixture 0 0 -1 gm_dest
+		span_from_gaussian_mixture 0 0 -1 gm_org
+    set llegada current_nodo    
   ]
 end
 
@@ -35,19 +45,82 @@ to take-bus ; personas toman el servicio
   ask people
   [
     
-    let type_route [
-      "all_route_transmilenio"
-      "all_route_t_easy"
-      "all_route_t_middle"
-      "all_route_t_fast"
+;    I Can Use
+    identifying-two-best-routes
+ 
+    
+;    Select bus to travel
+    if traveling = "no" [select-bus]
+    
+;      
+;   evaluating bus capacity 
+    if my_route != 0 [
+      if [cap_status] of my_route = "empty" 
+      [
+        if traveling = "no" 
+        [
+          ask my_route [
+            set on_board (on_board + 1)
+            set id_pass lput who id_pass
+          ]
+          set traveling "yes" 
+;          user-message (word "Me pude subir al " my_route " :D")
+        ]
+        
+        
+        hide-turtle
+      ]
+        if [origen.stop] of my_route = destination 
+        [
+          move-to destination
+          show-turtle
+          user-message (word "Llegue1 :D")
+          ask my_route [
+            set on_board (on_board - 1)
+            set id_pass remove who id_pass
+;            user-message (word "Llegue3 :D")
+          ]
+;          setup-people-new
+          die
+;          set destination place_from_gaussian_mixture 0 0 -1 gm_dest
+;          set llegada current_nodo
+;          set traveling "no" 
+;          set icu 0
+;          set my_route 0
+;          identifying-two-best-routes
+;          select-bus
+;          user-message (word "Llegue2 :D")
+        ]  
+        
+      
     ]
     
-;    I Can Use
+    
 
-    let icu_e []
+  ]
+  
+end
+
+;to get-in
+;	set_state_person 2
+;	hide-turtle
+;end
+;
+;to get-out
+;	set_state_person 0
+;	set current_vertice destination
+;	move-to destination
+;	show-turtle
+;end
+
+;   -------------------------- Select bus to travel ---------------------------
+
+
+to identifying-two-best-routes
+      let icu_e []
     let icu_m []
     let icu_f []
-    let max_ori last sort [who] of nodos with [tipo = "ORI"]
+;    let max_ori last sort [who] of nodos with [tipo = "ORI"]
     let d_icu "DOWN"
 
 ;    if empty, search routes
@@ -137,21 +210,8 @@ to take-bus ; personas toman el servicio
         ]
       ]
       
-      if empty? icu [user-message (word "soy " who " y no me sirve nada >:(")];evaluate points without coverage
+      if empty? icu [user-message (word "soy " who " y no me sirve nada >:( icu")];evaluate points without coverage
     
-    
-    
-;; validating customer direction   
-;    ifelse [who] of current_nodo < max_ori
-;    [
-;      ifelse [who] of destination > [who] of current_nodo 
-;      [set d_icu "UP"]
-;      [set d_icu "DOWN"]      
-;    ]
-;    [
-;;      ifelse [who] of current_nodo 
-;    ]
-
     
 ;   identifying best route (suprime direction)                                                 
     let unique_stop_icu remove-duplicates stop_icu
@@ -169,7 +229,7 @@ to take-bus ; personas toman el servicio
         user-message (word "soy " who " no pasa ninguno >:(")
       ]
       [
-        let id_usi item 0 unique_stop_icu ;; error
+        let id_usi item 0 unique_stop_icu ;; 
         set top_icu fput id_usi [] 
         (foreach stop_icu icu [
         [n m] -> 
@@ -178,27 +238,10 @@ to take-bus ; personas toman el servicio
       ]
       
     ]
-    ]; end validation empty icu      
-    
-;    Select bus to travel
-    select-bus
-    
-
-;    let bus_leave 0
-;    let bsb item 1 my_route ;breed_selected_bus 
-;    let nsb item 0 my_route;name_selected_bus 
-;
-;      
-;
-    if [cap_status] of my_route = "empty" [user-message (word "Me pude subir :D")   ]
-    
-    
-
-  ]
-  
+    ]; end validation empty icu     
 end
 
-;   -------------------------- Select bus to travel ---------------------------
+
 to select-bus
   foreach def_icu 
     [
@@ -241,21 +284,11 @@ to select-bus
         [] ] ]
       
     ]
-  if my_route = 0 [user-message (word "soy " who " y no me sirve nada >:(")];evaluate points without coverage
+;  if my_route != 0 [user-message (word "soy " who " y no me sirve nada >:(")];evaluate points without coverage
     
 end
 
-;to get-in
-;	set_state_person 2
-;	hide-turtle
-;end
-;
-;to get-out
-;	set_state_person 0
-;	set current_vertice destination
-;	move-to destination
-;	show-turtle
-;end
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; APLICANDO DISTRIBUCION GAUSIANA ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

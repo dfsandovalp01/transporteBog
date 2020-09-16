@@ -55,6 +55,8 @@ to setup_transmi_med_fast
       set color yellow
       setxy [xcor] of nodo g [ycor] of nodo g
       set pass_capacity bus_capacity
+      set on_board 0
+      set id_pass []
       set cap_status "empty";capacity status   
       set size 0.6
       set portOri nodo [genes] of articulado w
@@ -85,6 +87,8 @@ to setup_transmi_med_fast
       set color gray
       setxy [xcor] of nodo g [ycor] of nodo g
       set pass_capacity bus_capacity   
+      set on_board 0
+      set id_pass []
       set cap_status "empty";capacity status
       set size 0.6
       set portOri nodo [genes] of articulado w
@@ -115,6 +119,8 @@ to setup_transmi_med_fast
       set color green
       setxy [xcor] of nodo g [ycor] of nodo g
       set pass_capacity bus_capacity   
+      set on_board 0
+      set id_pass []
       set cap_status "empty";capacity status
       set size 0.6
       set portOri nodo [genes] of articulado w
@@ -362,6 +368,7 @@ to move-articulado
       [
         set direct "DOWN"
       ]
+    ability-level
 
   ] 
   
@@ -391,6 +398,7 @@ to move-articulado
       [
         set direct "DOWN"
       ]
+    ability-level
 
   ]
     
@@ -420,6 +428,7 @@ to move-articulado
       [
         set direct "DOWN"
       ]
+    ability-level
 
   ]
     
@@ -532,6 +541,10 @@ to return-articulado
   ]
 end
 
+
+to ability-level
+  ifelse  pass_capacity = on_board [set cap_status "full"][set cap_status "empty"]
+end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; IDENTIFICANDO CAMINOS ;;;;;;;;;;;;;;;;;;;;;;
 
 to give-path
