@@ -16,7 +16,7 @@ to setup
   
 
   
-  set all_portales sort [id] of nodos with [tipo = "PORT"] ; [421 425 432 446 464 475 492 503 516]
+  set all_portals sort [id] of nodos with [tipo = "PORT"] ; [421 425 432 446 464 475 492 503 516]
   
   set prob_of_service read_table "distributions/prob.csv"
 	set gm_org read_gm "distributions/org.csv"

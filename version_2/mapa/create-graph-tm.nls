@@ -15,8 +15,8 @@ to setup-importer-tm
 	; read the vertices.csv file and for each line create a vertix (node)
   
   ;====== MAPA COMPLETO =========
-;  file-open "/mapa/transmilenio/elevado/vertices_e.csv"
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/vertices_e.csv"; La Maquina
+  file-open "/mapa/transmilenio/elevado/vertices_e.csv"
+;  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/vertices_e.csv"; La Maquina
   ;====== SOLO TRANSMILENIO ====================
   ;file-open "streets/verticesPru2.1.csv"
 ;  file-open "streets/new.verticesTOTAL.csv"
@@ -43,8 +43,8 @@ to setup-importer-tm
 	; read the edges.csv file and for each line create a link
 	
   ;============= MAPA COMPLETO ================
-;  file-open "/mapa/transmilenio/elevado/edges_e.csv"
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/edges_e.csv"; La Maquina
+  file-open "/mapa/transmilenio/elevado/edges_e.csv"
+;  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/transmilenio/elevado/edges_e.csv"; La Maquina
   ;============= SOLO TRANSMILENIO ===============
   ;file-open "streets/edgesConectores1.csv"
 ;  file-open "streets/new.edgesTOTAL.csv"

@@ -9,7 +9,7 @@ to setup-people
     set traveling "no" 
     set destination place_from_gaussian_mixture 0 0 -1 gm_dest
 		span_from_gaussian_mixture 0 0 -1 gm_org
-    set llegada current_nodo    
+    set llegada current_node    
   ]
 end
 
@@ -22,7 +22,7 @@ to setup-people-new
     set traveling "no" 
     set destination place_from_gaussian_mixture 0 0 -1 gm_dest
 		span_from_gaussian_mixture 0 0 -1 gm_org
-    set llegada current_nodo    
+    set llegada current_node    
   ]
 end
 
@@ -74,7 +74,7 @@ to take-bus ; personas toman el servicio
         [
           move-to destination
           show-turtle
-          user-message (word "Llegue1 :D")
+;          user-message (word "Llegue1 :D")
           ask my_route [
             set on_board (on_board - 1)
             set id_pass remove who id_pass
@@ -83,7 +83,7 @@ to take-bus ; personas toman el servicio
 ;          setup-people-new
           die
 ;          set destination place_from_gaussian_mixture 0 0 -1 gm_dest
-;          set llegada current_nodo
+;          set llegada current_node
 ;          set traveling "no" 
 ;          set icu 0
 ;          set my_route 0
@@ -132,19 +132,19 @@ to identifying-two-best-routes
       ;; lis easy route
       foreach all_route_t_easy [
         m ->
-        if member? (current_nodo) m and member? (destination) m
+        if member? (current_node) m and member? (destination) m
         [
           if length [name_route] of t_easy with [route = m] != 0 
           [
             let p_t_t m
-            ifelse position current_nodo m < position destination m 
+            ifelse position current_node m < position destination m 
             [
-              set p_t_t length sublist m (position current_nodo m) (position destination m)
+              set p_t_t length sublist m (position current_node m) (position destination m)
               set stop_icu fput p_t_t stop_icu
             ]
             [
               set p_t_t length sublist m (position destination m) (position (last m) m) +
-              length sublist m  (position current_nodo m) (position (last m) m)
+              length sublist m  (position current_node m) (position (last m) m)
               set stop_icu fput p_t_t stop_icu            
             ] 
             ;          set p_t_t
@@ -159,19 +159,19 @@ to identifying-two-best-routes
       ;; listado ruta media
       foreach all_route_t_middle [
         m ->
-        if member? (current_nodo) m and member? (destination) m
+        if member? (current_node) m and member? (destination) m
         [
           if length [name_route] of t_middle with [route = m] != 0 
           [
             let p_t_t m
-            ifelse position current_nodo m < position destination m 
+            ifelse position current_node m < position destination m 
             [
-              set p_t_t length sublist m (position current_nodo m) (position destination m)
+              set p_t_t length sublist m (position current_node m) (position destination m)
               set stop_icu fput p_t_t stop_icu
             ]
             [
               set p_t_t length sublist m (position destination m) (position (last m) m) +
-              length sublist m  (position current_nodo m) (position (last m) m)
+              length sublist m  (position current_node m) (position (last m) m)
               set stop_icu fput p_t_t stop_icu
             ] 
             set icu fput item 0 [name_route] of t_middle with [route = m] icu
@@ -186,19 +186,19 @@ to identifying-two-best-routes
       ;; listado ruta rapida 
       foreach all_route_t_fast [
         m ->
-        if member? (current_nodo) m and member? (destination) m
+        if member? (current_node) m and member? (destination) m
         [
           if length [name_route] of t_fast with [route = m] != 0
           [
             let p_t_t m
-            ifelse position current_nodo m < position destination m 
+            ifelse position current_node m < position destination m 
             [
-              set p_t_t length sublist m (position current_nodo m) (position destination m)
+              set p_t_t length sublist m (position current_node m) (position destination m)
               set stop_icu fput p_t_t stop_icu
             ]
             [
               set p_t_t length sublist m (position destination m) (position (last m) m) +
-              length sublist m  (position current_nodo m) (position (last m) m)
+              length sublist m  (position current_node m) (position (last m) m)
               set stop_icu fput p_t_t stop_icu
             ] 
             set icu fput item 0 [name_route] of t_fast with [route = m] icu
@@ -395,7 +395,7 @@ end
 
 to span_from_gaussian_mixture [ m n threshold dists ]
 	let nodo-to-move place_from_gaussian_mixture 0 0 -1 dists
-	set current_nodo nodo-to-move
+	set current_node nodo-to-move
 	move-to nodo-to-move
 end
 ; -----------------------------------------------------------

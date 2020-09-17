@@ -2,8 +2,8 @@
 ;; GLOBALS ;;
 ;;;;;;;;;;;;;
 globals [
-  all_portales
-  portalesTo
+  all_portals
+  portals_to
   prob_of_service
 	gm_org
 	gm_dest

@@ -3,14 +3,14 @@
 
 to setuptrans
   
-  let Portales.id sort [id] of nodos with [tipo = "PORT"]
-  let Portales.who sort [who] of nodos with [tipo = "PORT"] ;[387 391 398 412 430 441 458 469 482]
+  let portals_id sort [id] of nodos with [tipo = "PORT"]
+  let portals_who sort [who] of nodos with [tipo = "PORT"] ;[387 391 398 412 430 441 458 469 482]
 
 
-  set portalesTo sort [who] of nodos with [tipo = "PORT"]
+  set portals_to sort [who] of nodos with [tipo = "PORT"]
   
-  foreach Portales.who [ 
-    n -> create-transmilenio length all_portales - 1 [
+  foreach portals_who [ 
+    n -> create-transmilenio length all_portals - 1 [
       set shape "truck"
       set color red           
 
@@ -25,17 +25,17 @@ to setuptrans
       ]  
   ]
     
-    foreach Portales.who [
+    foreach portals_who [
       m -> 
-      (foreach (sort [who] of transmilenio-on nodo m ) (remove m portalesTo)
+      (foreach (sort [who] of transmilenio-on nodo m ) (remove m portals_to)
         [ [o p] -> ask articulado o [
-;          set portalesTo remove m portalesTo
-          set portOri nodo m
-          set portDest nodo p
-          set origen.stop portOri 
+;          set portals_to remove m portals_to
+          set origin_portal nodo m
+          set destination_portal nodo p
+          set origen.stop origin_portal 
           set genes m
           set apoc p
-          set name_route word [id] of portOri [id] of portDest
+          set name_route word [id] of origin_portal [id] of destination_portal
         ]
       ])
     ]
@@ -59,9 +59,9 @@ to setup_transmi_med_fast
       set id_pass []
       set cap_status "empty";capacity status   
       set size 0.6
-      set portOri nodo [genes] of articulado w
-      set portDest nodo [apoc] of articulado w
-      set origen.stop portOri 
+      set origin_portal nodo [genes] of articulado w
+      set destination_portal nodo [apoc] of articulado w
+      set origen.stop origin_portal 
       set path  [path] of articulado w
       set route path
       set recorridos 0
@@ -76,11 +76,11 @@ to setup_transmi_med_fast
 ;          set route lput b route
 ;        ]
 ;      ]
-      set route fput portOri route
-      set route lput portDest route
+      set route fput origin_portal route
+      set route lput destination_portal route
       set route remove-duplicates route
-      if portOri = last path [set path reverse path set route path set route fput portOri route]
-      set next.stop item (position origen.stop route ) route 
+      if origin_portal = last path [set path reverse path set route path set route fput origin_portal route]
+      set next_stop item (position origen.stop route ) route 
     ]
     create-t_middle 1 [
       set shape "truck"
@@ -91,9 +91,9 @@ to setup_transmi_med_fast
       set id_pass []
       set cap_status "empty";capacity status
       set size 0.6
-      set portOri nodo [genes] of articulado w
-      set portDest nodo [apoc] of articulado w
-      set origen.stop portOri 
+      set origin_portal nodo [genes] of articulado w
+      set destination_portal nodo [apoc] of articulado w
+      set origen.stop origin_portal 
       set path but-last [path] of articulado w
       set route []
       set recorridos 0
@@ -109,10 +109,10 @@ to setup_transmi_med_fast
           set route lput b route
         ]
       ]
-      set route fput portOri route
-      set route lput portDest route
+      set route fput origin_portal route
+      set route lput destination_portal route
       set route remove-duplicates route
-      set next.stop item (position origen.stop route ) route 
+      set next_stop item (position origen.stop route ) route 
     ]
     create-t_fast 1 [
       set shape "truck"
@@ -123,9 +123,9 @@ to setup_transmi_med_fast
       set id_pass []
       set cap_status "empty";capacity status
       set size 0.6
-      set portOri nodo [genes] of articulado w
-      set portDest nodo [apoc] of articulado w
-      set origen.stop portOri 
+      set origin_portal nodo [genes] of articulado w
+      set destination_portal nodo [apoc] of articulado w
+      set origen.stop origin_portal 
       set path but-last [path] of articulado w
       set route []
       set recorridos 0
@@ -140,10 +140,10 @@ to setup_transmi_med_fast
           set route lput b route
         ]
       ]
-      set route fput portOri route
-      set route lput portDest route
+      set route fput origin_portal route
+      set route lput destination_portal route
       set route remove-duplicates route
-      set next.stop item (position origen.stop route ) route 
+      set next_stop item (position origen.stop route ) route 
     ]
   ])
   
@@ -160,37 +160,37 @@ to setup-tm_on_demand
 ;    set inicio one-of vertices
     set pass_capacity bus_capacity   
     set cap_status "empty";capacity status
-;    setxy [xcor] of portOri [ycor] of portOri
+;    setxy [xcor] of origin_portal [ycor] of origin_portal
     set od_dest place_from_gaussian_mixture 0 0 -1 gm_dest 
      
 		span_from_gaussian_mixture 0 0 -1 gm_org
-    set od_ori current_nodo 
-;    set current_nodo
-    set origen.stop current_nodo
+    set od_ori current_node 
+;    set current_node
+    set origen.stop current_node
     set on_demand_route [name_route] of transmilenio with [member? od_ori path and member? od_dest path]
-;    ask transmilenio [if member? (current_nodo) path and member? (portDest) path [set on_demand_route lput name_route on_demand_route ]]
+;    ask transmilenio [if member? (current_node) path and member? (destination_portal) path [set on_demand_route lput name_route on_demand_route ]]
     let name_route_1 item 0 shuffle on_demand_route    
     let whoRouteRef item 0 [who] of transmilenio with [name_route = name_route_1]
     set path [path] of articulado whoRouteRef
-    set portOri nodo [genes] of articulado whoRouteRef
-    set portDest nodo [apoc] of articulado whoRouteRef
+    set origin_portal nodo [genes] of articulado whoRouteRef
+    set destination_portal nodo [apoc] of articulado whoRouteRef
     set genes od_ori
     set apoc od_dest
-    set path remove portOri path  set path remove portDest path
-    set path fput portOri path set path lput portDest path
+    set path remove origin_portal path  set path remove destination_portal path
+    set path fput origin_portal path set path lput destination_portal path
     set name_route (name_route_1) 
     set route path
     set recorridos 0    
     ifelse position origen.stop route + 1 >= length route [
-      set next.stop origen.stop
+      set next_stop origen.stop
     ][
-      set next.stop item (position origen.stop route + 1) route
+      set next_stop item (position origen.stop route + 1) route
     ]
     set od_ori 0
     set od_dest 0
-    set optionsRoute on_demand_route
+    set options_route on_demand_route
     if length on_demand_route = 0 [user-message (word "bus " who " murio") die ]
-    show who show optionsRoute
+    show who show options_route
     set on_demand_route 0
 ;    set inicio vertex 56
 ;    set llegada vertex 53
@@ -209,11 +209,11 @@ end
 to move-articulado
   
 ;  if [direct] of transmilenio = "DOWN";any? vertices with [direct = "DOWN"] = TRUE
-  let Portales.id sort [id] of nodos with [tipo = "PORT"]  ;[56	60	67	81	99	110	127	138	151]
-  let Portales.who sort [who] of nodos with [tipo = "PORT"]
-  let connector.id sort [id] of nodos with [tipo = "ORI"];[0 11 19 26  37 41 50 53] 
-  let connector.who sort [who] of nodos with [tipo = "ORI"]
-  let connector.path [
+  let portals_id sort [id] of nodos with [tipo = "PORT"]  ;[56	60	67	81	99	110	127	138	151]
+  let portals_who sort [who] of nodos with [tipo = "PORT"]
+  let connector_id sort [id] of nodos with [tipo = "ORI"];[0 11 19 26  37 41 50 53] 
+  let connector_who sort [who] of nodos with [tipo = "ORI"]
+  let connector_path [
     [419	422	366	366	366	366	366	366	366] ;366
     [375	375	377	381	381	381	378	381	381] ;
     [377	377	426	377	377	377	377	377	377] ;426
@@ -229,29 +229,29 @@ to move-articulado
   
   ask transmilenio with [direct = "DOWN"]  
   [
-    ifelse member? [id] of origen.stop  connector.id  = TRUE
+    ifelse member? [id] of origen.stop  connector_id  = TRUE
     [      
-      let connector.position position [who] of origen.stop connector.who ; posicion del conector en el arreglo
-      let destination.position position [who] of portDest Portales.who ; posicion del portal de destino en el arreglo
-      let nodo_salida nodo item 0 [who] of nodos with [id = item destination.position item connector.position connector.path]
-      set next.stop nodo_salida 
-      let next.stop_x [xcor] of next.stop
-      let next.stop_y [ycor] of next.stop
+      let connector_position position [who] of origen.stop connector_who ; posicion del conector en el arreglo
+      let destination_position position [who] of destination_portal portals_who ; posicion del portal de destino en el arreglo
+      let exit_node nodo item 0 [who] of nodos with [id = item destination_position item connector_position connector_path]
+      set next_stop exit_node 
+      let next_stop_x [xcor] of next_stop
+      let next_stop_y [ycor] of next_stop
       ;;; PRUEBA
-;      face next.stop
+;      face next_stop
 ;      fd 0.2
       ;;;
-      facexy next.stop_x next.stop_y 
-      fd distance next.stop
-      ifelse [who] of origen.stop < [who] of next.stop 
+      facexy next_stop_x next_stop_y 
+      fd distance next_stop
+      ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
       ]
       [
         set direct "DOWN"
       ]
-      set last.stop origen.stop
-      set origen.stop next.stop
+      set last_stop origen.stop
+      set origen.stop next_stop
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
       
@@ -260,19 +260,19 @@ to move-articulado
       let origen origen.stop
       
       
-      set next.stop item 0 [end1] of edges_tm with [end2 = origen and capacity = 4];of transmilenio]
-                                                                ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
-      let next.stop_x [xcor] of next.stop
-      let next.stop_y [ycor] of next.stop
+      set next_stop item 0 [end1] of edges_tm with [end2 = origen and capacity = 4];of transmilenio]
+                                                                ;      set options.stop  [end2] of links with [end1 = id_origin_stop ]
+      let next_stop_x [xcor] of next_stop
+      let next_stop_y [ycor] of next_stop
       ;;; PRUEBA
-;      face next.stop
+;      face next_stop
 ;      fd 0.2
       ;;;
-      facexy next.stop_x next.stop_y 
-      fd distance next.stop
-      set last.stop origen.stop
-      set origen.stop next.stop
-      set next.stop item 0 [end1] of links with [end2 = origen ]
+      facexy next_stop_x next_stop_y 
+      fd distance next_stop
+      set last_stop origen.stop
+      set origen.stop next_stop
+      set next_stop item 0 [end1] of links with [end2 = origen ]
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
      
@@ -284,29 +284,29 @@ to move-articulado
   
   ask transmilenio with [direct = "UP"]  
   [
-    ifelse member? [who] of origen.stop  connector.who  = TRUE
+    ifelse member? [who] of origen.stop  connector_who  = TRUE
     [      
-      let connector.position position [who] of origen.stop connector.who ; posicion del conector en el arreglo
-      let destination.position position [who] of portDest Portales.who ; posicion del portal de destino en el arreglo
-      let nodo_salida nodo item 0 [who] of nodos with [id = item destination.position item connector.position connector.path]
-      set next.stop nodo_salida 
-;      set next.stop nodo  (item destination.position item connector.position connector.path);nodo item destination.position item connector.position connector.path
-      let next.stop_x [xcor] of next.stop
-      let next.stop_y [ycor] of next.stop
+      let connector_position position [who] of origen.stop connector_who ; posicion del conector en el arreglo
+      let destination_position position [who] of destination_portal portals_who ; posicion del portal de destino en el arreglo
+      let exit_node nodo item 0 [who] of nodos with [id = item destination_position item connector_position connector_path]
+      set next_stop exit_node 
+;      set next_stop nodo  (item destination_position item connector_position connector_path);nodo item destination_position item connector_position connector_path
+      let next_stop_x [xcor] of next_stop
+      let next_stop_y [ycor] of next_stop
       ;;; PRUEBA
-;      face next.stop
+;      face next_stop
 ;      fd 0.2
       ;;;
-      facexy next.stop_x next.stop_y fd distance next.stop
-      ifelse [who] of origen.stop < [who] of next.stop 
+      facexy next_stop_x next_stop_y fd distance next_stop
+      ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
       ]
       [
         set direct "DOWN"
       ]
-      set last.stop origen.stop
-      set origen.stop next.stop
+      set last_stop origen.stop
+      set origen.stop next_stop
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
 
@@ -316,18 +316,18 @@ to move-articulado
       let origen origen.stop
       
       
-      set next.stop item 0 [end2] of edges_tm with [end1 = origen and capacity = 4];of transmilenio]
-                                                                ;      set options.stop  [end2] of links with [end1 = id.origen.stop ]
-      let next.stop_x [xcor] of next.stop
-      let next.stop_y [ycor] of next.stop
+      set next_stop item 0 [end2] of edges_tm with [end1 = origen and capacity = 4];of transmilenio]
+                                                                ;      set options.stop  [end2] of links with [end1 =  ]
+      let next_stop_x [xcor] of next_stop
+      let next_stop_y [ycor] of next_stop
       ;;; PRUEBA
-;      face next.stop
+;      face next_stop
 ;      fd 0.2
       ;;;
-      facexy next.stop_x next.stop_y fd distance next.stop
-      set last.stop origen.stop
-      set origen.stop next.stop
-      set next.stop item 0 [end2] of links with [end1 = origen ]
+      facexy next_stop_x next_stop_y fd distance next_stop
+      set last_stop origen.stop
+      set origen.stop next_stop
+      set next_stop item 0 [end2] of links with [end1 = origen ]
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
       
@@ -341,27 +341,27 @@ to move-articulado
   
   ask t_easy [
 ;    let origen origen.stop      
-;    set next.stop item (position origen route ) route
-    let next.stop_x [xcor] of next.stop
-    let next.stop_y [ycor] of next.stop
+;    set next_stop item (position origen route ) route
+    let next_stop_x [xcor] of next_stop
+    let next_stop_y [ycor] of next_stop
     ;;; PRUEBA
-;      face next.stop
+;      face next_stop
 ;      fd 0.2
     ;;;
-    facexy next.stop_x next.stop_y fd distance next.stop
-;    fd distance next.stop
-;    set heading towards next.stop
+    facexy next_stop_x next_stop_y fd distance next_stop
+;    fd distance next_stop
+;    set heading towards next_stop
 ;    forward 1.0E-500
-;		move-to next.stop
-    set last.stop origen.stop
-    set origen.stop next.stop    
-;    ifelse portdest != origen.stop [set next.stop item (position next.stop route + 1) route][]
+;		move-to next_stop
+    set last_stop origen.stop
+    set origen.stop next_stop    
+;    ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
     ifelse position origen.stop route + 1 >= length route [
-      set next.stop origen.stop
+      set next_stop origen.stop
     ][
-      set next.stop item (position origen.stop route + 1) route
+      set next_stop item (position origen.stop route + 1) route
     ]
-    ifelse [who] of origen.stop < [who] of next.stop 
+    ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
       ]
@@ -376,22 +376,22 @@ to move-articulado
   
   ask t_middle [
 ;    let origen origen.stop      
-;    set next.stop item (position origen route ) route
-    let next.stop_x [xcor] of next.stop
-    let next.stop_y [ycor] of next.stop
+;    set next_stop item (position origen route ) route
+    let next_stop_x [xcor] of next_stop
+    let next_stop_y [ycor] of next_stop
     ;;; PRUEBA
-;      face next.stop
+;      face next_stop
 ;      fd 0.2
     ;;;
-    facexy next.stop_x next.stop_y fd distance next.stop
-;    fd distance next.stop
-;    set heading towards next.stop
+    facexy next_stop_x next_stop_y fd distance next_stop
+;    fd distance next_stop
+;    set heading towards next_stop
 ;    forward 1.0E-500
-;		move-to next.stop
-    set last.stop origen.stop
-    set origen.stop next.stop
-    ifelse portdest != origen.stop [set next.stop item (position next.stop route + 1) route][]
-    ifelse [who] of origen.stop < [who] of next.stop 
+;		move-to next_stop
+    set last_stop origen.stop
+    set origen.stop next_stop
+    ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
+    ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
       ]
@@ -406,22 +406,22 @@ to move-articulado
   
   ask t_fast [
 ;    let origen origen.stop      
-;    set next.stop item (position origen route ) route
-    let next.stop_x [xcor] of next.stop
-    let next.stop_y [ycor] of next.stop
+;    set next_stop item (position origen route ) route
+    let next_stop_x [xcor] of next_stop
+    let next_stop_y [ycor] of next_stop
     ;;; PRUEBA
-;      face next.stop
+;      face next_stop
 ;      fd 0.2
     ;;;
-    facexy next.stop_x next.stop_y fd distance next.stop
-;    fd distance next.stop
-;    set heading towards next.stop
+    facexy next_stop_x next_stop_y fd distance next_stop
+;    fd distance next_stop
+;    set heading towards next_stop
 ;    forward 1.0E-500
-;		move-to next.stop
-    set last.stop origen.stop
-    set origen.stop next.stop
-    ifelse portdest != origen.stop [set next.stop item (position next.stop route + 1) route][]
-    ifelse [who] of origen.stop < [who] of next.stop 
+;		move-to next_stop
+    set last_stop origen.stop
+    set origen.stop next_stop
+    ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
+    ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
       ]
@@ -439,53 +439,73 @@ to move_middle
   
   ask t_middle [
     let origen origen.stop      
-    set next.stop item position origen route route
-    let next.stop_x [xcor] of next.stop
-    let next.stop_y [ycor] of next.stop
-    ;;; PRUEBA
-;      face next.stop
-;      fd 0.2
-    ;;;
-    facexy next.stop_x next.stop_y 
-;    fd distance next.stop
-;    set heading towards next.stop
+    set next_stop item position origen route route
+    let next_stop_x [xcor] of next_stop
+    let next_stop_y [ycor] of next_stop
+    facexy next_stop_x next_stop_y 
     forward 1.0E-500
-		move-to next.stop
-    set last.stop origen.stop
-    set origen.stop next.stop
-    set next.stop item (position origen route + 1) route
-;    set path lput origen.stop path ;;;;;;
-;    set path remove-duplicates path
+		move-to next_stop
+    set last_stop origen.stop
+    set origen.stop next_stop
+    set next_stop item (position origen route + 1) route
   ]
+  
+  
  
   
 end
 
 
 
-to go-towards [to-turtle]
-  ask t_middle [
-;		let xcord [xcor] of to-turtle let ycord [ycor] of to-turtle
-    set heading towards to-turtle
-    forward 1.0E-500
-		move-to to-turtle
-  ]
-end
 
-to driver-act
-  
-;    let transmileio-p transmilenio 151
-    foreach route [ 
-      x -> 
-      set next.stop x
-      go-towards next.stop
-;      tick
-    ]
-  
-  
-  
-  
-end
+; --------- movement function --------------
+;to go-towards [from-turtle to-turtle]
+;  ask from-turtle [
+;		let xcord [xcor] of to-turtle let ycord [ycor] of to-turtle
+;
+;    ifelse distance to-turtle != 0 [
+;
+;      set heading towards to-turtle
+;      let from_vertex [who] of last_vertex
+;      let to_vertex [who] of first path
+;      let penalty2 1
+;      ifelse from_vertex = to_vertex 
+;      [
+;        set penalty2 1
+;      ][
+;        ifelse from_vertex < to_vertex 
+;        [
+;          set penalty2 [penalty] of edge from_vertex to_vertex
+;        ][  
+;          set penalty2 [penalty] of edge to_vertex from_vertex 
+;        ]
+;      ] ; problem is order of min max from to
+;      let speed max_speed / penalty2
+;
+;      ifelse abs(xcord - xcor) > speed OR abs(ycord - ycor) > speed [
+;        forward speed ;TODO correct by penalty
+;      ][
+;        forward distance to-turtle ;TODO correct by penalty
+;				move-to to-turtle
+;      ]
+;    ][move-to to-turtle]
+;  ]
+;end
+
+;; ------------ move through path function ------------
+;to move-in-path 
+;	; if path not empty
+;	ifelse not empty? path [
+;		ifelse distance item 0 path = 0 [
+;			; check if current vertex is item 0 nd if true delete
+;			set last_vertex item 0 path
+;			set path remove-item 0 path	
+;		][
+;			; else move
+;			go-towards self item 0 path
+;		]
+;	][print "empty"]
+;end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; RETORNO DE BUSES
@@ -493,10 +513,10 @@ to return-articulado
   ;;; ESTA PARTE DUVUELVE AL ARTICULADO
   ask transmilenio 
   [
-    ifelse portdest = origen.stop
+    ifelse destination_portal = origen.stop
     [
-      set portDest portOri
-      set portOri origen.stop
+      set destination_portal origin_portal
+      set origin_portal origen.stop
       set direct "DOWN"
       set recorridos recorridos + 1
       
@@ -505,10 +525,10 @@ to return-articulado
   ]
   ask t_easy
   [
-     ifelse portdest = origen.stop ;or portori = next.stop
+     ifelse destination_portal = origen.stop ;or origin_portal = next_stop
     [
-      set portDest portOri
-      set portOri origen.stop
+      set destination_portal origin_portal
+      set origin_portal origen.stop
       set route reverse route
       set recorridos recorridos + 1
       
@@ -517,10 +537,10 @@ to return-articulado
   ]
   ask t_middle
   [
-     ifelse portdest = origen.stop
+     ifelse destination_portal = origen.stop
     [
-      set portDest portOri
-      set portOri origen.stop
+      set destination_portal origin_portal
+      set origin_portal origen.stop
       set route reverse route
       set recorridos recorridos + 1
       
@@ -529,10 +549,10 @@ to return-articulado
   ]
   ask t_fast
   [
-     ifelse portdest = origen.stop
+     ifelse destination_portal = origen.stop
     [
-      set portDest portOri
-      set portOri origen.stop
+      set destination_portal origin_portal
+      set origin_portal origen.stop
       set route reverse route
       set recorridos recorridos + 1
       
@@ -550,7 +570,7 @@ end
 to give-path
   ask transmilenio [    
 ;    set path lput origen.stop path 
-    if portdest = origen.stop and recorridos = 1 [
+    if destination_portal = origen.stop and recorridos = 1 [
       set route path
     ]
   ]
