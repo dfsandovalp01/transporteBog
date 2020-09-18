@@ -10,9 +10,9 @@ breed [estaciones estacion]
 breed [portales portal]
 
 transmilenio-own [
-  speed
-  speed-limit 
-  speed-min 
+;  speed
+;  speed-limit 
+;  speed-min 
   path 
   origen.stop  
   last_stop  

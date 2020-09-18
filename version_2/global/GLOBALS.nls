@@ -19,6 +19,8 @@ globals [
   all_route_t_easy
   all_route_t_middle
   all_route_t_fast
+  max_speed
+	min_max_speed
   
    
 ;  portal.norte-x portal.norte-y
