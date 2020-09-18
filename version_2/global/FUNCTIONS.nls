@@ -92,10 +92,10 @@ to state_tm
       setup_transmi_med_fast
       ask patch 2 30 [ set pcolor green ]
       ask transmilenio [set route path]
-      set all_route_transmilenio [route] of transmilenio
-      set all_route_t_easy [route] of t_easy
-      set all_route_t_middle [route] of t_middle
-      set all_route_t_fast [route] of t_fast
+      set all_route_transmilenio [route] of transmilenio with [family_route = "origin"]
+      set all_route_t_easy [route] of transmilenio with [family_route = "t_easy"]
+      set all_route_t_middle [route] of transmilenio with [family_route = "t_middle"]
+      set all_route_t_fast [route] of transmilenio with [family_route = "t_fast"]
     ]
     []
   

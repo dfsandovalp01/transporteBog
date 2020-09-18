@@ -13,6 +13,11 @@ transmilenio-own [
 ;  speed
 ;  speed-limit 
 ;  speed-min 
+  family_route
+  pass_capacity
+  on_board
+  cap_status ;capacity status
+  id_pass
   path 
   origen.stop  
   last_stop  
@@ -26,6 +31,12 @@ transmilenio-own [
   genes
   apoc
   route
+  freq_easy
+  freq_middle
+  freq_fast
+  current_node
+  options_route
+  
   
 ]
 
@@ -126,4 +137,7 @@ people-own [
   def_icu
   my_route
   traveling
+  fast_here 
+  middle_here 
+  easy_here 
 ]

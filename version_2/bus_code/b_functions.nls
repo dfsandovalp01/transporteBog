@@ -13,7 +13,7 @@ to setuptrans
     n -> create-transmilenio length all_portals - 1 [
       set shape "truck"
       set color red           
-
+      set family_route "origin"
       setxy [xcor] of nodo n [ycor] of nodo n
       set direct "DOWN"     
       set size 0.6
@@ -50,7 +50,8 @@ to setup_transmi_med_fast
 ;  foreach gen_x_route [
   (foreach (gen_x_route )(who_x_route )(nameR_x_route) [
     [g w n] ->
-    create-t_easy 1 [
+    create-transmilenio 1 [
+      set family_route "t_easy"
       set shape "truck"
       set color yellow
       setxy [xcor] of nodo g [ycor] of nodo g
@@ -82,7 +83,8 @@ to setup_transmi_med_fast
       if origin_portal = last path [set path reverse path set route path set route fput origin_portal route]
       set next_stop item (position origen.stop route ) route 
     ]
-    create-t_middle 1 [
+    create-transmilenio 1 [
+      set family_route "t_middle"
       set shape "truck"
       set color gray
       setxy [xcor] of nodo g [ycor] of nodo g
@@ -114,7 +116,8 @@ to setup_transmi_med_fast
       set route remove-duplicates route
       set next_stop item (position origen.stop route ) route 
     ]
-    create-t_fast 1 [
+    create-transmilenio 1 [
+      set family_route "t_fast"
       set shape "truck"
       set color green
       setxy [xcor] of nodo g [ycor] of nodo g
@@ -152,7 +155,8 @@ to setup_transmi_med_fast
 end
 
 to setup-tm_on_demand
-  create-t_easy #_easy [
+  create-transmilenio #_easy [
+    set family_route "t_easy"
     setxy random-xcor random-ycor
     set shape "truck"
     set color yellow
@@ -339,7 +343,7 @@ to move-articulado
  
     ;;;;;;; RUTA FACIL;;;;;;;;;;;;;;
   
-  ask t_easy [
+  ask transmilenio with [family_route = "t_easy"] [
     let origen origen.stop      
 ;    set next_stop item (position origen route ) route
     let next_stop_x [xcor] of next_stop
@@ -369,7 +373,7 @@ to move-articulado
   
    ;;;;;;; RUTA MEDIA;;;;;;;;;;;;;;
   
-  ask t_middle [
+  ask transmilenio with [family_route = "t_middle"] [
 ;    let origen origen.stop      
 ;    set next_stop item (position origen route ) route
     let next_stop_x [xcor] of next_stop
@@ -391,7 +395,7 @@ to move-articulado
     
      ;;;;;;; RUTA RAPIDA;;;;;;;;;;;;;;
   
-  ask t_fast [
+  ask transmilenio with [family_route = "t_fast"] [
     let next_stop_x [xcor] of next_stop
     let next_stop_y [ycor] of next_stop    
     facexy next_stop_x next_stop_y fd distance next_stop
@@ -479,7 +483,7 @@ to move-in-route
 			; check if current vertex is item 0 nd if true delete
 			set origen.stop next_stop
       set last_stop origen.stop
-    ifelse breed = t_easy [
+    ifelse family_route = "t_easy" [
       ifelse position origen.stop route + 1 >= length route [
       set next_stop origen.stop
     ][
@@ -514,7 +518,7 @@ end
 ;;; RETORNO DE BUSES
 to return-articulado
   ;;; ESTA PARTE DUVUELVE AL ARTICULADO
-  ask transmilenio 
+  ask transmilenio with [family_route = "origin"]
   [
     ifelse destination_portal = origen.stop
     [
@@ -526,7 +530,7 @@ to return-articulado
     ]
     []
   ]
-  ask t_easy
+  ask transmilenio with [family_route = "t_easy"]
   [
      ifelse destination_portal = origen.stop ;or origin_portal = next_stop
     [
@@ -538,7 +542,7 @@ to return-articulado
     ]
     []
   ]
-  ask t_middle
+  ask transmilenio with [family_route = "t_middle"]
   [
      ifelse destination_portal = origen.stop
     [
@@ -550,7 +554,7 @@ to return-articulado
     ]
     []
   ]
-  ask t_fast
+  ask transmilenio with [family_route = "t_fast"]
   [
      ifelse destination_portal = origen.stop
     [
@@ -571,7 +575,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; IDENTIFICANDO CAMINOS ;;;;;;;;;;;;;;;;;;;;;;
 
 to give-path
-  ask transmilenio [    
+  ask transmilenio with [family_route = "origin"] [    
 ;    set path lput origen.stop path 
     if destination_portal = origen.stop and recorridos = 1 [
       set route path

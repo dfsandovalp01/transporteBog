@@ -134,7 +134,7 @@ to identifying-two-best-routes
         m ->
         if member? (current_node) m and member? (destination) m
         [
-          if length [name_route] of t_easy with [route = m] != 0 
+          if length [name_route] of transmilenio with [family_route = "t_easy" AND route = m] != 0 
           [
             let p_t_t m
             ifelse position current_node m < position destination m 
@@ -148,9 +148,9 @@ to identifying-two-best-routes
               set stop_icu fput p_t_t stop_icu            
             ] 
             ;          set p_t_t
-            set icu fput item 0 [name_route] of t_easy with [route = m] icu
+            set icu fput item 0 [name_route] of transmilenio with [family_route = "t_easy" AND route = m] icu
             set icu remove-duplicates icu
-            set icu_e fput item 0 [name_route] of t_easy with [route = m] icu_e
+            set icu_e fput item 0 [name_route] of transmilenio with [family_route = "t_easy" AND route = m] icu_e
             set icu_e remove-duplicates icu_e
           ]
         ]
@@ -161,7 +161,7 @@ to identifying-two-best-routes
         m ->
         if member? (current_node) m and member? (destination) m
         [
-          if length [name_route] of t_middle with [route = m] != 0 
+          if length [name_route] of transmilenio with [family_route = "t_middle" AND route = m] != 0 
           [
             let p_t_t m
             ifelse position current_node m < position destination m 
@@ -174,9 +174,9 @@ to identifying-two-best-routes
               length sublist m  (position current_node m) (position (last m) m)
               set stop_icu fput p_t_t stop_icu
             ] 
-            set icu fput item 0 [name_route] of t_middle with [route = m] icu
+            set icu fput item 0 [name_route] of transmilenio with [family_route = "t_middle" AND route = m] icu
             set icu remove-duplicates icu
-            set icu_m fput item 0 [name_route] of t_middle with [route = m] icu_m
+            set icu_m fput item 0 [name_route] of transmilenio with [family_route = "t_middle" AND route = m] icu_m
             set icu_m remove-duplicates icu_m
           ]
           
@@ -188,7 +188,7 @@ to identifying-two-best-routes
         m ->
         if member? (current_node) m and member? (destination) m
         [
-          if length [name_route] of t_fast with [route = m] != 0
+          if length [name_route] of transmilenio with [family_route = "t_fast" AND route = m] != 0
           [
             let p_t_t m
             ifelse position current_node m < position destination m 
@@ -201,16 +201,16 @@ to identifying-two-best-routes
               length sublist m  (position current_node m) (position (last m) m)
               set stop_icu fput p_t_t stop_icu
             ] 
-            set icu fput item 0 [name_route] of t_fast with [route = m] icu
+            set icu fput item 0 [name_route] of transmilenio with [family_route = "t_fast" AND route = m] icu
             set icu remove-duplicates icu
-            set icu_f fput item 0 [name_route] of t_fast with [route = m] icu_f
+            set icu_f fput item 0 [name_route] of transmilenio with [family_route = "t_fast" AND route = m] icu_f
             set icu_f remove-duplicates icu_f
           ]
           
         ]
       ]
       
-      if empty? icu [user-message (word "soy " who " y no me sirve nada >:( icu")];evaluate points without coverage
+      if empty? icu [user-message (word "soy " who " y no me sirve nada >:( icu") print who];evaluate points without coverage
     
     
 ;   identifying best route (suprime direction)                                                 
@@ -246,37 +246,40 @@ to select-bus
   foreach def_icu 
     [
       r -> 
-      let fast_here []
-      let middle_here []
-      let easy_here []
+      set fast_here []
+      set middle_here []
+      set easy_here []
       
-      ifelse any? t_fast-on self AND length filter [i -> i = r] [name_route] of t_fast-on self != 0 
+      ifelse member? "t_fast" [family_route] of transmilenio-on self AND length filter [i -> i = r] [name_route] of transmilenio-on self != 0 
+;      ifelse any? transmilenio-on self with [family_route = "t_fast"] AND length filter [i -> i = r] [name_route] of t_fast-on self != 0 
       [
-        set fast_here filter [i -> i = r] [name_route] of t_fast-on self
+        set fast_here filter [i -> i = r] [name_route] of transmilenio-on self
 ;        set my_route lput item 0 fast_here []
 ;        set my_route lput (word item 0 [breed] of t_fast with [name_route = item 0 fast_here]) my_route
-        set my_route turtle item 0 [who] of t_fast with [name_route = item 0 fast_here]
+        set my_route turtle item 0 [who] of transmilenio with [family_route = "t_fast" AND name_route = item 0 fast_here]
 ;          user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
 ;        die
         
 ;        hide-turtle
       ]
-      [ifelse any? t_middle-on self AND length filter [i -> i = r] [name_route] of t_middle-on self != 0
+      [ifelse member? "t_middle" [family_route] of transmilenio-on self AND length filter [i -> i = r] [name_route] of transmilenio-on self != 0 
+;        ifelse any? t_middle-on self AND length filter [i -> i = r] [name_route] of t_middle-on self != 0
       [
-          set middle_here filter [i -> i = r] [name_route] of t_middle-on self
+          set middle_here filter [i -> i = r] [name_route] of transmilenio-on self
 ;          set my_route lput item 0 middle_here []
 ;        set my_route lput (word item 0 [breed] of t_middle with [name_route = item 0 middle_here]) my_route
-           set my_route turtle item 0 [who] of t_middle with [name_route = item 0 middle_here]
+           set my_route turtle item 0 [who] of transmilenio with [family_route = "t_middle" AND name_route = item 0 middle_here]
 ;                    user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
 ;        die
 ;          hide-turtle
         ]
-      [ifelse any? t_easy-on self AND length filter [i -> i = r] [name_route] of t_easy-on self != 0
+      [ifelse member? "t_easy" [family_route] of transmilenio-on self AND length filter [i -> i = r] [name_route] of transmilenio-on self != 0 
+;          ifelse any? t_easy-on self AND length filter [i -> i = r] [name_route] of t_easy-on self != 0
         [
-          set easy_here filter [i -> i = r] [name_route] of t_easy-on self
+          set easy_here filter [i -> i = r] [name_route] of transmilenio-on self
 ;            set my_route lput item 0 easy_here []
 ;        set my_route lput (word item 0 [breed] of t_easy with [name_route = item 0 easy_here]) my_route
-           set my_route turtle item 0 [who] of t_easy with [name_route = item 0 easy_here]
+           set my_route turtle item 0 [who] of transmilenio with [family_route = "t_easy" AND name_route = item 0 easy_here]
 ;                      user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
 ;        die
 ;            hide-turtle
