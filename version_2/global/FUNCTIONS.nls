@@ -1,0 +1,112 @@
+
+extensions [nw table]
+;;;;;;;;;;;;;;;
+;; FUNCTIONS ;;
+;;;;;;;;;;;;;;;
+
+
+to setup
+  clear-all
+  ask patch 2 30 [set pcolor red]
+  
+  setup-importer
+  setup-importer-tm
+  setup-portales
+  setup-conectores
+  
+
+  
+  set all_portals sort [id] of nodos with [tipo = "PORT"] ; [421 425 432 446 464 475 492 503 516]
+  
+  set prob_of_service read_table "distributions/prob.csv"
+	set gm_org read_gm "distributions/org.csv"
+	set gm_dest read_gm "distributions/dest.csv"
+  
+  setup-people
+;  move-people
+; /home/dfsandovalp/WORK/transporteBog/version_1/distributions
+  setuptrans
+  set min_max_speed 0.2
+	set max_speed [dist] of min-one-of edges with [member? self (filter [[elem] -> [ dist ] of elem > min_max_speed ] sort edges) ]  [dist]
+  
+
+  set indice_rec [recorridos] of transmilenio
+  
+  correcciones
+
+  reset-ticks
+end
+
+
+;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
+
+to go
+
+    move-articulado
+    return-articulado
+    give-path
+    if all_routes_ok = "OK" [take-bus]
+    
+
+
+  if length [who] of t_middle = 0  [state_tm] 
+  
+   
+  
+
+  tick
+end
+
+;=================== funciones =====================
+
+
+to setup-portales
+  ask nodos
+  [if tipo = "PORT" 
+    [set shape "house"
+     set color green
+     set label id
+     set size 0.6]
+  ]
+end
+
+to setup-conectores
+  ask nodos
+  [
+    if tipo = "ORI" 
+    [
+      set shape "circle"
+      set color yellow
+      set label id
+      set size 0.4
+    ]    
+  ]
+
+end
+
+to state_tm 
+  
+    ifelse [recorridos] of min-one-of (transmilenio) [recorridos] > 0
+    [      
+      set all_routes_ok "OK"
+      setup_transmi_med_fast
+      ask patch 2 30 [ set pcolor green ]
+      ask transmilenio [set route path]
+      set all_route_transmilenio [route] of transmilenio
+      set all_route_t_easy [route] of t_easy
+      set all_route_t_middle [route] of t_middle
+      set all_route_t_fast [route] of t_fast
+    ]
+    []
+  
+end
+
+
+; ===== CORRECCIONES =========
+
+to correcciones
+  ;ask vertex 102 [create-edge_tm-with vertex 103]
+  ask edges_tm with [capacity = 4] [
+    set color sky
+  ]
+end

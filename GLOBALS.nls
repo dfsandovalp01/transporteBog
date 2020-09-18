@@ -1,8 +1,0 @@
-;;;;;;;;;;;;;
-;; GLOBALS ;;
-;;;;;;;;;;;;;
-globals [
-  portal.norte-x portal.norte-y
-  portal.sur-x portal.sur-y
- 
-]

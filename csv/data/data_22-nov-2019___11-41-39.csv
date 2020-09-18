@@ -1,0 +1,16 @@
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+153,(vertex 150),(vertex 30),(vertex 150),[(vertex 150)],1
+152,(vertex 150),(vertex 30),(vertex 150),[(vertex 150)],1
+154,(vertex 150),(vertex 30),(vertex 150),[(vertex 150)],1
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+154,(vertex 150),(vertex 150),(vertex 125),[(edge 125 150) (edge 30 150)],2
+153,(vertex 150),(vertex 150),(vertex 125),[(edge 125 150) (edge 30 150)],2
+152,(vertex 150),(vertex 150),(vertex 125),[(edge 125 150) (edge 30 150)],2
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+153,(vertex 150),(vertex 150),(vertex 30),[(edge 30 150) (edge 125 150)],3
+154,(vertex 150),(vertex 150),(vertex 30),[(edge 30 150) (edge 125 150)],3
+152,(vertex 150),(vertex 150),(vertex 125),[(edge 125 150) (edge 30 150)],3
+ID,id.origen.stop,last_stop,next.stop,options.stop,tick
+152,(vertex 150),(vertex 150),(vertex 30),[(edge 125 150) (edge 30 150)],4
+154,(vertex 150),(vertex 150),(vertex 125),[(edge 30 150) (edge 125 150)],4
+153,(vertex 150),(vertex 150),(vertex 125),[(edge 30 150) (edge 125 150)],4

@@ -1,0 +1,30 @@
+;;;;;;;;;;;;;
+;; GLOBALS ;;
+;;;;;;;;;;;;;
+globals [
+  all_portals
+  portals_to
+  prob_of_service
+	gm_org
+	gm_dest
+  time
+	time_string
+  horas_pico
+  indice_rec
+  all_routes_ok
+  on_demand_route
+  od_ori
+  od_dest
+  all_route_transmilenio
+  all_route_t_easy
+  all_route_t_middle
+  all_route_t_fast
+  max_speed
+	min_max_speed
+  
+   
+;  portal.norte-x portal.norte-y
+;  portal.sur-x portal.sur-y
+;  conectores
+ 
+]

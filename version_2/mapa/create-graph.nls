@@ -8,14 +8,21 @@ to setup-globals-importer
 	set max-y 32
 end
 
+
+
 to setup-importer
 
 	setup-globals-importer
 
 	; read the vertices.csv file and for each line create a vertix (node)
+  
+  ;====== MAPA COMPLETO =========
+  file-open "/mapa/base/vertices_brian.csv"
+;  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/vertices_brian.csv"; La Maquina
+  ;====== SOLO TRANSMILENIO ====================
   ;file-open "streets/verticesPru2.1.csv"
 ;  file-open "streets/new.verticesTOTAL.csv"
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/transmilenio/vertices1.csv"
+;  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/transmilenio/vertices1.csv"
   while [ not file-at-end? ] [
 		; Create variable row which is a list
     let row csv:from-row file-read-line
@@ -36,21 +43,27 @@ to setup-importer
   ]
   file-close 
 	; read the edges.csv file and for each line create a link
-	;file-open "streets/edgesConectores1.csv"
+	
+  ;============= MAPA COMPLETO ================
+  file-open "/mapa/base/edges_brian.csv"
+;  file-open "/home/dfsandovalp/WORK/transporteBog/version_2/mapa/base/edges_brian.csv"; La Maquina
+  ;============= SOLO TRANSMILENIO ===============
+  ;file-open "streets/edgesConectores1.csv"
 ;  file-open "streets/new.edgesTOTAL.csv"
-  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/transmilenio/edges2.csv"
+;  file-open "/home/dfsandovalp/WORK/transporteBog/version_1/mapa/transmilenio/edges2.csv"
 	while [not file-at-end?] [
 		; Create variable row which is a list
 		let row csv:from-row file-read-line
 
 		; Create link --- this is a little inefficient
+
 		let fromElement item 0 sort vertices with [id = item 1 row]
 		ask fromElement [
 			; Get vertex at the other end
 			let toElement item 0 sort vertices with [id = item 2 row]
 
 			; create the link
-			create-edge-with toElement [ set thickness item 4 row / 6]
+			create-edge-with toElement [ set thickness item 4 row / 6 ]
 
 			; Set the cost for that new link
 			ask edges with [end1 = fromElement and end2 = toElement] [
@@ -67,11 +80,13 @@ to setup-importer
 				;set label item 3 row
 			]
 		]
-	]	
+ 
+  ]
 	file-close
 
   reset-ticks
 end
+
 
 to check_connectivity
 	ask vertices [set color white]

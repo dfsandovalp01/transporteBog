@@ -1,0 +1,129 @@
+;;;;;;;;;;;;;;
+;; ENTITIES ;;
+;;;;;;;;;;;;;;
+breed [transmilenio articulado]
+breed [t_easy easy ]
+breed [t_middle middle ]
+breed [t_fast fast]
+breed [people person]
+breed [estaciones estacion]
+breed [portales portal]
+
+transmilenio-own [
+;  speed
+;  speed-limit 
+;  speed-min 
+  path 
+  origen.stop  
+  last_stop  
+  next_stop   
+  direct
+  origin_portal
+  destination_portal
+  completed
+  name_route
+  recorridos
+  genes
+  apoc
+  route
+  
+]
+
+t_easy-own [
+;  speed
+;  speed-limit 
+;  speed-min 
+  pass_capacity
+  on_board
+  cap_status ;capacity status
+  id_pass
+  path 
+  origen.stop  
+  last_stop  
+  next_stop   
+  direct
+  origin_portal
+  destination_portal
+  completed
+  name_route
+  recorridos
+  genes
+  apoc
+  route
+  freq_middle
+  current_node
+  options_route
+  
+]
+
+t_middle-own [
+;  speed
+;  speed-limit 
+;  speed-min 
+  pass_capacity
+  on_board
+  cap_status ;capacity status
+  id_pass
+  path 
+  origen.stop  
+  last_stop  
+  next_stop   
+  direct
+  origin_portal
+  destination_portal
+  completed
+  name_route
+  recorridos
+  genes
+  apoc
+  route
+  freq_middle
+  current_node
+  options_route
+  
+]
+
+t_fast-own [
+;  speed
+;  speed-limit 
+;  speed-min 
+  pass_capacity
+  on_board
+  cap_status ;capacity status
+  id_pass
+  path 
+  origen.stop  
+  last_stop  
+  next_stop   
+  direct
+  origin_portal
+  destination_portal
+  completed
+  name_route
+  recorridos
+  genes
+  apoc
+  route
+  freq_fast
+  current_node
+  options_route
+  
+]
+
+estaciones-own [
+  name-troncal
+]
+
+people-own [
+  inicio
+  llegada
+  destination
+  current_vertice
+  current_node
+  icu
+  stop_icu
+  top_icu 
+  def_icu
+  my_route
+  traveling
+]

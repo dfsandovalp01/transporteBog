@@ -1,24 +1,32 @@
 __includes [
+  ;GLOBAL
   "global/GLOBALS.nls"
   "global/ENTITIES.nls"
   "global/FUNCTIONS.nls"
+  ;BUS
+  "bus_code/b_functions.nls"
+
+   ;PERSON
+  "person_code/p_functions.nls"
+
  ; MAPA
   "mapa/globals.nls"
   "mapa/entities.nls"
   "mapa/create-graph.nls"
+  "mapa/create-graph-tm.nls"
 
-  "csv/data/export_data.nls"
+;  "../csv/data/export_data.nls"
 
 ]
 @#$#@#$#@
 GRAPHICS-WINDOW
 328
 13
-712
-398
+826
+512
 -1
 -1
-11.4
+14.85
 1
 10
 1
@@ -38,24 +46,13 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
-INPUTBOX
-16
-21
-177
-81
-cant_cuadrillas
-2.0
-1
-0
-Number
-
 BUTTON
-202
-107
-317
-264
+200
+81
+315
+238
 GO
-go\n;create_csv_new\n;info
+go\n;create_csv_new\n;info\n
 T
 1
 T
@@ -72,7 +69,7 @@ BUTTON
 318
 83
 SETUP
-setup\nget_date
+setup\n;get_date
 NIL
 1
 T
@@ -84,13 +81,13 @@ NIL
 1
 
 BUTTON
-209
-282
-309
-315
-Give-path
-move-articulado\n\nreturn-articulado\ngive-path
-T
+75
+427
+272
+460
+Transmi_ON_Demand
+setup-tm_on_demand
+NIL
 1
 T
 OBSERVER
@@ -101,26 +98,164 @@ NIL
 1
 
 INPUTBOX
-17
-109
-179
-169
+16
+80
+178
+140
 number_of_people
-1.0
+50.0
 1
 0
 Number
 
 INPUTBOX
 16
-184
+139
 177
-244
+199
 valor_pasaje
-2400.0
+0.0
 1
 0
 Number
+
+INPUTBOX
+16
+198
+102
+258
+mid_freq
+0.56
+1
+0
+Number
+
+INPUTBOX
+98
+198
+180
+258
+fast_freq
+0.34
+1
+0
+Number
+
+INPUTBOX
+75
+459
+143
+519
+#_middle
+1.0
+1
+0
+Number
+
+INPUTBOX
+143
+459
+209
+519
+#_fast
+0.0
+1
+0
+Number
+
+INPUTBOX
+208
+459
+272
+519
+#_easy
+3.0
+1
+0
+Number
+
+INPUTBOX
+16
+22
+178
+82
+bus_capacity
+3.0
+1
+0
+Number
+
+BUTTON
+62
+306
+213
+339
+Show-name-stop
+ifelse show-name-stop = true \n[ask nodos [set label who]]\n[ask nodos [set label \"\"]]
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SWITCH
+72
+356
+247
+389
+show-name-stop
+show-name-stop
+0
+1
+-1000
+
+MONITOR
+17
+259
+74
+304
+people
+length [who] of people
+17
+1
+11
+
+MONITOR
+73
+259
+146
+304
+Full_easy
+length [who] of t_easy with [cap_status = \"full\"]
+17
+1
+11
+
+MONITOR
+146
+259
+232
+304
+Full_middle
+length [who] of t_middle with [cap_status = \"full\"]
+17
+1
+11
+
+MONITOR
+232
+259
+299
+304
+Full_fast
+length [who] of t_fast with [cap_status = \"full\"]
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -464,7 +599,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
