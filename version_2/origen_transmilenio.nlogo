@@ -81,10 +81,10 @@ NIL
 1
 
 BUTTON
-75
-427
-272
-460
+17
+370
+214
+403
 Transmi_ON_Demand
 setup-tm_on_demand
 NIL
@@ -142,10 +142,10 @@ fast_freq
 Number
 
 INPUTBOX
-75
-459
-143
-519
+17
+403
+85
+463
 #_middle
 1.0
 1
@@ -153,10 +153,10 @@ INPUTBOX
 Number
 
 INPUTBOX
-143
-459
-209
-519
+85
+403
+151
+463
 #_fast
 0.0
 1
@@ -164,10 +164,10 @@ INPUTBOX
 Number
 
 INPUTBOX
-208
-459
-272
-519
+150
+403
+214
+463
 #_easy
 3.0
 1
@@ -186,10 +186,10 @@ bus_capacity
 Number
 
 BUTTON
-62
-306
-213
-339
+17
+304
+168
+337
 Show-name-stop
 ifelse show-name-stop = true \n[ask nodos [set label who]]\n[ask nodos [set label \"\"]]
 NIL
@@ -203,10 +203,10 @@ NIL
 1
 
 SWITCH
-72
-356
-247
-389
+17
+337
+192
+370
 show-name-stop
 show-name-stop
 0
