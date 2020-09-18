@@ -1,4 +1,4 @@
-;;; estoy en master?
+
 extensions [nw table]
 ;;;;;;;;;;;;;;;
 ;; FUNCTIONS ;;
@@ -27,7 +27,7 @@ to setup
 ; /home/dfsandovalp/WORK/transporteBog/version_1/distributions
   setuptrans
   set min_max_speed 0.2
-	set max_speed [dist] of min-one-of edges with [member? self (filter [[elem] -> [ dist ] of elem > min_max_speed ] sort edges) ]  [dist]
+	set max_speed [dist] of min-one-of edges_tm with [member? self (filter [[elem] -> [ dist ] of elem > min_max_speed ] sort edges_tm) ]  [dist]
   
 
   set indice_rec [recorridos] of transmilenio
