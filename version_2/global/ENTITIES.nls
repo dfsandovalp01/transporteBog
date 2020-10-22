@@ -131,7 +131,7 @@ people-own [
   destination
   current_vertice
   current_node
-  icu
+  icu ;I Can Use
   stop_icu
   top_icu 
   def_icu
