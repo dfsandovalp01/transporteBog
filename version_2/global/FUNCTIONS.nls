@@ -65,7 +65,7 @@ to setup-portales
   [if tipo = "PORT" 
     [set shape "house"
      set color green
-     set label id
+     set label who
      set size 0.6]
   ]
 end

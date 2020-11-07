@@ -35,7 +35,8 @@ to setuptrans
           set origen.stop origin_portal 
           set genes m
           set apoc p
-          set name_route word [id] of origin_portal [id] of destination_portal
+          set path fput nodo m path
+          set name_route word [who] of origin_portal [who] of destination_portal
         ]
       ])
     ]
@@ -63,7 +64,7 @@ to setup_transmi_med_fast
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
       set origen.stop origin_portal 
-      set path  [path] of articulado w
+      set path  [route] of articulado w
       set route path
       set recorridos 0
       set direCt "DOWN"
@@ -96,7 +97,8 @@ to setup_transmi_med_fast
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
       set origen.stop origin_portal 
-      set path but-last [path] of articulado w
+      ;set path but-last [route] of articulado w
+      set path [route] of articulado w
       set route []
       set recorridos 0
       set direCt "DOWN"
@@ -129,7 +131,8 @@ to setup_transmi_med_fast
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
       set origen.stop origin_portal 
-      set path but-last [path] of articulado w
+      ;set path but-last [route] of articulado w
+      set path [route] of articulado w
       set route []
       set recorridos 0
       set direCt "DOWN"
@@ -175,7 +178,7 @@ to setup-tm_on_demand
 ;    ask transmilenio [if member? (current_node) path and member? (destination_portal) path [set on_demand_route lput name_route on_demand_route ]]
     let name_route_1 item 0 shuffle on_demand_route    
     let whoRouteRef item 0 [who] of transmilenio with [name_route = name_route_1]
-    set path [path] of articulado whoRouteRef
+    set path [route] of articulado whoRouteRef
     set origin_portal nodo [genes] of articulado whoRouteRef
     set destination_portal nodo [apoc] of articulado whoRouteRef
     set genes od_ori
@@ -353,11 +356,14 @@ to move-articulado
     set last_stop origen.stop
     set origen.stop next_stop    
 ;    ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
-    ifelse position origen.stop route + 1 >= length route [
+    carefully [
+      ifelse (position origen.stop route + 1) >= length route [
       set next_stop origen.stop
     ][
       set next_stop item (position origen.stop route + 1) route
-    ]
+    ]]
+    [user-message (word "soy " who )]
+    
     ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
@@ -365,6 +371,8 @@ to move-articulado
       [
         set direct "DOWN"
       ]
+    ;carefully [][user-message (word "Soy " who "next_stop" next_stop)]
+    
     ability-level
     
 ;    move-in-route
@@ -525,6 +533,7 @@ to return-articulado
       set destination_portal origin_portal
       set origin_portal origen.stop
       set direct "DOWN"
+      if recorridos = 0 [set route path]
       set recorridos recorridos + 1
       
     ]

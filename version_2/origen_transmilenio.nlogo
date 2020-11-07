@@ -69,7 +69,7 @@ BUTTON
 318
 83
 SETUP
-setup\n;get_date
+setup\n;get_date\nstop-inspecting-dead-agents
 NIL
 1
 T
