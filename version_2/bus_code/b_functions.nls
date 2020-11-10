@@ -47,6 +47,9 @@ to setup_transmi_med_fast
   let apoc_x_route sort [apoc] of transmilenio
   let nameR_x_route sort [name_route] of transmilenio
   let who_x_route sort [who] of transmilenio
+  set all_route_t_easy []
+  set all_route_t_middle []
+  set all_route_t_fast []
   
 ;  foreach gen_x_route [
   (foreach (gen_x_route )(who_x_route )(nameR_x_route) [
@@ -64,7 +67,7 @@ to setup_transmi_med_fast
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
       set origen.stop origin_portal 
-      set path  [route] of articulado w
+      set path [route] of articulado w
       set route path
       set recorridos 0
       set direCt "DOWN"
@@ -83,6 +86,8 @@ to setup_transmi_med_fast
       set route remove-duplicates route
       if origin_portal = last path [set path reverse path set route path set route fput origin_portal route]
       set next_stop item (position origen.stop route ) route 
+      set all_route_t_easy lput route all_route_t_easy
+      
     ]
     create-transmilenio 1 [
       set family_route "t_middle"
@@ -97,8 +102,8 @@ to setup_transmi_med_fast
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
       set origen.stop origin_portal 
-      ;set path but-last [route] of articulado w
-      set path [route] of articulado w
+      set path but-last [route] of articulado w
+      ;set path [route] of articulado w
       set route []
       set recorridos 0
       set direCt "DOWN"
@@ -117,6 +122,7 @@ to setup_transmi_med_fast
       set route lput destination_portal route
       set route remove-duplicates route
       set next_stop item (position origen.stop route ) route 
+      set all_route_t_middle lput route all_route_t_middle
     ]
     create-transmilenio 1 [
       set family_route "t_fast"
@@ -131,8 +137,8 @@ to setup_transmi_med_fast
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
       set origen.stop origin_portal 
-      ;set path but-last [route] of articulado w
-      set path [route] of articulado w
+      set path but-last [route] of articulado w
+      ;set path [route] of articulado w
       set route []
       set recorridos 0
       set direCt "DOWN"
@@ -149,7 +155,12 @@ to setup_transmi_med_fast
       set route fput origin_portal route
       set route lput destination_portal route
       set route remove-duplicates route
-      set next_stop item (position origen.stop route ) route 
+      ;let item_1 item 1 route
+      ;let route__1 route
+      set next_stop item (position origen.stop route) route
+      set all_route_t_fast lput route all_route_t_fast
+      ;user-message (word who next_stop " route " route path) 
+      ;set next_stop item 1 route 
     ]
   ])
   
@@ -234,7 +245,7 @@ to move-articulado
   
   ;;;;;;; ARTICULADOS BAJANDO ;;;;;;;;;;;;;;
   
-  ask transmilenio with [direct = "DOWN"]  
+  ask transmilenio with [family_route = "origin" and direct = "DOWN"]  
   [
     ifelse member? [id] of origen.stop  connector_id  = TRUE
     [      
@@ -282,6 +293,10 @@ to move-articulado
       set next_stop item 0 [end1] of links with [end2 = origen ]
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
+      if destination_portal = origen.stop and recorridos = 1 [
+        set route path
+        set Conteo_origin Conteo_origin + 1
+      ]
      
     ]
     set path remove-duplicates path
@@ -289,7 +304,7 @@ to move-articulado
   
   ;;;;;;; ARTICULADOS SUBIENDO;;;;;;;;;;;;;;
   
-  ask transmilenio with [direct = "UP"]  
+  ask transmilenio with [family_route = "origin" and direct = "UP"]  
   [
     ifelse member? [who] of origen.stop  connector_who  = TRUE
     [      
@@ -337,6 +352,10 @@ to move-articulado
       set next_stop item 0 [end2] of links with [end1 = origen ]
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
+      if destination_portal = origen.stop and recorridos = 1 [
+        set route path
+        set Conteo_origin Conteo_origin + 1
+      ]
       
       
     ]
@@ -362,7 +381,7 @@ to move-articulado
     ][
       set next_stop item (position origen.stop route + 1) route
     ]]
-    [user-message (word "soy " who )]
+    [user-message (word "soy " who " prueva mov t_easy" )]
     
     ifelse [who] of origen.stop < [who] of next_stop 
       [
@@ -389,7 +408,14 @@ to move-articulado
     facexy next_stop_x next_stop_y fd distance next_stop
     set last_stop origen.stop
     set origen.stop next_stop
-    ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
+    ;ifelse destination_portal != origen.stop [set next_stop item (position next_stop route ) route][]
+    carefully [
+      ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1 ) route][]
+    ][
+      ;carefully [set next_stop item 1 route][
+        user-message (word "Soy " who " next_stop " next_stop " route " route " item1 " item 1 route)
+      ;]
+    ]
     ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
@@ -409,7 +435,14 @@ to move-articulado
     facexy next_stop_x next_stop_y fd distance next_stop
     set last_stop origen.stop
     set origen.stop next_stop
-    ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
+    carefully [
+      ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1 ) route][]
+    ][
+      ;carefully [set next_stop item 1 route][
+        user-message (word "Soy " who " next_stop " next_stop " route " route " item1 " item 1 route)
+      ;]
+    ]
+    
     ifelse [who] of origen.stop < [who] of next_stop 
       [
         set direct "UP"
@@ -588,6 +621,8 @@ to give-path
 ;    set path lput origen.stop path 
     if destination_portal = origen.stop and recorridos = 1 [
       set route path
+      print name_route 
+      print route
     ]
   ]
 end

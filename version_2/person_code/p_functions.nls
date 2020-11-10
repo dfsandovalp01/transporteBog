@@ -59,9 +59,10 @@ to take-bus ; personas toman el servicio
       [
         if traveling = "no" 
         [
+          let my_id who
           ask my_route [
             set on_board (on_board + 1)
-            set id_pass lput who id_pass
+            set id_pass lput my_id id_pass
           ]
           set traveling "yes" 
 ;          user-message (word "Me pude subir al " my_route " :D")
@@ -254,50 +255,129 @@ to select-bus
       ifelse member? "t_fast" [family_route] of transmilenio-on self AND length (filter [i -> i = r] ([name_route] of transmilenio-on self)) != 0 
 ;      ifelse any? transmilenio-on self with [family_route = "t_fast"] AND length filter [i -> i = r] [name_route] of t_fast-on self != 0 
       [
+        let all_fast_here filter [i -> first i = "f"] [name_route] of transmilenio-on self 
+        if length all_fast_here = 0 [user-message (word "esta vacio fast" )]
+        foreach all_fast_here [
+          f ->
+          if member? f r [
+            set fast_here f
+            let fast_here_1 fast_here
+            set my_route turtle item 0 [who] of transmilenio with [family_route = "t_fast" AND name_route = fast_here_1]
+          ]
+        ]
+         
         
-        set fast_here filter [i -> first i = "f"] [name_route] of transmilenio-on self
-        let fast_here_1 item 0 fast_here
-        
-;        set my_route lput item 0 fast_here []
-;        set my_route lput (word item 0 [breed] of t_fast with [name_route = item 0 fast_here]) my_route
-        set my_route turtle item 0 [who] of transmilenio with [family_route = "t_fast" AND name_route = fast_here_1]
-        ;user-message (word "soy " who "fast her es" fast_here )
-;          user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
-;        die
-        
-;        hide-turtle
       ]
       [ifelse member? "t_middle" [family_route] of transmilenio-on self AND length filter [i -> i = r] [name_route] of transmilenio-on self != 0 
 ;        ifelse any? t_middle-on self AND length filter [i -> i = r] [name_route] of t_middle-on self != 0
       [
-          set middle_here filter [i -> i = r] [name_route] of transmilenio-on self
-          let middle_here_1 item 0 middle_here
-;          set my_route lput item 0 middle_here []
-;        set my_route lput (word item 0 [breed] of t_middle with [name_route = item 0 middle_here]) my_route
-           set my_route turtle item 0 [who] of transmilenio with [family_route = "t_middle" AND name_route = middle_here_1]
-;                    user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
-;        die
-;          hide-turtle
+        let all_middle_here filter [i -> first i = "m"] [name_route] of transmilenio-on self 
+        if length all_middle_here = 0 [user-message (word "esta vacio middle" )]
+        foreach all_middle_here [
+          m ->
+          if member? m r [
+            set middle_here m
+            let middle_here_1 middle_here
+              
+            set my_route turtle item 0 [who] of transmilenio with [family_route = "t_middle" AND name_route = middle_here_1]
+                
+          ]
+        ]
+          
+     
         ]
       [ifelse member? "t_easy" [family_route] of transmilenio-on self AND length filter [i -> i = r] [name_route] of transmilenio-on self != 0 
 ;          ifelse any? t_easy-on self AND length filter [i -> i = r] [name_route] of t_easy-on self != 0
         [
-          set easy_here filter [i -> i = r] [name_route] of transmilenio-on self
-          let easy_here_1 item 0 easy_here
-;            set my_route lput item 0 easy_here []
-;        set my_route lput (word item 0 [breed] of t_easy with [name_route = item 0 easy_here]) my_route
-           set my_route turtle item 0 [who] of transmilenio with [family_route = "t_easy" AND name_route = easy_here_1]
-;                      user-message (word "Soy " who " y me subire en F " [who] of t_fast with [name_route = item 0 fast_here])
-;        die
-;            hide-turtle
+            let all_easy_here filter [i -> first i = "e"]  [name_route] of transmilenio-on self 
+            if length all_easy_here = 0 [user-message (word "esta vacio easy" )]
+        foreach all_easy_here [
+          ea ->
+          if member? ea r [
+            set easy_here ea
+            let easy_here_1 easy_here
+            set my_route turtle item 0 [who] of transmilenio with [family_route = "t_easy" AND name_route = easy_here_1]
+          ]
+        ]
+            
+            
+           
           ]
         [] ] ]
       
     ]
-;  if my_route != 0 [user-message (word "soy " who " y no me sirve nada >:(")];evaluate points without coverage
-    
+ 
 end
 
+to select-bus-1
+  foreach def_icu 
+    [
+      r -> 
+      set fast_here []
+      set middle_here []
+      set easy_here []
+      
+      
+      let list_r []
+      set list_r fput r list_r
+      ;user-message (word "list_r f " list_r )
+      
+      
+      ifelse filter [i -> first i = "f"] list_r != 0 
+      [
+        ;user-message (word "esta vacio fast " who)
+        let all_fast_here filter [i -> first i = "f"] [name_route] of transmilenio
+        if length all_fast_here = 0 [user-message (word "esta vacio fast" )]
+        
+        if [origen.stop] of transmilenio with [family_route = "t_fast" and name_route = r] = current_node 
+          [
+          user-message (word "esta vacio fast" )
+            set fast_here r
+            let fast_here_1 fast_here
+            set my_route turtle item 0 [who] of transmilenio with [family_route = "t_fast" AND name_route = fast_here_1]
+          ]
+        
+         
+        
+      ]
+      [ifelse filter [i -> first i = "m"] list_r != 0 
+      [
+        let all_middle_here filter [i -> first i = "m"] [name_route] of transmilenio
+        if length all_middle_here = 0 [user-message (word "esta vacio middle" )]
+        if [origen.stop] of transmilenio with [name_route = r] = current_node  [
+            set middle_here r
+            let middle_here_1 middle_here
+              
+            set my_route turtle item 0 [who] of transmilenio with [family_route = "t_middle" AND name_route = middle_here_1]
+                
+          ]
+        ]
+          
+     
+        
+      [ifelse filter [i -> first i = "e"] list_r != 0 
+
+        [
+            let all_easy_here filter [i -> first i = "e"]  [name_route] of transmilenio-on self 
+            if length all_easy_here = 0 [user-message (word "esta vacio easy" )]
+            if [origen.stop] of transmilenio with [name_route = r] = current_node [
+                set easy_here r
+                let easy_here_1 easy_here
+                set my_route turtle item 0 [who] of transmilenio with [family_route = "t_easy" AND name_route = easy_here_1]
+              ]
+        ]
+            
+            
+           
+          
+        [] ] ]
+      
+      set list_r but-first list_r
+      ;user-message (word "list_r l " list_r )
+      
+    ]
+ 
+end
 
 
 

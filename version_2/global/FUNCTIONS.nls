@@ -14,6 +14,7 @@ to setup
   setup-portales
   setup-conectores
   
+  set Conteo_origin 0
 
   
   set all_portals sort [id] of nodos with [tipo = "PORT"] ; [421 425 432 446 464 475 492 503 516]
@@ -42,14 +43,15 @@ end
 
 to go
 
+    if length [who] of t_middle = 0  [state_tm]  
     move-articulado
     return-articulado
-    give-path
+    ;give-path
     if all_routes_ok = "OK" [take-bus]
     
 
 
-  if length [who] of t_middle = 0  [state_tm] 
+  
   
    
   
@@ -86,16 +88,18 @@ end
 
 to state_tm 
   
-    ifelse [recorridos] of min-one-of (transmilenio) [recorridos] > 0
+    ;ifelse [recorridos] of min-one-of (transmilenio) [recorridos] > 0
+   ifelse Conteo_origin = 72
     [      
       set all_routes_ok "OK"
       setup_transmi_med_fast
       ask patch 2 30 [ set pcolor green ]
-      ask transmilenio [set route path]
-      set all_route_transmilenio [route] of transmilenio with [family_route = "origin"]
-      set all_route_t_easy [route] of transmilenio with [family_route = "t_easy"]
-      set all_route_t_middle [route] of transmilenio with [family_route = "t_middle"]
-      set all_route_t_fast [route] of transmilenio with [family_route = "t_fast"]
+      ;ask transmilenio [set route path]
+      ;set all_route_transmilenio [route] of transmilenio with [family_route = "origin"]
+      ;set all_route_t_easy [route] of transmilenio with [family_route = "t_easy"]
+      ;set all_route_t_middle [route] of transmilenio with [family_route = "t_middle"]
+      ;set all_route_t_fast [route] of transmilenio with [family_route = "t_fast"]
+      set Conteo_origin 0
     ]
     []
   

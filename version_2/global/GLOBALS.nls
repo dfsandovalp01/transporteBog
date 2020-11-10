@@ -21,6 +21,7 @@ globals [
   all_route_t_fast
   max_speed
 	min_max_speed
+  Conteo_origin
   
    
 ;  portal.norte-x portal.norte-y
