@@ -27,6 +27,9 @@ to setup
 ;  move-people
 ; /home/dfsandovalp/WORK/transporteBog/version_1/distributions
   setuptrans
+  set max_capacity [capacity] of max-one-of edges_tm [capacity]
+  set inEdge_ponderator 1 ;w
+	set min_penalty 1
   set min_max_speed 0.2
 	set max_speed [dist] of min-one-of edges_tm with [member? self (filter [[elem] -> [ dist ] of elem > min_max_speed ] sort edges_tm) ]  [dist]
   
@@ -42,12 +45,17 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;; GO ;;;;;;;;;;;;;;;;;;;;;;
 
 to go
+  
+    
 
     if length [who] of t_middle = 0  [state_tm]  
     move-articulado
     return-articulado
     ;give-path
-    if all_routes_ok = "OK" [take-bus]
+    if all_routes_ok = "OK" [
+    calculate_traffic
+    take-bus
+  ]
     
 
 

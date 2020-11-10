@@ -370,31 +370,35 @@ to move-articulado
 ;    set next_stop item (position origen route ) route
     let next_stop_x [xcor] of next_stop
     let next_stop_y [ycor] of next_stop
-  
-    facexy next_stop_x next_stop_y fd distance next_stop
-    set last_stop origen.stop
-    set origen.stop next_stop    
-;    ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
-    carefully [
-      ifelse (position origen.stop route + 1) >= length route [
-      set next_stop origen.stop
-    ][
-      set next_stop item (position origen.stop route + 1) route
-    ]]
-    [user-message (word "soy " who " prueva mov t_easy" )]
     
-    ifelse [who] of origen.stop < [who] of next_stop 
-      [
-        set direct "UP"
-      ]
-      [
-        set direct "DOWN"
-      ]
-    ;carefully [][user-message (word "Soy " who "next_stop" next_stop)]
+    move-in-route    
+  
+ ;   facexy next_stop_x next_stop_y fd distance next_stop
+ ;   set last_stop origen.stop
+ ;   set origen.stop next_stop    
+    
+    
+ ;   ifelse (position origen.stop route + 1) >= length route [
+ ;     set next_stop origen.stop
+ 
+ ; ][
+ ;     set next_stop item (position origen.stop route + 1) route
+ ;   ]
+    
+    
+    
+ ;   ifelse [who] of origen.stop < [who] of next_stop 
+  ;    [
+  ;      set direct "UP"
+   ;   ]
+    ;  [
+     ;   set direct "DOWN"
+      ;]
+    
     
     ability-level
     
-;    move-in-route
+
 
   ] 
   
@@ -500,11 +504,13 @@ to go-towards [from-turtle to-turtle]
         ifelse from_vertex < to_vertex 
         [
           set penalty2 [penalty] of edge_tm from_vertex to_vertex
-        ][  
-          carefully [set penalty2 [penalty] of edge_tm to_vertex from_vertex][user-message (word who)] 
+        ][
+          carefully [set penalty2 [penalty] of edge_tm to_vertex from_vertex ][user-message (word who " penalty1 " from_vertex " " to_vertex)]  
+          ;set penalty2 [penalty] of edge_tm to_vertex from_vertex 
         ]
       ] ; problem is order of min max from to
-      let speed max_speed / penalty2
+      let speed 1
+      carefully [set speed max_speed / penalty2][user-message (word who " penalty1 " from_vertex to_vertex)]
 
       ifelse abs(xcord - xcor) > speed OR abs(ycord - ycor) > speed [
         forward speed ;TODO correct by penalty
@@ -517,43 +523,64 @@ to go-towards [from-turtle to-turtle]
 end
 
 ;; ------------ move through path function ------------
+; ------------ move through path function ------------
 to move-in-route 
 	; if path not empty
-;	ifelse not empty? route [
+	;ifelse not empty? path [
 		ifelse distance next_stop = 0 [
 			; check if current vertex is item 0 nd if true delete
 			set origen.stop next_stop
-      set last_stop origen.stop
-    ifelse family_route = "t_easy" [
-      ifelse position origen.stop route + 1 >= length route [
+    ifelse (position origen.stop route + 1) >= length route [
       set next_stop origen.stop
     ][
       set next_stop item (position origen.stop route + 1) route
-    ]][
-      ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1) route][]
     ]
-      
-;			set path remove-item 0 path	
-		][
+    
+    
+    
+    ifelse [who] of origen.stop < [who] of next_stop 
+    [
+      set direct "UP"
+    ]
+    [
+      set direct "DOWN"
+    ]
+    ;carefully [][user-message (word "Soy " who "next_stop" next_stop)]
+    
+ ;   ability-level	
+  		][
 			; else move
 			go-towards self next_stop
 		]
-;	][print "tm_empty"]
+	;][print "empty"]
 end
 
-; ---------------- calculating traffic -----------------
-;to calculate_traffic
-;	foreach sort edges_tm [ 
-;		[element] -> let inEdge length sort drivers with [ last_vertex = [ end1 ] of element and length path > 0 and item 0 path = [end2] of element ]
-;		set inEdge inEdge + length sort drivers with [ last_vertex = [end2] of element and length path > 0 and item 0 path = [end1] of element ]
-;		;ask element [ set penalty (( 1 + inEdge ) * inEdge_ponderator )^( 1 + max_capacity - capacity) ] 
-;    ask element [ set penalty 1 + ((inEdge) / (10 ^ ( capacity - 1)) * 1 / ( count drivers / 100 ) ^ 2) ]
-;
-;		ask element	[ set cost dist * penalty ]
-;	]
-;
-;;	set_traffic_color
-;end
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; TRAFICO Y VELOCIDAD ;;;;;;;;;;;;;;;;;;;;;;
+
+to calculate_traffic
+	foreach sort edges_tm [ 
+		[element] -> let inEdge length sort transmilenio with [ origen.stop = [ end1 ] of element and length route > 0 and item 0 route = [end2] of element ]
+		set inEdge inEdge + length sort transmilenio with [ origen.stop = [end2] of element and length route > 0 and item 0 route = [end1] of element ]
+		;ask element [ set penalty (( 1 + inEdge ) * inEdge_ponderator )^( 1 + max_capacity - capacity) ] 
+    ask element [ set penalty 1 + ((inEdge) / (10 ^ ( capacity - 1)) * 1 / ( count transmilenio / 100 ) ^ 2) ]
+
+		ask element	[ set cost dist * penalty ]
+	]
+
+	set_traffic_color
+end
+
+to set_traffic_color
+	ask edges_tm [set color gray]
+	let first_centile int ( ( length sort edges_tm ) * 0.1 ) 
+	let top10 sublist sort-on [penalty] edges_tm (length sort edges_tm - first_centile) ( length sort edges_tm)
+	set top10 filter [ [elem] -> [penalty] of elem > min_penalty ] top10
+	let top50 sublist sort-on [penalty] edges_tm (length sort edges_tm - first_centile * 5) ( length sort edges_tm)
+	set top50 filter [ [elem] -> [penalty] of elem > min_penalty ] top50
+
+	foreach top50 [[elem] -> ask elem [set color yellow]]
+	foreach top10 [[elem] -> ask elem [set color red]]
+end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; RETORNO DE BUSES
@@ -626,3 +653,6 @@ to give-path
     ]
   ]
 end
+
+
+

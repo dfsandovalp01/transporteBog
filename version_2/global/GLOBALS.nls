@@ -19,6 +19,7 @@ globals [
   all_route_t_easy
   all_route_t_middle
   all_route_t_fast
+  min_penalty
   max_speed
 	min_max_speed
   Conteo_origin
