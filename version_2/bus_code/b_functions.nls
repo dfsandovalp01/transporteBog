@@ -17,6 +17,7 @@ to setuptrans
       setxy [xcor] of nodo n [ycor] of nodo n
       set direct "DOWN"     
       set size 0.6
+      set pass_capacity bus_capacity
       set path [];list ("x") (origen.stop)
       set recorridos 0
        
@@ -51,7 +52,6 @@ to setup_transmi_med_fast
   set all_route_t_middle []
   set all_route_t_fast []
   
-;  foreach gen_x_route [
   (foreach (gen_x_route )(who_x_route )(nameR_x_route) [
     [g w n] ->
     create-transmilenio 1 [
@@ -66,6 +66,7 @@ to setup_transmi_med_fast
       set size 0.6
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
+      set is_stop "yes"
       set origen.stop origin_portal 
       set path [route] of articulado w
       set route path
@@ -74,13 +75,6 @@ to setup_transmi_med_fast
       set name_route (word "e" n "-" who)
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
-;      set freq_fast round ((length path) / ((length path) mod ( ((length path) * fast_freq))))
-;      foreach path [
-;        b ->
-;        if ((position b path + 1) mod freq_fast) = 0 [
-;          set route lput b route
-;        ]
-;      ]
       set route fput origin_portal route
       set route lput destination_portal route
       set route remove-duplicates route
@@ -89,10 +83,11 @@ to setup_transmi_med_fast
       set all_route_t_easy lput route all_route_t_easy
       
     ]
+    
     create-transmilenio 1 [
       set family_route "t_middle"
       set shape "truck"
-      set color gray
+      set color red
       setxy [xcor] of nodo g [ycor] of nodo g
       set pass_capacity bus_capacity   
       set on_board 0
@@ -101,9 +96,9 @@ to setup_transmi_med_fast
       set size 0.6
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
+      set is_stop "yes"
       set origen.stop origin_portal 
-      set path but-last [route] of articulado w
-      ;set path [route] of articulado w
+      set path [route] of articulado w
       set route []
       set recorridos 0
       set direCt "DOWN"
@@ -111,7 +106,6 @@ to setup_transmi_med_fast
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
       set freq_middle floor ((length path) / ((length path) mod (((length path) * mid_freq))))
-;      show freq_middle
       foreach path [
         b ->
         if ((position b path + 1) mod freq_middle) = 0 [
@@ -121,9 +115,11 @@ to setup_transmi_med_fast
       set route fput origin_portal route
       set route lput destination_portal route
       set route remove-duplicates route
-      set next_stop item (position origen.stop route ) route 
+      ;set next_stop item (position origen.stop route ) route 
+      set next_stop item (position origen.stop path ) path 
       set all_route_t_middle lput route all_route_t_middle
     ]
+    
     create-transmilenio 1 [
       set family_route "t_fast"
       set shape "truck"
@@ -136,9 +132,9 @@ to setup_transmi_med_fast
       set size 0.6
       set origin_portal nodo [genes] of articulado w
       set destination_portal nodo [apoc] of articulado w
+      set is_stop "yes"
       set origen.stop origin_portal 
-      set path but-last [route] of articulado w
-      ;set path [route] of articulado w
+      set path [route] of articulado w
       set route []
       set recorridos 0
       set direCt "DOWN"
@@ -155,12 +151,8 @@ to setup_transmi_med_fast
       set route fput origin_portal route
       set route lput destination_portal route
       set route remove-duplicates route
-      ;let item_1 item 1 route
-      ;let route__1 route
-      set next_stop item (position origen.stop route) route
+      set next_stop item (position origen.stop path ) path 
       set all_route_t_fast lput route all_route_t_fast
-      ;user-message (word who next_stop " route " route path) 
-      ;set next_stop item 1 route 
     ]
   ])
   
@@ -173,8 +165,8 @@ to setup-tm_on_demand
     set family_route "t_easy"
     setxy random-xcor random-ycor
     set shape "truck"
-    set color yellow
-    set size 0.6
+    set color 60
+    set size 1
 ;    set inicio one-of vertices
     set pass_capacity bus_capacity   
     set cap_status "empty";capacity status
@@ -245,7 +237,7 @@ to move-articulado
   
   ;;;;;;; ARTICULADOS BAJANDO ;;;;;;;;;;;;;;
   
-  ask transmilenio with [family_route = "origin" and direct = "DOWN"]  
+  ask transmilenio with [family_route = "origin" and direct = "DOWN" and recorridos = 0]  
   [
     ifelse member? [id] of origen.stop  connector_id  = TRUE
     [      
@@ -293,18 +285,19 @@ to move-articulado
       set next_stop item 0 [end1] of links with [end2 = origen ]
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
-      if destination_portal = origen.stop and recorridos = 1 [
+      if destination_portal = origen.stop and recorridos = 0 [
         set route path
         set Conteo_origin Conteo_origin + 1
       ]
      
     ]
     set path remove-duplicates path
+    return-articulado-1
      ]
   
   ;;;;;;; ARTICULADOS SUBIENDO;;;;;;;;;;;;;;
   
-  ask transmilenio with [family_route = "origin" and direct = "UP"]  
+  ask transmilenio with [family_route = "origin" and direct = "UP" and recorridos = 0]  
   [
     ifelse member? [who] of origen.stop  connector_who  = TRUE
     [      
@@ -352,7 +345,7 @@ to move-articulado
       set next_stop item 0 [end2] of links with [end1 = origen ]
       set path lput origen.stop path ;;;;;;
       set path remove-duplicates path
-      if destination_portal = origen.stop and recorridos = 1 [
+      if destination_portal = origen.stop and recorridos = 0 [
         set route path
         set Conteo_origin Conteo_origin + 1
       ]
@@ -360,7 +353,7 @@ to move-articulado
       
     ]
     set path remove-duplicates path
-    
+    return-articulado-1
      ]
  
     ;;;;;;; RUTA FACIL;;;;;;;;;;;;;;
@@ -372,33 +365,7 @@ to move-articulado
     let next_stop_y [ycor] of next_stop
     
     move-in-route    
-  
- ;   facexy next_stop_x next_stop_y fd distance next_stop
- ;   set last_stop origen.stop
- ;   set origen.stop next_stop    
-    
-    
- ;   ifelse (position origen.stop route + 1) >= length route [
- ;     set next_stop origen.stop
- 
- ; ][
- ;     set next_stop item (position origen.stop route + 1) route
- ;   ]
-    
-    
-    
- ;   ifelse [who] of origen.stop < [who] of next_stop 
-  ;    [
-  ;      set direct "UP"
-   ;   ]
-    ;  [
-     ;   set direct "DOWN"
-      ;]
-    
-    
-    ability-level
-    
-
+    return-articulado
 
   ] 
   
@@ -409,25 +376,9 @@ to move-articulado
 ;    set next_stop item (position origen route ) route
     let next_stop_x [xcor] of next_stop
     let next_stop_y [ycor] of next_stop
-    facexy next_stop_x next_stop_y fd distance next_stop
-    set last_stop origen.stop
-    set origen.stop next_stop
-    ;ifelse destination_portal != origen.stop [set next_stop item (position next_stop route ) route][]
-    carefully [
-      ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1 ) route][]
-    ][
-      ;carefully [set next_stop item 1 route][
-        user-message (word "Soy " who " next_stop " next_stop " route " route " item1 " item 1 route)
-      ;]
-    ]
-    ifelse [who] of origen.stop < [who] of next_stop 
-      [
-        set direct "UP"
-      ]
-      [
-        set direct "DOWN"
-      ]
-    ability-level
+    
+    move-in-route 
+    return-articulado
 
   ]
     
@@ -436,27 +387,9 @@ to move-articulado
   ask transmilenio with [family_route = "t_fast"] [
     let next_stop_x [xcor] of next_stop
     let next_stop_y [ycor] of next_stop    
-    facexy next_stop_x next_stop_y fd distance next_stop
-    set last_stop origen.stop
-    set origen.stop next_stop
-    carefully [
-      ifelse destination_portal != origen.stop [set next_stop item (position next_stop route + 1 ) route][]
-    ][
-      ;carefully [set next_stop item 1 route][
-        user-message (word "Soy " who " next_stop " next_stop " route " route " item1 " item 1 route)
-      ;]
-    ]
     
-    ifelse [who] of origen.stop < [who] of next_stop 
-      [
-        set direct "UP"
-      ]
-      [
-        set direct "DOWN"
-      ]
-    ability-level
-    
-;    move-in-route
+    move-in-route 
+    return-articulado
 
   ]
     
@@ -530,10 +463,11 @@ to move-in-route
 		ifelse distance next_stop = 0 [
 			; check if current vertex is item 0 nd if true delete
 			set origen.stop next_stop
-    ifelse (position origen.stop route + 1) >= length route [
+    ifelse member? origen.stop route [set is_stop "yes"][set is_stop "no"]
+    ifelse (position origen.stop path + 1) >= length path [
       set next_stop origen.stop
     ][
-      set next_stop item (position origen.stop route + 1) route
+      set next_stop item (position origen.stop path + 1) path
     ]
     
     
@@ -546,7 +480,7 @@ to move-in-route
       set direct "DOWN"
     ]
     ;carefully [][user-message (word "Soy " who "next_stop" next_stop)]
-    
+    return-articulado
  ;   ability-level	
   		][
 			; else move
@@ -571,7 +505,7 @@ to calculate_traffic
 end
 
 to set_traffic_color
-	ask edges_tm [set color gray]
+	ask edges_tm [set color sky]
 	let first_centile int ( ( length sort edges_tm ) * 0.1 ) 
 	let top10 sublist sort-on [penalty] edges_tm (length sort edges_tm - first_centile) ( length sort edges_tm)
 	set top10 filter [ [elem] -> [penalty] of elem > min_penalty ] top10
@@ -584,62 +518,47 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; RETORNO DE BUSES
+
 to return-articulado
+   if destination_portal = origen.stop ;or origin_portal = next_stop
+    [
+      set destination_portal origin_portal
+      set origin_portal origen.stop
+      set path reverse path
+      set route reverse route
+      set recorridos recorridos + 1      
+    ]
+  
+end
+
+
+to return-articulado-1
   ;;; ESTA PARTE DUVUELVE AL ARTICULADO
-  ask transmilenio with [family_route = "origin"]
-  [
+;  ask transmilenio with [family_route = "origin"]
+;  [
     ifelse destination_portal = origen.stop
     [
       set destination_portal origin_portal
       set origin_portal origen.stop
       set direct "DOWN"
-      if recorridos = 0 [set route path]
+      ;if recorridos = 0 [set route path]
       set recorridos recorridos + 1
       
     ]
     []
-  ]
-  ask transmilenio with [family_route = "t_easy"]
-  [
-     ifelse destination_portal = origen.stop ;or origin_portal = next_stop
-    [
-      set destination_portal origin_portal
-      set origin_portal origen.stop
-      set route reverse route
-      set recorridos recorridos + 1
-      
-    ]
-    []
-  ]
-  ask transmilenio with [family_route = "t_middle"]
-  [
-     ifelse destination_portal = origen.stop
-    [
-      set destination_portal origin_portal
-      set origin_portal origen.stop
-      set route reverse route
-      set recorridos recorridos + 1
-      
-    ]
-    []
-  ]
-  ask transmilenio with [family_route = "t_fast"]
-  [
-     ifelse destination_portal = origen.stop
-    [
-      set destination_portal origin_portal
-      set origin_portal origen.stop
-      set route reverse route
-      set recorridos recorridos + 1
-      
-    ]
-    []
-  ]
 end
 
 
 to ability-level
-  ifelse  pass_capacity = on_board [set cap_status "full"][set cap_status "empty"]
+  ask transmilenio [
+    ifelse pass_capacity = on_board [
+      user-message (word "voy lleno " who )
+      set cap_status "full"
+    ][
+      set cap_status "empty"
+    ]
+  ]
+  
 end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; IDENTIFICANDO CAMINOS ;;;;;;;;;;;;;;;;;;;;;;
 

@@ -36,7 +36,7 @@ to setup-importer-tm
 
 			set shape "dot"
 			set size 0.3
-			set color white
+			set color red
 		]
   ]
   file-close 

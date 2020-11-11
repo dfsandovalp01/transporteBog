@@ -31,6 +31,7 @@ transmilenio-own [
   genes
   apoc
   route
+  is_stop
   freq_easy
   freq_middle
   freq_fast
