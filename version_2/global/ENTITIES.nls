@@ -26,6 +26,7 @@ transmilenio-own [
   origin_portal
   destination_portal
   completed
+  generic_name
   name_route
   recorridos
   genes
@@ -35,6 +36,7 @@ transmilenio-own [
   freq_easy
   freq_middle
   freq_fast
+  is_od
   current_node
   options_route
   
@@ -136,6 +138,7 @@ people-own [
   stop_icu
   top_icu 
   def_icu
+  def_icu_od
   my_route
   traveling
   fast_here 

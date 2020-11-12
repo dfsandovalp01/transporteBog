@@ -37,6 +37,7 @@ to setuptrans
           set genes m
           set apoc p
           set path fput nodo m path
+          set generic_name word genes apoc 
           set name_route word [who] of origin_portal [who] of destination_portal
         ]
       ])
@@ -72,6 +73,7 @@ to setup_transmi_med_fast
       set route path
       set recorridos 0
       set direCt "DOWN"
+      set generic_name (word "e" n) 
       set name_route (word "e" n "-" who)
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
@@ -102,6 +104,7 @@ to setup_transmi_med_fast
       set route []
       set recorridos 0
       set direCt "DOWN"
+      set generic_name n 
       set name_route (word "m" n "-" who)
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
@@ -138,6 +141,7 @@ to setup_transmi_med_fast
       set route []
       set recorridos 0
       set direCt "DOWN"
+      set generic_name n 
       set name_route (word "f" n "-" who)
       set genes [genes] of articulado w
       set apoc [apoc] of articulado w
@@ -160,7 +164,7 @@ to setup_transmi_med_fast
   
 end
 
-to setup-tm_on_demand
+to setup-tm_ode
   create-transmilenio #_easy [
     set family_route "t_easy"
       set shape "truck"
@@ -171,21 +175,10 @@ to setup-tm_on_demand
       set id_pass []
       set cap_status "empty";capacity status   
       set size 0.6
-;    set family_route "t_easy"
-;    setxy random-xcor random-ycor
-;    set shape "truck"
-;    set color 60
-;    set size 1
-;    set inicio one-of vertices
-;    set pass_capacity bus_capacity   
-;    set cap_status "empty";capacity status
-;    setxy [xcor] of origin_portal [ycor] of origin_portal
-    set od_dest place_from_gaussian_mixture 0 0 -1 gm_dest 
+    let od_dest place_from_gaussian_mixture 0 0 -1 gm_dest 
      
 		span_from_gaussian_mixture 0 0 -1 gm_org
-    set od_ori current_node 
-    ;user-message (word who " " od_dest " " od_ori)
-;    set current_node
+    let od_ori current_node 
     set origen.stop current_node
     foreach all_route_t_easy [
         m ->
@@ -197,81 +190,104 @@ to setup-tm_on_demand
             ifelse position od_ori m < position od_dest m 
             [
               set route m
-              ;set p_t_t length sublist m (position current_node m) (position destination m)
-              ;set stop_icu fput p_t_t stop_icu
             ]
             [
               set route reverse m
-              ;set p_t_t length sublist m (position destination m) (position (last m) m) +
-              ;length sublist m  (position current_node m) (position (last m) m)
-              ;set stop_icu fput p_t_t stop_icu            
             ] 
-            ;          set p_t_t
-            ;set icu fput item 0 [name_route] of transmilenio with [family_route = "t_easy" AND route = m] icu
-            ;set icu remove-duplicates icu
-            ;set icu_e fput item 0 [name_route] of transmilenio with [family_route = "t_easy" AND route = m] icu_e
-            ;set icu_e remove-duplicates icu_e
           ]
         ]
       ]    
     set path route
     let route-1 route
-    set origin_portal item 0 route;[origin_portal] of transmilenio with [family_route = "t_easy" AND route = route-1]
-      set destination_portal item (length route - 1) route;[origin_portal] of transmilenio with [family_route = "t_easy" AND route = route-1]
+    set origin_portal item 0 route
+      set destination_portal item (length route - 1) route
       set is_stop "yes"
-      set origen.stop od_ori 
-    ;set on_demand_route [name_route] of transmilenio with [member? od_ori path and member? od_dest path]
-;    ask transmilenio [if member? (current_node) path and member? (destination_portal) path [set on_demand_route lput name_route on_demand_route ]]
-      
-;      set route path
+      set origen.stop od_ori
       set recorridos 0
-;      set direct "DOWN"
-    set genes [who] of item 0 route;[genes] of transmilenio with [family_route = "t_easy" AND route = route-1]
-    set apoc [who] of item (length route - 1) route ;[genes] of transmilenio with [family_route = "t_easy" AND route = route-1]
+    set genes [who] of item 0 route
+    set apoc [who] of item (length route - 1) route 
+    set generic_name (word "e" genes apoc)
+    set is_od "yes"
     set name_route (word "e_p_" genes apoc "-" who)
-;      set route fput origin_portal route
-;      set route lput destination_portal route
-;      set route remove-duplicates route
       if origin_portal = last path [set path reverse path set route path set route fput origin_portal route]
     carefully [set next_stop item (position origen.stop route + 1 ) route ][user-message (word who )]
-     ; set all_route_t_easy lput route all_route_t_easy
-    
-    
-    
-    
-    
-    
-    ; ---------------------- pasado
-;    let name_route_1 item 0 shuffle on_demand_route    
-;    let whoRouteRef item 0 [who] of transmilenio with [name_route = name_route_1]
-;    set path [route] of articulado whoRouteRef
-;    set origin_portal nodo [genes] of articulado whoRouteRef
-;    set destination_portal nodo [apoc] of articulado whoRouteRef
-;    set genes od_ori
-;    set apoc od_dest
-;    set path remove origin_portal path  set path remove destination_portal path
-;    set path fput origin_portal path set path lput destination_portal path
-;    set name_route (name_route_1) 
-;    set route path
-;    set recorridos 0    
-;    ifelse position origen.stop route + 1 >= length route [
-;      set next_stop origen.stop
-;    ][
-;      set next_stop item (position origen.stop route + 1) route
-;    ]
-;    set od_ori 0
-;    set od_dest 0
-;    set options_route on_demand_route
-;    if length on_demand_route = 0 [user-message (word "bus " who " murio") die ]
-;    show who show options_route
-;    set on_demand_route 0
-;    set inicio vertex 56
-;    set llegada vertex 53
-    
   ]
 end
 
-
+to setup-tm_odf
+  create-transmilenio #_fast [
+    set family_route "t_fast"
+      set shape "truck"
+      set color yellow
+;      setxy [xcor] of nodo g [ycor] of nodo g
+      set pass_capacity bus_capacity
+      set on_board 0
+      set id_pass []
+      set cap_status "empty";capacity status   
+      set size 0.6
+    let od_dest place_from_gaussian_mixture 0 0 -1 gm_dest 
+     
+		span_from_gaussian_mixture 0 0 -1 gm_org
+    let od_ori current_node 
+    set origen.stop current_node
+    foreach all_route_t_fast [
+        m ->
+        ifelse member? (od_ori) m and member? (od_dest) m
+        [
+          ;if count transmilenio with [family_route = "t_fast" AND route = m] != 0 
+          ;[
+            
+            ifelse position od_ori m < position od_dest m 
+            [
+              set path item 0 [path] of transmilenio with [family_route = "t_fast" AND route = m] 
+              set route m
+              user-message (word who route "11" )
+              ;stop
+            ]
+            [
+              set path reverse item 0 [path] of transmilenio with [family_route = "t_fast" AND route = m] 
+              set route m
+              user-message (word who route "12" )
+              ;stop
+            ] 
+          ;]
+      ][if member? (od_ori) m [
+          ;if count transmilenio with [family_route = "t_fast" AND route = m] != 0 
+          ;[
+            let p_t_t m
+            ifelse position od_ori m < position last m m
+            [
+              set path item 0 [path] of transmilenio with [family_route = "t_fast" AND route = m] 
+              set route m
+              user-message (word who route "21" )
+              ;stop
+            ]
+            [
+              set path reverse item 0 [path] of transmilenio with [family_route = "t_fast" AND route = m] 
+              set route m
+              user-message (word who route "22" )
+              ;stop
+            ] 
+          ;]
+      ] ]
+      ]    
+    ;set path route
+    let route-1 route
+    carefully [set origin_portal item 0 route-1] [user-message (word who route )]
+      set destination_portal item (position last route route) route
+      set is_stop "yes"
+      set origen.stop od_ori
+      set recorridos 0
+    set genes [who] of item 0 route
+    set apoc [who] of item (length route - 1) route 
+    set generic_name (word "f" genes apoc)
+    set is_od "yes"
+    set name_route (word "f_p_" genes apoc "-" who)
+      if origin_portal = last path [set path reverse path set route path set route fput origin_portal route]
+    carefully [set next_stop item (position origen.stop route ) route ][user-message (word who "error" )]
+    user-message (word who "no error" )
+  ]
+end
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -448,8 +464,8 @@ to move-articulado
      ;;;;;;; RUTA RAPIDA;;;;;;;;;;;;;;
   
   ask transmilenio with [family_route = "t_fast"] [
-    let next_stop_x [xcor] of next_stop
-    let next_stop_y [ycor] of next_stop    
+    ;let next_stop_x [xcor] of next_stop
+    ;let next_stop_y [ycor] of next_stop    
     
     move-in-route 
     return-articulado

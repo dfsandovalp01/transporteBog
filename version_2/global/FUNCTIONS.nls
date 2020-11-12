@@ -52,7 +52,8 @@ to go
   
     
 
-    if length [who] of t_middle = 0  [state_tm]  
+    ;if length [who] of t_middle = 0  [state_tm]
+    state_tm  
     move-articulado
     ;ability-level
 ;    return-articulado
