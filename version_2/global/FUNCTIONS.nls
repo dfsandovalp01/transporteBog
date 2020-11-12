@@ -14,7 +14,11 @@ to setup
   setup-portales
   setup-conectores
   
+  set time_string "00:00"
+	set time 0
+  
   set Conteo_origin 0
+  set total_users 0
 
   
   set all_portals sort [id] of nodos with [tipo = "PORT"] ; [421 425 432 446 464 475 492 503 516]
@@ -122,4 +126,16 @@ to correcciones
   ask edges_tm with [capacity = 4] [
     set color sky
   ]
+end
+
+to calculate_time
+
+	set time 24 * ticks / total_ticks
+	let minutes floor ( floor ( ( time - floor time ) * 100 ) / 100 * 60 )
+  	if minutes < 10 [ set minutes word 0 minutes ]
+	set time_string ( word floor time ":" minutes )
+  	if time < 10  [ set time_string word "0" time_string ]
+
+	; correct color_p based on time
+
 end

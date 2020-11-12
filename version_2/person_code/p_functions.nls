@@ -68,14 +68,15 @@ to take-bus ; personas toman el servicio
               ;user-message (word "voy lleno " who )              
             ]
           ]
-          set traveling "yes" 
+          set traveling "yes"
+          set total_users total_users + 1
           ;user-message (word "Me pude subir al " my_route " :D")
         ]
         
         
         hide-turtle
       ]
-      if [origen.stop] of my_route = destination 
+      if [origen.stop] of my_route = destination and traveling = "yes"
         [
           move-to destination
           show-turtle

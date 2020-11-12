@@ -103,7 +103,7 @@ INPUTBOX
 178
 140
 number_of_people
-100.0
+1000.0
 1
 0
 Number
@@ -258,10 +258,10 @@ count transmilenio with [family_route = \"t_fast\" and cap_status = \"full\"]
 11
 
 MONITOR
-55
-482
-145
-527
+19
+464
+109
+509
 NIL
 Conteo_origin
 17
@@ -286,6 +286,39 @@ true
 PENS
 "Viajando" 1.0 0 -16777216 true "" "plot (count people with [traveling = \"yes\"]) / number_of_people * 100"
 "Espera" 1.0 0 -7500403 true "" "plot (count people with [traveling = \"no\"]) / number_of_people * 100"
+
+INPUTBOX
+15
+533
+230
+593
+total_ticks
+900.0
+1
+0
+Number
+
+MONITOR
+763
+450
+821
+495
+time
+time_string
+2
+1
+11
+
+MONITOR
+124
+464
+199
+509
+NIL
+total_users
+2
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?

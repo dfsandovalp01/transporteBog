@@ -23,7 +23,7 @@ globals [
   max_speed
 	min_max_speed
   Conteo_origin
-  
+  total_users
    
 ;  portal.norte-x portal.norte-y
 ;  portal.sur-x portal.sur-y
